@@ -1,8 +1,11 @@
 package main;
 
+import java.net.ConnectException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import main.data.Message;
@@ -27,23 +30,20 @@ public class Main {
             mockNetwork.loginResult = NetworkInterface.SUCCESS;
             mockNetwork.loginTime = 2500;
             
-            mockNetwork.getNicknameResult = NetworkInterface.SUCCESS;
-            mockNetwork.getNicknameTime = 1000;
-            mockNetwork.nicknameMap.put("Stealth", "Stealth - 2706");
-            mockNetwork.nicknameMap.put("biscuitseed", "builderman's son");
+            mockNetwork.getNicknameResult = NetworkInterface.NOT_LOGGED_IN;
+            mockNetwork.getNicknameTime = 0;
             
-            mockNetwork.getMessagesResult = NetworkInterface.SUCCESS;
-            mockNetwork.getMessagesTime = 3500;
-            mockNetwork.messages.add(new Message(new User("stealth", network.getNickname("Stealth").get()),
-                                                 "I am angery!!!1!11", LocalDateTime.now(ZoneId.ofOffset("UTC", ZoneOffset.UTC)).minusHours(1)));
-            mockNetwork.messages.add(new Message(new User("biscuitseed", network.getNickname("biscuitseed").get()),
-                                                 "Ya dingus", LocalDateTime.now(ZoneId.ofOffset("UTC", ZoneOffset.UTC)).minusHours(4)));
+            mockNetwork.getUserUpdatesResult = NetworkInterface.NOT_LOGGED_IN;
+            mockNetwork.getUserUpdatesTime = 0;
             
-            mockNetwork.sendMessageResult = NetworkInterface.COULD_NOT_CONNECT;
-            mockNetwork.sendMessageTime = 500;
+            mockNetwork.getMessagesResult = NetworkInterface.NOT_LOGGED_IN;
+            mockNetwork.getMessagesTime = 0;
             
-            mockNetwork.logoutResult = NetworkInterface.SUCCESS;
-            mockNetwork.logoutTime = 750;
+            mockNetwork.sendMessageResult = NetworkInterface.NOT_LOGGED_IN;
+            mockNetwork.sendMessageTime = 0;
+            
+            mockNetwork.logoutResult = NetworkInterface.NOT_LOGGED_IN;
+            mockNetwork.logoutTime = 0;
         }
         
         
@@ -60,19 +60,92 @@ public class Main {
             }
         }
         
+        window.loginWindow.setActionText("Logging in...");
         network.login(loginInfo.get());
+        
+        if(network instanceof MockServer) {
+            MockServer mockNetwork = (MockServer)network;
+            
+            mockNetwork.loginResult = NetworkInterface.ALREADY_LOGGED_IN;
+            mockNetwork.loginTime = 0;
+            
+            mockNetwork.getNicknameResult = NetworkInterface.SUCCESS;
+            mockNetwork.getNicknameTime = 1000;
+            mockNetwork.userMap.put("Stealth", "Stealth - 2706🍁");
+            mockNetwork.userMap.put("biscuitseed", "builderman's son");
+            mockNetwork.userMap.put("C#", "Java 1.11");
+            mockNetwork.userMap.put("Java", "C+=2");
+            mockNetwork.userMap.put("Kotlin", "Java 2.0");
+            
+            mockNetwork.getUserUpdatesResult = NetworkInterface.SUCCESS;
+            mockNetwork.getUserUpdatesTime = 250;
+            
+            mockNetwork.getMessagesResult = NetworkInterface.SUCCESS;
+            mockNetwork.getMessagesTime = 750;
+            mockNetwork.messages.add(new Message(new User("Stealth", network),
+                                                 "I am angery!!!1!11", LocalDateTime.now(ZoneId.ofOffset("UTC", ZoneOffset.UTC)).minusHours(1)));
+            mockNetwork.messages.add(new Message(new User("biscuitseed", network),
+                                                 "Ya dingus", LocalDateTime.now(ZoneId.ofOffset("UTC", ZoneOffset.UTC)).minusHours(4)));
+            
+            mockNetwork.sendMessageResult = NetworkInterface.SUCCESS;
+            mockNetwork.sendMessageTime = 500;
+            
+            mockNetwork.logoutResult = NetworkInterface.SUCCESS;
+            mockNetwork.logoutTime = 750;
+        }
+        
+        window.loginWindow.setActionText("Getting online users...");
+        
+        try {
+            window.messagingWindow.initializeUserSet(network.getAllUsers().orElseThrow(network::makeException));
+        } catch (ConnectException e) {
+            e.printStackTrace();
+        }
         
         window.setStatePanel(window.messagingWindow);
         
         while(window.isShowing()) {
             try {
+                Map<User, List<Integer>> userUpdates = network.getUserUpdates().orElseThrow(network::makeException);
+                for(User user : userUpdates.keySet()) {
+                    for(int state : userUpdates.get(user)) {
+                        window.messagingWindow.updateUser(user, state, network);
+                    }
+                }
+                List<Message> messages = network.getIncomingMessages().orElseThrow(network::makeException);
+                for(Message message : messages) {
+                    window.messagingWindow.addMessage(message);
+                }
+                
                 Thread.sleep(250);
-            } catch (InterruptedException e) {
+            } catch (InterruptedException | ConnectException e) {
                 e.printStackTrace();
             }
         }
         
         network.logout();
+        
+        if(network instanceof MockServer) {
+            MockServer mockNetwork = (MockServer)network;
+            
+            mockNetwork.loginResult = NetworkInterface.SUCCESS;
+            mockNetwork.loginTime = 2500;
+            
+            mockNetwork.getNicknameResult = NetworkInterface.NOT_LOGGED_IN;
+            mockNetwork.getNicknameTime = 0;
+            
+            mockNetwork.getUserUpdatesResult = NetworkInterface.NOT_LOGGED_IN;
+            mockNetwork.getUserUpdatesTime = 0;
+            
+            mockNetwork.getMessagesResult = NetworkInterface.NOT_LOGGED_IN;
+            mockNetwork.getMessagesTime = 0;
+            
+            mockNetwork.sendMessageResult = NetworkInterface.NOT_LOGGED_IN;
+            mockNetwork.sendMessageTime = 0;
+            
+            mockNetwork.logoutResult = NetworkInterface.NOT_LOGGED_IN;
+            mockNetwork.logoutTime = 0;
+        }
         
         System.exit(0);
     }

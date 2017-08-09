@@ -1,6 +1,7 @@
 package main.gui;
 
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 public class Window extends JFrame {
     
@@ -35,5 +36,7 @@ public class Window extends JFrame {
         currentPanel = panel;
         
         panel.setVisible(true);
+        
+        SwingUtilities.updateComponentTreeUI(this);
     }
 }

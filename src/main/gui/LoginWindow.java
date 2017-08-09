@@ -7,6 +7,7 @@ import java.awt.event.FocusListener;
 import java.util.Optional;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 
@@ -18,10 +19,14 @@ public class LoginWindow extends StatePanel {
 
     private User loginInfo;
     private final JButton submit;
+    private final JLabel action;
+    
     
     public LoginWindow() {
         this.setSize(500, 500);
         
+        action = new JLabel();
+        action.setVisible(false);
         JTextField username = new JTextField("Username");
         username.setForeground(Color.GRAY);
         username.addFocusListener(new FocusListener() {
@@ -68,10 +73,19 @@ public class LoginWindow extends StatePanel {
         loggingIn.setString("Logging in...");
         
         submit.addActionListener(e -> {
-            loginInfo = new User(username.getText(), nickname.getText());
-            loggingIn.setVisible(true);
+            if(username.getForeground() == Color.GRAY || nickname.getForeground() == Color.GRAY
+                            || username.getText().isEmpty() || nickname.getText().isEmpty()) {
+                action.setText("Please ensure username and nickname are set");
+                action.setVisible(true);
+            }
+            else {
+                action.setVisible(true);
+                loginInfo = new User(username.getText(), nickname.getText());
+                loggingIn.setVisible(true);
+            }
         });
         
+        this.add(action);
         this.add(username);
         this.add(nickname);
         this.add(submit);
@@ -95,5 +109,9 @@ public class LoginWindow extends StatePanel {
     @Override
     public JButton getSubmitButton() {
         return submit;
+    }
+    
+    public void setActionText(String text) {
+        action.setText(text);
     }
 }
