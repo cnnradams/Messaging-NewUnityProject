@@ -70,13 +70,25 @@ public class Main {
             mockNetwork.loginTime = 0;
             
             mockNetwork.getNicknameResult = NetworkInterface.SUCCESS;
-            mockNetwork.getNicknameTime = 1000;
+            mockNetwork.getNicknameTime = 75;
             mockNetwork.userMap.put("Stealth", "Stealth - 2706🍁");
             mockNetwork.userMap.put("biscuitseed", "builderman's son");
             mockNetwork.userMap.put("C#", "Java 1.11");
             mockNetwork.userMap.put("Java", "C+=2");
-            mockNetwork.userMap.put("Kotlin", "Java 2.0");
-            
+            mockNetwork.userMap.put("cheeseburger", "Nathan");
+            mockNetwork.userMap.put("el Presidentai", "George");
+            mockNetwork.userMap.put("broom&scoop", "Matt");
+            mockNetwork.userMap.put("Kip", "Dario");
+            mockNetwork.userMap.put("Sweet Necture", "Ty");
+            mockNetwork.userMap.put("outof", "ideas");
+            mockNetwork.userMap.put("pi", "3.1415926535897932384664338327950288419716939937510582097492307");
+            mockNetwork.userMap.put("cheeselover1052", "Charles");
+            mockNetwork.userMap.put("rnande24", "Rick");
+            mockNetwork.userMap.put("nick_565", "Nick");
+            mockNetwork.userMap.put("windyman52", "Lori");
+            mockNetwork.userMap.put("rylon01", "Andy");
+            mockNetwork.userMap.put("baconburger202", "Glenn");
+            ;
             mockNetwork.getUserUpdatesResult = NetworkInterface.SUCCESS;
             mockNetwork.getUserUpdatesTime = 250;
             

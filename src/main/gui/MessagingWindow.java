@@ -1,5 +1,6 @@
 package main.gui;
 
+import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,8 +10,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import main.data.Message;
 import main.data.User;
@@ -25,11 +28,18 @@ public class MessagingWindow extends StatePanel {
     
     private List<JButton> userButtons = new ArrayList<>();
     
+    private final JPanel userListPanel = new JPanel();
+    
     public MessagingWindow() {
         this.setSize(848, 477);
-        JLabel j = new JLabel("Test");
-        j.setVisible(true);
-        this.add(j);
+        
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        userListPanel.setLayout(new BoxLayout(userListPanel, BoxLayout.Y_AXIS));
+        scrollPane.setViewportView(userListPanel);
+        scrollPane.setPreferredSize(new Dimension(300, 300));
+        this.add(scrollPane);
     }
     
     @Override
@@ -52,21 +62,21 @@ public class MessagingWindow extends StatePanel {
             case NetworkInterface.CONNECTED:
                 onlineUsers.add(user);
                 JButton userButton = createButtonForUser(user);
-                this.add(userButton);
+                userListPanel.add(userButton);
                 userButtons.add(userButton);
             break;
             case NetworkInterface.DISCONNECTED:
                 onlineUsers.remove(user);
-                this.remove(getUserButtonByUser(user).orElse(null));
+                userListPanel.remove(getUserButtonByUser(user).orElse(null));
                 userButtons.remove(getUserButtonByUser(user).orElse(null));
             break;
             case NetworkInterface.CHANGED_NICKNAME:
                 onlineUsers.remove(user);
-                this.remove(getUserButtonByUser(user).orElse(null));
+                userListPanel.remove(getUserButtonByUser(user).orElse(null));
                 userButtons.remove(getUserButtonByUser(user).orElse(null));
                 onlineUsers.add(new User(user.username, network));
                 userButton = createButtonForUser(user);
-                this.add(userButton);
+                userListPanel.add(userButton);
                 userButtons.add(userButton);
             break;
             default:
@@ -79,7 +89,7 @@ public class MessagingWindow extends StatePanel {
         
         for(User user : onlineUsers) {
             JButton userButton = createButtonForUser(user);
-            this.add(userButton);
+            userListPanel.add(userButton);
             userButtons.add(userButton);
         }
     }
