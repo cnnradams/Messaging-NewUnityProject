@@ -82,9 +82,9 @@ public class Main {
             
             mockNetwork.getMessagesResult = NetworkInterface.SUCCESS;
             mockNetwork.getMessagesTime = 750;
-            mockNetwork.messages.add(new Message(new User("Stealth", network),
+            mockNetwork.messages.add(new Message(new User("Stealth", mockNetwork.userMap.get("Stealth")),
                                                  "I am angery!!!1!11", LocalDateTime.now(ZoneId.ofOffset("UTC", ZoneOffset.UTC)).minusHours(1)));
-            mockNetwork.messages.add(new Message(new User("biscuitseed", network),
+            mockNetwork.messages.add(new Message(new User("biscuitseed",  mockNetwork.userMap.get("biscuitseed")),
                                                  "Ya dingus", LocalDateTime.now(ZoneId.ofOffset("UTC", ZoneOffset.UTC)).minusHours(4)));
             
             mockNetwork.sendMessageResult = NetworkInterface.SUCCESS;

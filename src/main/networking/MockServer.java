@@ -190,7 +190,7 @@ public class MockServer implements NetworkInterface {
        pause(getMessagesTime);
        
        if(getMessagesResult != NetworkInterface.SUCCESS) {
-           System.out.println("Failed to get messages");
+           System.out.println("[Mock] Failed to get messages");
            
            resultCode = getMessagesResult;
            printlnResult();
@@ -200,7 +200,7 @@ public class MockServer implements NetworkInterface {
            return Optional.empty();
        }
        else {
-           System.out.println("Found " + messages.size() + " new messages");
+           System.out.println("[Mock] Found " + messages.size() + " new messages");
            
            List<Message> copy = new ArrayList<>();
            copy.addAll(messages);
