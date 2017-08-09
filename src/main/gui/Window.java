@@ -25,6 +25,7 @@ public class Window extends JFrame {
         this.setTitle(panel.getTitle());
         this.setIconImage(panel.getImage());
         this.setSize(panel.getWidth(), panel.getHeight());
+        this.getRootPane().setDefaultButton(panel.getSubmitButton());
         
         this.add(panel);
         

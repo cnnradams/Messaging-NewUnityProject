@@ -2,6 +2,7 @@ package main.gui;
 
 import java.awt.Image;
 
+import javax.swing.JButton;
 import javax.swing.JPanel;
 
 public abstract class StatePanel extends JPanel {
@@ -10,5 +11,6 @@ public abstract class StatePanel extends JPanel {
     
     public abstract String getTitle();
     public abstract Image getImage();
+    public abstract JButton getSubmitButton();
     
 }

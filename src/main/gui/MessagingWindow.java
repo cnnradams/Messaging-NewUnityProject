@@ -2,6 +2,8 @@ package main.gui;
 
 import java.awt.Image;
 
+import javax.swing.JButton;
+
 public class MessagingWindow extends StatePanel {
     
     private static final long serialVersionUID = 1L;
@@ -17,6 +19,11 @@ public class MessagingWindow extends StatePanel {
 
     @Override
     public Image getImage() {
+        return null;
+    }
+
+    @Override
+    public JButton getSubmitButton() {
         return null;
     }
 }

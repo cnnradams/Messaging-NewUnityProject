@@ -26,6 +26,10 @@ public class Main {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            
+            if(!window.isShowing()) {
+                System.exit(1);
+            }
         }
         
         network.login(loginInfo.get());

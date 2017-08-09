@@ -1,6 +1,8 @@
 package main.gui;
 
 import java.awt.Image;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.Optional;
 
 import javax.swing.JButton;
@@ -14,13 +16,45 @@ public class LoginWindow extends StatePanel {
     private static final long serialVersionUID = 1L;
 
     private User loginInfo;
+    private final JButton submit;
     
     public LoginWindow() {
         this.setSize(500, 500);
         
         JTextField username = new JTextField("Username");
+        username.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if(username.getText().equals("Username")) {
+                    username.setText("");
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if(username.getText().equals("")) {
+                    username.setText("Username");
+                }
+            }
+        });
+        
         JTextField nickname = new JTextField("Nickname");
-        JButton submit = new JButton("Submit");
+        nickname.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if(nickname.getText().equals("Nickname")) {
+                    nickname.setText("");
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if(nickname.getText().equals("")) {
+                    nickname.setText("Nickname");
+                }
+            }
+        });
+        submit = new JButton("Submit");
         JProgressBar loggingIn = new JProgressBar();
         loggingIn.setVisible(false);
         loggingIn.setIndeterminate(true);
@@ -50,5 +84,9 @@ public class LoginWindow extends StatePanel {
     public Image getImage() {
         return null;
     }
-
+    
+    @Override
+    public JButton getSubmitButton() {
+        return submit;
+    }
 }
