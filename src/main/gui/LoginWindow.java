@@ -1,5 +1,6 @@
 package main.gui;
 
+import java.awt.Color;
 import java.awt.Image;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -22,11 +23,13 @@ public class LoginWindow extends StatePanel {
         this.setSize(500, 500);
         
         JTextField username = new JTextField("Username");
+        username.setForeground(Color.GRAY);
         username.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                if(username.getText().equals("Username")) {
+                if(username.getText().equals("Username") && username.getForeground() == Color.GRAY) {
                     username.setText("");
+                    username.setForeground(Color.BLACK);
                 }
             }
 
@@ -34,16 +37,19 @@ public class LoginWindow extends StatePanel {
             public void focusLost(FocusEvent e) {
                 if(username.getText().equals("")) {
                     username.setText("Username");
+                    username.setForeground(Color.GRAY);
                 }
             }
         });
         
         JTextField nickname = new JTextField("Nickname");
+        nickname.setForeground(Color.GRAY);
         nickname.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                if(nickname.getText().equals("Nickname")) {
+                if(nickname.getText().equals("Nickname") && nickname.getForeground() == Color.GRAY) {
                     nickname.setText("");
+                    nickname.setForeground(Color.BLACK);
                 }
             }
 
@@ -51,6 +57,7 @@ public class LoginWindow extends StatePanel {
             public void focusLost(FocusEvent e) {
                 if(nickname.getText().equals("")) {
                     nickname.setText("Nickname");
+                    nickname.setForeground(Color.GRAY);
                 }
             }
         });
