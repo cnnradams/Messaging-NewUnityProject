@@ -97,16 +97,19 @@ public class LoginWindow extends StatePanel {
 		loggingIn.setString("Logging in...");
 
 		submit.addActionListener(e -> {
-			username.setVisible(false);    
-	    	nickname.setVisible(false);
-	    	submit.setVisible(false);
-	    	hidden = true;
+	    	
 			if (username.getForeground() == Color.GRAY || nickname.getForeground() == Color.GRAY
 					|| username.getText().isEmpty() || nickname.getText().isEmpty()) {
 				action.setText("Please ensure username and nickname are set");
+				action.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 5, getWidth() / 4, 50);
 				action.setVisible(true);
 			} else {
+				hidden = true;
 				action.setVisible(true);
+				action.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 90, getWidth() / 4, 50);
+				username.setVisible(false);    
+		    	nickname.setVisible(false);
+		    	submit.setVisible(false);
 				loginInfo = new User(username.getText(), nickname.getText());
 				loggingIn.setVisible(true);
 			}
@@ -119,6 +122,7 @@ public class LoginWindow extends StatePanel {
 		this.add(loggingIn);
 		this.addComponentListener(new ComponentListener() {
 		    public void componentResized(ComponentEvent e) {
+		    	action.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 5, getWidth() / 4, 50);
 		    	username.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 40, getWidth() / 4, 50);    
 		    	nickname.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 100, getWidth() / 4, 50);
 		    	loggingIn.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 160, getWidth() / 4, 50);
