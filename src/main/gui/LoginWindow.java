@@ -25,45 +25,47 @@ public class LoginWindow extends StatePanel {
 	private final JLabel action;
 	private Image logoStartup;
 	private Image logoDone;
+	private Image loginbg;
 	private long startMillis = 0;
 
 	public LoginWindow() {
 		this.setLayout(null);
-		
-		this.setSize(500, 500);
+		this.setResizable(false);
+		this.setSize(800, 439);
 		logoStartup = Toolkit.getDefaultToolkit().createImage("src/resources/logo.gif");
 		logoDone = Toolkit.getDefaultToolkit().createImage("src/resources/logodone.gif");
+		loginbg = Toolkit.getDefaultToolkit().createImage("src/resources/loginbg.png");
 		tempLogoStartup = logoStartup.getScaledInstance(getWidth(), -1, Image.SCALE_DEFAULT);
 		tempLogoDone = logoDone.getScaledInstance(getWidth(), -1, Image.SCALE_DEFAULT);
 		if (startMillis == 0) {
 			startMillis = System.currentTimeMillis();
 		}
 		action = new JLabel();
+		action.setForeground(Color.white);
 		action.setVisible(false);
-		PlaceHolderTextField username = new PlaceHolderTextField("Username");
+		PlaceHolderTextField username = new PlaceHolderTextField("  display name");
 		username.setBorder(BorderFactory.createMatteBorder(2,2,2,2, new Color(105,105,105)));
-		username.setHorizontalAlignment(JTextField.CENTER);
+		username.setHorizontalAlignment(JTextField.LEFT);
 		
-		PlaceHolderTextField nickname = new PlaceHolderTextField("Nickname");
+		PlaceHolderTextField nickname = new PlaceHolderTextField("  nickname");
 		nickname.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 100, getWidth() / 4, 50);
 		nickname.setBorder(BorderFactory.createMatteBorder(2,2, 2, 2, new Color(105,105,105)));
-		nickname.setHorizontalAlignment(JTextField.CENTER);
+		nickname.setHorizontalAlignment(JTextField.LEFT);
 		
-		submit = new JButton("Submit");
+		submit = new JButton("login");
 		submit.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 150, getWidth() / 4, 50);
 		submit.setBackground( new Color(0,191,255));
 		JProgressBar loggingIn = new JProgressBar();
 		loggingIn.setVisible(false);
 		loggingIn.setIndeterminate(true);
-		loggingIn.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 150, getWidth() / 4, 50);
-		loggingIn.setBackground( new Color(0,191,255));
+		loggingIn.setForeground(Color.white);
 		loggingIn.setString("Logging in...");
 
 		submit.addActionListener(e -> {
 	    	
 			if (username.isPlaceHolder() || nickname.isPlaceHolder()) {
-				action.setText("Please ensure username and nickname are set");
-				action.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 5, getWidth() / 4, 50);
+				action.setText("A display name and nickname are required.");
+				action.setBounds(450, 130, getWidth() / 3, 30);
 				action.setVisible(true);
 			} else {
 				hidden = true;
@@ -85,12 +87,12 @@ public class LoginWindow extends StatePanel {
 		this.addComponentListener(new ComponentListener() {
 		    public void componentResized(ComponentEvent e) {
 		    	action.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 5, getWidth() / 4, 50);
-		    	username.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 40, getWidth() / 4, 50);    
-		    	nickname.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 100, getWidth() / 4, 50);
-		    	loggingIn.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 160, getWidth() / 4, 50);
-		    	submit.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 160, getWidth() / 4, 50);
-		    	tempLogoStartup = logoStartup.getScaledInstance(getWidth(), -1, Image.SCALE_DEFAULT);
-				tempLogoDone = logoDone.getScaledInstance(getWidth(), -1, Image.SCALE_DEFAULT);
+		    	username.setBounds(450, 160, getWidth() / 3, 30);    
+		    	nickname.setBounds(450, 190, getWidth() / 3, 30);
+		    	loggingIn.setBounds(450, 190, getWidth() / 6, 30);
+		    	submit.setBounds(450, 220, getWidth() / 6, 30);
+		    	tempLogoStartup = logoStartup.getScaledInstance(getWidth() / 3, -1, Image.SCALE_DEFAULT);
+				tempLogoDone = logoDone.getScaledInstance(getWidth() / 3, -1, Image.SCALE_DEFAULT);
 				rectX = getWidth() / 2 - getWidth() / 8 - 25;
 				rectY = getHeight() / 2 + 5;
 				rectW = getWidth() / 4 + 50;
@@ -116,6 +118,10 @@ public class LoginWindow extends StatePanel {
 			}
 		});
 	}
+	private void setResizable(boolean b) {
+		// TODO Auto-generated method stub
+		
+	}
 	Image tempLogoStartup;
 	Image tempLogoDone;
 	int rectX = 0;
@@ -126,17 +132,11 @@ public class LoginWindow extends StatePanel {
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		if(!hidden) {
-			g.setColor(Color.WHITE);
-			g.fillRoundRect(rectX, rectY, rectW, rectH, 20, 20);//paint background
-			g.setColor(new Color(105,105,105));
-			g.drawRoundRect(rectX + 10, rectY + 10, rectW - 20, rectH - 20, 20, 20);//paint border
-		}
-		int x = getWidth() / 2 - tempLogoStartup.getWidth(null) / 2;
+		g.drawImage(loginbg, 0, 0, this);
 		if (tempLogoStartup != null && (System.currentTimeMillis() - startMillis) < 4190)
-			g.drawImage(tempLogoStartup, x, 0, this);
+			g.drawImage(tempLogoStartup, 74, 174, this);
 		else if (tempLogoDone != null)
-			g.drawImage(tempLogoDone, x, 0, this);
+			g.drawImage(tempLogoDone, 74, 174, this);
 
 	}
 	public Optional<User> getLoginInfo() {
