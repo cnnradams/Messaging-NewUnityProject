@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import main.data.ChatRoom;
 import main.data.Message;
 import main.data.User;
 
@@ -16,12 +17,14 @@ public class MockServer implements NetworkInterface {
 
     private int resultCode;
     
-    public int loginResult, getNicknameResult, getUsersResult, getUserUpdatesResult, getMessagesResult, sendMessageResult, logoutResult;
-    public long loginTime, getNicknameTime, getUsersTime, getUserUpdatesTime, getMessagesTime, sendMessageTime, logoutTime;
+    public int loginResult, getAllChatsResult, getChatNameResult, getChatUpdatesResult, getNicknameResult, getUsersResult, getUserUpdatesResult, getMessagesResult, sendMessageResult, logoutResult;
+    public long loginTime, getAllChatsTime, getChatNameTime, getChatUpdatesTime, getNicknameTime, getUsersTime, getUserUpdatesTime, getMessagesTime, sendMessageTime, logoutTime;
     
     public Map<String, String> userMap = new HashMap<>();
     public List<Message> messages = new ArrayList<>();
-    public Map<User, List<Integer>> updateMap = new HashMap<>();
+    public Map<User, List<Integer>> userUpdateMap = new HashMap<>();
+    public Map<Integer, String> chatMap = new HashMap<>();
+    public Map<ChatRoom, List<Integer>> chatUpdateMap = new HashMap<>();
     
     private void pause(long time) {
         try {
@@ -68,6 +71,121 @@ public class MockServer implements NetworkInterface {
         return loginResult == NetworkInterface.SUCCESS;
     }
 
+    @Override
+    public Optional<Set<ChatRoom>> getAllChats() {
+        System.out.println("[Mock] Getting all chats...\n"
+                        + "[Mock] Waiting for " + getAllChatsTime + " milliseconds");
+       pause(getAllChatsTime);
+       
+       if(getAllChatsResult != NetworkInterface.SUCCESS) {
+           System.out.println("[Mock] Failed to get chats");
+           
+           resultCode = getAllChatsResult;
+           printlnResult();
+           
+           System.out.println();
+           
+           return Optional.empty();
+       }
+       else {
+           System.out.println("[Mock] Found " + chatMap.size() + " chats");
+           
+           Set<ChatRoom> chats = new HashSet<>(chatMap.size());
+           
+           for(Integer chatId : chatMap.keySet()) {
+               chats.add(new ChatRoom(chatId, this));
+           }
+           
+           resultCode = getMessagesResult;
+           printlnResult();
+           
+           System.out.println();
+           
+           return Optional.of(chats);
+       }
+    }
+    
+    @Override
+    public Optional<String> getChatName(int id) {
+      System.out.println("[Mock] Looking up chat name for id " + id + "...\n"
+                       + "[Mock] Waiting for " + getChatNameTime + " milliseconds");
+      pause(getChatNameTime);
+      
+      if(getChatNameResult != NetworkInterface.SUCCESS && getChatNameResult != NetworkInterface.UNKNOWN_USERNAME) {
+          System.out.println("[Mock] Chat name for id " + id + " could not be checked");
+          
+          resultCode = getChatNameResult;
+          printlnResult();
+          
+          System.out.println();
+          
+          return Optional.empty();
+      }
+      else {
+          Optional<String> chatName = Optional.ofNullable(chatMap.get(id));
+      
+          System.out.println("[Mock] Chat name for id " + id + " is " + chatName.orElse("unknown"));
+      
+          resultCode = getChatNameResult;
+          printlnResult();
+      
+          System.out.println();
+          
+          return chatName;
+      }
+    }
+    
+    @Override
+    public Optional<Map<ChatRoom, List<Integer>>> getChatUpdates() {
+        System.out.println("[Mock] Getting all chat updates...\n"
+                        +  "[Mock] Waiting for " + getChatUpdatesTime + " milliseconds");
+       pause(getChatUpdatesTime);
+       
+       if(getChatUpdatesResult != NetworkInterface.SUCCESS) {
+           System.out.println("[Mock] Failed to get chat updates");
+           
+           resultCode = getChatUpdatesResult;
+           printlnResult();
+           
+           System.out.println();
+           
+           return Optional.empty();
+       }
+       else {
+           System.out.println("[Mock] Found " + chatUpdateMap.size() + " chat updates");
+           
+           Map<ChatRoom, List<Integer>> copy = new HashMap<>();
+           copy.putAll(chatUpdateMap);
+           userUpdateMap = new HashMap<>();
+           
+           Optional<Map<ChatRoom, List<Integer>>> optional = Optional.of(copy);
+           
+           for(ChatRoom chat : optional.get().keySet()) {
+               for(int state : optional.get().get(chat)) {
+                   switch(state) {
+                       case NetworkInterface.CONNECTED:
+                           chatMap.put(chat.id, chat.name);
+                       break;
+                       case NetworkInterface.DISCONNECTED:
+                           chatMap.remove(chat.id);
+                       break;
+                       case NetworkInterface.CHANGED_NICKNAME:
+                           chatMap.remove(chat.id);
+                           // May be null if user leaves server and changes nickname at same time
+                           chatMap.put(chat.id, getChatName(chat.id).orElse(""));
+                   }
+               }
+           }
+           
+           resultCode = getChatUpdatesResult;
+           printlnResult();
+           
+           System.out.println();
+           
+           return optional;
+       }
+    }
+    
     @Override
     public Optional<String> getNickname(String username) {
         System.out.println("[Mock] Looking up nickname for " + username + "...\n"
@@ -149,11 +267,11 @@ public class MockServer implements NetworkInterface {
            return Optional.empty();
        }
        else {
-           System.out.println("[Mock] Found " + updateMap.size() + " user updates");
+           System.out.println("[Mock] Found " + userUpdateMap.size() + " user updates");
            
            Map<User, List<Integer>> copy = new HashMap<>();
-           copy.putAll(updateMap);
-           updateMap = new HashMap<>();
+           copy.putAll(userUpdateMap);
+           userUpdateMap = new HashMap<>();
            
            Optional<Map<User, List<Integer>>> optional = Optional.of(copy);
            
@@ -174,7 +292,7 @@ public class MockServer implements NetworkInterface {
                }
            }
            
-           resultCode = getMessagesResult;
+           resultCode = getUserUpdatesResult;
            printlnResult();
            
            System.out.println();

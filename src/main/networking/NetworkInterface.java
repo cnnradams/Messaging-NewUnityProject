@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import main.data.ChatRoom;
 import main.data.Message;
 import main.data.User;
 
@@ -19,6 +20,7 @@ public interface NetworkInterface {
     public static final int UNKNOWN_USERNAME = -3;
     public static final int NOT_LOGGED_IN = -4;
     public static final int ALREADY_LOGGED_IN = -5;
+    public static final int UNKNOWN_CHAT = -6;
     
     public static final int CONNECTED = 1;
     public static final int DISCONNECTED = 2;
@@ -38,6 +40,7 @@ public interface NetworkInterface {
         decodings.put(UNKNOWN_USERNAME,     "Could not find the specified username on the server");
         decodings.put(NOT_LOGGED_IN,        "No username has been specified to login to the server with");
         decodings.put(ALREADY_LOGGED_IN,    "Cannot login more than once without logging out");
+        decodings.put(UNKNOWN_CHAT,         "Could not find the specified chat on the server");
         
         return Collections.unmodifiableMap(decodings);
     }
@@ -49,6 +52,12 @@ public interface NetworkInterface {
     public int getLastResultCode();
     
     public boolean login(User user);
+    
+    public Optional<Set<ChatRoom>> getAllChats();
+    
+    public Optional<String> getChatName(int chatID);
+    
+    public Optional<Map<ChatRoom, List<Integer>>> getChatUpdates();
     
     public Optional<String> getNickname(String username);
     

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import main.data.ChatRoom;
 import main.data.Message;
 import main.data.User;
 import main.gui.Window;
@@ -70,6 +71,14 @@ public class Main {
             mockNetwork.loginResult = NetworkInterface.ALREADY_LOGGED_IN;
             mockNetwork.loginTime = 0;
             
+            mockNetwork.getChatNameResult = NetworkInterface.SUCCESS;
+            mockNetwork.getChatNameTime = 75;
+            mockNetwork.chatMap.put(0, "General");
+            mockNetwork.chatMap.put(1, "Off topic");
+            
+            mockNetwork.getChatUpdatesResult = NetworkInterface.SUCCESS;
+            mockNetwork.getChatUpdatesTime = 250;
+            
             mockNetwork.getNicknameResult = NetworkInterface.SUCCESS;
             mockNetwork.getNicknameTime = 75;
             mockNetwork.userMap.put("Stealth", "Stealth - 2706🍁");
@@ -89,7 +98,7 @@ public class Main {
             mockNetwork.userMap.put("windyman52", "Lori");
             mockNetwork.userMap.put("rylon01", "Andy");
             mockNetwork.userMap.put("baconburger202", "Glenn");
-            ;
+            
             mockNetwork.getUserUpdatesResult = NetworkInterface.SUCCESS;
             mockNetwork.getUserUpdatesTime = 250;
             
@@ -107,6 +116,14 @@ public class Main {
             mockNetwork.logoutTime = 750;
         }
         
+        window.loginWindow.setActionText("Getting online chats...");
+        
+        try {
+            window.messagingWindow.initializeChatRoomSet(network.getAllChats().orElseThrow(network::makeException));
+        } catch (ConnectException e) {
+            e.printStackTrace();
+        }
+        
         window.loginWindow.setActionText("Getting online users...");
         
         try {
@@ -119,6 +136,12 @@ public class Main {
         
         while(window.isShowing()) {
             try {
+                Map<ChatRoom, List<Integer>> chatUpdates = network.getChatUpdates().orElseThrow(network::makeException);
+                for(ChatRoom chat : chatUpdates.keySet()) {
+                    for(int state : chatUpdates.get(chat)) {
+                        window.messagingWindow.updateChat(chat, state, network);
+                    }
+                }
                 Map<User, List<Integer>> userUpdates = network.getUserUpdates().orElseThrow(network::makeException);
                 for(User user : userUpdates.keySet()) {
                     for(int state : userUpdates.get(user)) {

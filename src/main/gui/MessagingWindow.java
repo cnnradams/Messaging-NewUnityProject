@@ -15,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import main.data.ChatRoom;
 import main.data.Message;
 import main.data.User;
 import main.networking.NetworkInterface;
@@ -24,22 +25,33 @@ public class MessagingWindow extends StatePanel {
     private static final long serialVersionUID = 1L;
     
     private Set<User> onlineUsers = new HashSet<>();
+    private Set<ChatRoom> onlineChats = new HashSet<>();
     private List<Message> messages = new ArrayList<Message>();
     
     private List<JButton> userButtons = new ArrayList<>();
-    
     private final JPanel userListPanel = new JPanel();
+    
+    private List<JButton> chatButtons = new ArrayList<>();
+    private final JPanel chatListPanel = new JPanel();
     
     public MessagingWindow() {
         this.setSize(848, 477);
         
-        JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        JScrollPane userScrollPane = new JScrollPane();
+        userScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        userScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         userListPanel.setLayout(new BoxLayout(userListPanel, BoxLayout.Y_AXIS));
-        scrollPane.setViewportView(userListPanel);
-        scrollPane.setPreferredSize(new Dimension(300, 300));
-        this.add(scrollPane);
+        userScrollPane.setViewportView(userListPanel);
+        userScrollPane.setPreferredSize(new Dimension(300, 300));
+        this.add(userScrollPane);
+        
+        JScrollPane chatScrollPane = new JScrollPane();
+        chatScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        chatScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        chatListPanel.setLayout(new BoxLayout(chatListPanel, BoxLayout.Y_AXIS));
+        chatScrollPane.setViewportView(chatListPanel);
+        chatScrollPane.setPreferredSize(new Dimension(300, 300));
+        this.add(chatScrollPane);
     }
     
     @Override
@@ -81,6 +93,43 @@ public class MessagingWindow extends StatePanel {
             break;
             default:
                 throw new IllegalArgumentException("Unknown user update state");
+        }
+    }
+    
+    public void updateChat(ChatRoom chat, int state, NetworkInterface network) {
+        switch(state) {
+            case NetworkInterface.CONNECTED:
+                onlineChats.add(chat);
+                JButton chatButton = createButtonForChat(chat);
+                chatListPanel.add(chatButton);
+                chatButtons.add(chatButton);
+            break;
+            case NetworkInterface.DISCONNECTED:
+                onlineChats.remove(chat);
+                chatListPanel.remove(getChatButtonByChat(chat).orElse(null));
+                chatButtons.remove(getChatButtonByChat(chat).orElse(null));
+            break;
+            case NetworkInterface.CHANGED_NICKNAME:
+                onlineChats.remove(chat);
+                chatListPanel.remove(getChatButtonByChat(chat).orElse(null));
+                chatButtons.remove(getChatButtonByChat(chat).orElse(null));
+                onlineChats.add(chat);
+                chatButton = createButtonForChat(chat);
+                chatListPanel.add(chatButton);
+                chatButtons.add(chatButton);
+            break;
+            default:
+                throw new IllegalArgumentException("Unknown user update state");
+        }
+    }
+    
+    public void initializeChatRoomSet(Set<ChatRoom> chats) {
+        onlineChats = chats;
+        
+        for(ChatRoom chat : onlineChats) {
+            JButton userButton = createButtonForChat(chat);
+            chatListPanel.add(userButton);
+            chatButtons.add(userButton);
         }
     }
     
@@ -130,6 +179,42 @@ public class MessagingWindow extends StatePanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             showMessages(user);
+        }
+    }
+    
+    
+    public JButton createButtonForChat(ChatRoom chat) {
+        JButton userButton = new JButton(chat.name + " (#" + chat.id + ")");
+        userButton.addActionListener(new ChatButtonPress(chat));
+        return userButton;
+    }
+    
+    public void showMessages(ChatRoom chat) {
+        System.out.println("Showing messages for " + chat.name + " (#" + chat.id + ")");
+    }
+    
+    private Optional<JButton> getChatButtonByChat(ChatRoom chat) {
+        for(JButton chatButton : chatButtons) {
+            for(ActionListener listener : chatButton.getActionListeners()) {
+                if(listener instanceof ChatButtonPress && ((ChatButtonPress)listener).chat == chat) { 
+                    return Optional.of(chatButton);
+                }
+            }
+        }
+        return Optional.empty();
+    }
+    
+    private class ChatButtonPress implements ActionListener {
+
+        private final ChatRoom chat;
+        
+        public ChatButtonPress(ChatRoom chat) {
+            this.chat = chat;
+        }
+        
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            showMessages(chat);
         }
     }
 }
