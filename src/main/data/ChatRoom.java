@@ -24,4 +24,9 @@ public class ChatRoom {
             return fallbackChatName;
         }
     }
+    
+    @Override
+    public boolean equals(Object other) {
+        return other instanceof ChatRoom && this.id == ((ChatRoom)other).id;
+    }
 }

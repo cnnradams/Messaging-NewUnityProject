@@ -1,9 +1,14 @@
 package main.gui;
 
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -14,6 +19,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 
 import main.data.ChatRoom;
 import main.data.Message;
@@ -33,6 +39,16 @@ public class MessagingWindow extends StatePanel {
     
     private List<JButton> chatButtons = new ArrayList<>();
     private final JPanel chatListPanel = new JPanel();
+
+    private final JScrollPane messagingPane;
+    private final JPanel messagingWindow;
+    private Optional<User> selectedUser = Optional.empty();
+    private Optional<ChatRoom> selectedChat = Optional.empty();
+    
+    private final PlaceHolderTextField sendMessages;
+    private final JButton sendMessageButton;
+    
+    private final List<Message> messageQueue;
     
     public MessagingWindow() {
         this.setSize(848, 477);
@@ -52,6 +68,39 @@ public class MessagingWindow extends StatePanel {
         chatScrollPane.setViewportView(chatListPanel);
         chatScrollPane.setPreferredSize(new Dimension(300, 300));
         this.add(chatScrollPane);
+        
+        messagingWindow = new JPanel();
+        
+        messagingPane = new JScrollPane();
+        messagingPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        messagingPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        messagingWindow.setLayout(new BoxLayout(messagingWindow, BoxLayout.Y_AXIS));
+        messagingPane.setViewportView(messagingWindow);
+        messagingPane.setPreferredSize(new Dimension(300, 300));
+        messagingPane.setVisible(false);
+        this.add(messagingPane);
+        
+        messageQueue = new ArrayList<>();
+        
+        sendMessages = new PlaceHolderTextField("Type a message here");
+        sendMessages.setVisible(false);
+        sendMessageButton = new JButton("Send");
+        sendMessageButton.setVisible(false);
+        sendMessageButton.addActionListener(e -> {
+            if (sendMessages.isVisible() && !sendMessages.isPlaceHolder()) {
+                if(selectedChat.isPresent()) {
+                    messageQueue.add(new Message(selectedChat.get(), null, sendMessages.getText(), ZonedDateTime.now(ZoneId.ofOffset("UTC", ZoneOffset.UTC))));
+                }
+                else if(selectedUser.isPresent()) {
+                    messageQueue.add(new Message(selectedUser.get(), sendMessages.getText(), ZonedDateTime.now(ZoneId.ofOffset("UTC", ZoneOffset.UTC))));
+                }
+                sendMessages.reset();
+                this.grabFocus();
+            }
+        });
+        
+        this.add(sendMessages);
+        this.add(sendMessageButton);
     }
     
     @Override
@@ -66,7 +115,102 @@ public class MessagingWindow extends StatePanel {
 
     @Override
     public JButton getSubmitButton() {
-        return null;
+        return sendMessageButton;
+    }
+    
+    public void updateMessages() {
+        if(selectedChat.isPresent()) {
+            List<Message> allChatMessages = new ArrayList<>();
+            
+            for(Message m : messages) {
+                if(m.chatRoom.isPresent() && m.chatRoom.get().equals(selectedChat.get())) {
+                    allChatMessages.add(m);
+                    
+                    boolean added = false;
+                    for(Component comp : messagingWindow.getComponents()) {
+                        if(comp.equals(m)) {
+                            added = true;
+                        }
+                    }
+                    
+                    if(!added)
+                        messagingWindow.add(m);
+                }
+            }
+            
+            for(Component comp : messagingWindow.getComponents()) {
+                if(comp instanceof Message) {
+                    boolean remove = true;
+                    for(Message m : allChatMessages) {
+                        if(comp.equals(m)) {
+                            remove = false;
+                            break;
+                        }
+                    }
+                    if(remove) {
+                        this.remove(comp);
+                        for(Component sub : ((Container)comp).getComponents()) {
+                            this.remove(sub);
+                        }
+                    }
+                }
+            }
+            
+            if(!messagingPane.isVisible()) {
+                messagingPane.setVisible(true);
+                SwingUtilities.updateComponentTreeUI(this);
+            };
+        }
+        else if(selectedUser.isPresent()) {
+            
+            List<Message> allUserMessages = new ArrayList<>();
+            
+            for(Message m : messages) {
+                if(!m.chatRoom.isPresent() && m.user.equals(selectedUser.get())) {
+                    allUserMessages.add(m);
+                    
+                    boolean added = false;
+                    for(Component comp : messagingWindow.getComponents()) {
+                        if(comp == m) {
+                            added = true;
+                        }
+                    }
+                    
+                    if(!added)
+                        messagingWindow.add(m);
+                }
+            }
+            
+            for(Component comp : messagingWindow.getComponents()) {
+                if(comp instanceof Message) {
+                    boolean remove = true;
+                    for(Message m : allUserMessages) {
+                        if(comp.equals(m)) {
+                            remove = false;
+                            break;
+                        }
+                    }
+                    if(remove) {
+                        this.remove(comp);
+                        for(Component sub : ((Container)comp).getComponents()) {
+                            this.remove(sub);
+                        }
+                    }
+                }
+            }
+            
+            if(!messagingPane.isVisible()) {
+                messagingPane.setVisible(true);
+            }
+        }
+        else {
+            if(messagingPane.isVisible()) {
+                messagingPane.setVisible(false);
+            }
+            
+            SwingUtilities.updateComponentTreeUI(this.getParent());
+            return;
+        }
     }
     
     public void updateUser(User user, int state, NetworkInterface network) {
@@ -155,6 +299,10 @@ public class MessagingWindow extends StatePanel {
     
     public void showMessages(User user) {
         System.out.println("Showing messages for " + user.username + " (" + user.nickname + ")");
+        selectedChat = Optional.empty();
+        selectedUser = Optional.of(user);
+        sendMessages.setVisible(true);
+        sendMessageButton.setVisible(true);
     }
     
     private Optional<JButton> getUserButtonByUser(User user) {
@@ -191,6 +339,10 @@ public class MessagingWindow extends StatePanel {
     
     public void showMessages(ChatRoom chat) {
         System.out.println("Showing messages for " + chat.name + " (#" + chat.id + ")");
+        selectedChat = Optional.of(chat);
+        selectedUser = Optional.empty();
+        sendMessages.setVisible(true);
+        sendMessageButton.setVisible(true);
     }
     
     private Optional<JButton> getChatButtonByChat(ChatRoom chat) {
@@ -216,5 +368,13 @@ public class MessagingWindow extends StatePanel {
         public void actionPerformed(ActionEvent e) {
             showMessages(chat);
         }
+    }
+    
+    public List<Message> getQueuedMessages() {
+        return new ArrayList<>(messageQueue);
+    }
+    
+    public void emptyQueuedMessages() {
+        while(messageQueue.size() != 0) messageQueue.remove(0);
     }
 }

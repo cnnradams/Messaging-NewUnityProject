@@ -2,9 +2,9 @@ package main;
 
 import java.awt.Color;
 import java.net.ConnectException;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -105,9 +105,9 @@ public class Main {
             mockNetwork.getMessagesResult = NetworkInterface.SUCCESS;
             mockNetwork.getMessagesTime = 750;
             mockNetwork.messages.add(new Message(new User("Stealth", mockNetwork.userMap.get("Stealth")),
-                                                 "I am angery!!!1!11", LocalDateTime.now(ZoneId.ofOffset("UTC", ZoneOffset.UTC)).minusHours(1)));
+                                                 "I am angery!!!1!11", ZonedDateTime.now(ZoneId.ofOffset("UTC", ZoneOffset.UTC)).minusHours(1)));
             mockNetwork.messages.add(new Message(new User("biscuitseed",  mockNetwork.userMap.get("biscuitseed")),
-                                                 "Ya dingus", LocalDateTime.now(ZoneId.ofOffset("UTC", ZoneOffset.UTC)).minusHours(4)));
+                                                 "Ya dingus", ZonedDateTime.now(ZoneId.ofOffset("UTC", ZoneOffset.UTC)).minusHours(4)));
             
             mockNetwork.sendMessageResult = NetworkInterface.SUCCESS;
             mockNetwork.sendMessageTime = 500;
@@ -136,6 +136,11 @@ public class Main {
         
         while(window.isShowing()) {
             try {
+                for(Message m : window.messagingWindow.getQueuedMessages()) {
+                    network.sendMessage(m);
+                }
+                window.messagingWindow.emptyQueuedMessages();
+                
                 Map<ChatRoom, List<Integer>> chatUpdates = network.getChatUpdates().orElseThrow(network::makeException);
                 for(ChatRoom chat : chatUpdates.keySet()) {
                     for(int state : chatUpdates.get(chat)) {
@@ -152,6 +157,8 @@ public class Main {
                 for(Message message : messages) {
                     window.messagingWindow.addMessage(message);
                 }
+                
+                window.messagingWindow.updateMessages();
                 
                 Thread.sleep(250);
             } catch (InterruptedException | ConnectException e) {

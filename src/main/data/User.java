@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import main.networking.NetworkInterface;
 
-public class User {
+public class User implements Comparable<User> {
 
     public final String username, nickname;
     
@@ -27,5 +27,15 @@ public class User {
             e.printStackTrace();
             return fallbackNickname;
         }
+    }
+    
+    @Override
+    public boolean equals(Object other) {
+        return other instanceof User && this.username.equals(((User)other).username);
+    }
+
+    @Override
+    public int compareTo(User other) {
+        return username.compareToIgnoreCase(other.username);
     }
 }

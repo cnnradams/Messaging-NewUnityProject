@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
 
 import main.data.ChatRoom;
 import main.data.Message;
@@ -25,6 +26,8 @@ public class MockServer implements NetworkInterface {
     public Map<User, List<Integer>> userUpdateMap = new HashMap<>();
     public Map<Integer, String> chatMap = new HashMap<>();
     public Map<ChatRoom, List<Integer>> chatUpdateMap = new HashMap<>();
+    
+    public Optional<User> loggedIn = Optional.empty();
     
     private void pause(long time) {
         try {
@@ -57,6 +60,8 @@ public class MockServer implements NetworkInterface {
         System.out.println("[Mock] Logging in as " + user.username + " (" + user.nickname + ")...\n"
                          + "[Mock] Waiting for " + loginTime + " milliseconds");
         pause(loginTime);
+        
+        loggedIn = Optional.of(user);
         
         System.out.println("[Mock] Login " + (loginResult == NetworkInterface.SUCCESS ? "successful" : "failure"));
         
@@ -235,7 +240,7 @@ public class MockServer implements NetworkInterface {
        else {
            System.out.println("[Mock] Found " + userMap.size() + " users online");
            
-           Set<User> users = new HashSet<>(userMap.size());
+           Set<User> users = new TreeSet<User>();
            
            for(String username : userMap.keySet()) {
                users.add(new User(username, this));
@@ -337,9 +342,23 @@ public class MockServer implements NetworkInterface {
     
     @Override
     public boolean sendMessage(Message message) {
-        System.out.println("[Mock] Sending message to " + message.user.username + " (" + message.user.nickname + ")...\n"
-                         + "[Mock] Waiting for " + sendMessageTime + " milliseconds");
+        if(message.chatRoom.isPresent()) {
+            System.out.println("[Mock] Sending message to " + message.chatRoom.get().name + " (#" +  message.chatRoom.get().id + ")...\n"
+                             + "[Mock] Waiting for " + sendMessageTime + " milliseconds");
+        }
+        else {
+            System.out.println("[Mock] Sending message to " + message.user.username + " (" + message.user.nickname + ")...\n"
+                          + "[Mock] Waiting for " + sendMessageTime + " milliseconds");
+        }
+            
         pause(sendMessageTime);
+        
+        if(message.chatRoom.isPresent()) {
+            messages.add(new Message(message.chatRoom.get(), loggedIn.get(), message.message, message.dateTime));
+        }
+        else {
+            messages.add(new Message(loggedIn.get(), message.message, message.dateTime));
+        }
         
         System.out.println("[Mock] Message sending " + (sendMessageResult == NetworkInterface.SUCCESS ? "successful" : "failure"));
         
