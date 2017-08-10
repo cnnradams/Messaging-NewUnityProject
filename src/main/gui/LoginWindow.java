@@ -10,6 +10,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Optional;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
@@ -44,7 +45,8 @@ public class LoginWindow extends StatePanel {
 		action.setVisible(false);
 		JTextField username = new JTextField("Username");
 		username.setForeground(Color.GRAY);
-		username.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 50, getWidth() / 4, 50);
+		username.setBorder(BorderFactory.createMatteBorder(2,2,2,2, new Color(105,105,105)));
+		username.setHorizontalAlignment(JTextField.CENTER);
 		username.addFocusListener(new FocusListener() {
 			@Override
 			public void focusGained(FocusEvent e) {
@@ -66,6 +68,8 @@ public class LoginWindow extends StatePanel {
 		JTextField nickname = new JTextField("Nickname");
 		nickname.setForeground(Color.GRAY);
 		nickname.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 100, getWidth() / 4, 50);
+		nickname.setBorder(BorderFactory.createMatteBorder(2,2, 2, 2, new Color(105,105,105)));
+		nickname.setHorizontalAlignment(JTextField.CENTER);
 		nickname.addFocusListener(new FocusListener() {
 			@Override
 			public void focusGained(FocusEvent e) {
@@ -85,16 +89,19 @@ public class LoginWindow extends StatePanel {
 		});
 		submit = new JButton("Submit");
 		submit.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 150, getWidth() / 4, 50);
+		submit.setBackground( new Color(0,191,255));
 		JProgressBar loggingIn = new JProgressBar();
 		loggingIn.setVisible(false);
 		loggingIn.setIndeterminate(true);
 		loggingIn.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 150, getWidth() / 4, 50);
+		loggingIn.setBackground( new Color(0,191,255));
 		loggingIn.setString("Logging in...");
 
 		submit.addActionListener(e -> {
 			username.setVisible(false);    
 	    	nickname.setVisible(false);
 	    	submit.setVisible(false);
+	    	hidden = true;
 			if (username.getForeground() == Color.GRAY || nickname.getForeground() == Color.GRAY
 					|| username.getText().isEmpty() || nickname.getText().isEmpty()) {
 				action.setText("Please ensure username and nickname are set");
@@ -113,12 +120,16 @@ public class LoginWindow extends StatePanel {
 		this.add(loggingIn);
 		this.addComponentListener(new ComponentListener() {
 		    public void componentResized(ComponentEvent e) {
-		    	username.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 50, getWidth() / 4, 50);    
+		    	username.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 40, getWidth() / 4, 50);    
 		    	nickname.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 100, getWidth() / 4, 50);
-		    	loggingIn.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 150, getWidth() / 4, 50);
-		    	submit.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 150, getWidth() / 4, 50);
+		    	loggingIn.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 160, getWidth() / 4, 50);
+		    	submit.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 160, getWidth() / 4, 50);
 		    	tempLogoStartup = logoStartup.getScaledInstance(getWidth(), -1, Image.SCALE_DEFAULT);
 				tempLogoDone = logoDone.getScaledInstance(getWidth(), -1, Image.SCALE_DEFAULT);
+				rectX = getWidth() / 2 - getWidth() / 8 - 25;
+				rectY = getHeight() / 2 + 5;
+				rectW = getWidth() / 4 + 50;
+				rectH = 240;
 		    }
 
 			@Override
@@ -142,10 +153,20 @@ public class LoginWindow extends StatePanel {
 	}
 	Image tempLogoStartup;
 	Image tempLogoDone;
-
+	int rectX = 0;
+	int rectY = 150;
+	int rectW = 100;
+	int rectH = 100;
+	boolean hidden = false;
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
+		if(!hidden) {
+			g.setColor(Color.WHITE);
+			g.fillRoundRect(rectX, rectY, rectW, rectH, 20, 20);//paint background
+			g.setColor(new Color(105,105,105));
+			g.drawRoundRect(rectX + 10, rectY + 10, rectW - 20, rectH - 20, 20, 20);//paint border
+		}
 		int x = getWidth() / 2 - tempLogoStartup.getWidth(null) / 2;
 		if (tempLogoStartup != null && (System.currentTimeMillis() - startMillis) < 4190)
 			g.drawImage(tempLogoStartup, x, 0, this);
