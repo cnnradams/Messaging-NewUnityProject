@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.swing.SwingUtilities;
+
 import main.data.ChatRoom;
 import main.data.Message;
 import main.data.User;
@@ -158,7 +160,7 @@ public class Main {
                     window.messagingWindow.addMessage(message);
                 }
                 
-                window.messagingWindow.updateMessages();
+                SwingUtilities.invokeLater(() -> window.messagingWindow.updateMessages());
                 
                 Thread.sleep(250);
             } catch (InterruptedException | ConnectException e) {
