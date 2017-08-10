@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Optional;
@@ -27,10 +29,14 @@ public class LoginWindow extends StatePanel {
 	private long startMillis = 0;
 
 	public LoginWindow() {
+		this.setLayout(null);
+		
 		System.out.println("b");
 		this.setSize(500, 500);
 		logoStartup = Toolkit.getDefaultToolkit().createImage("src/resources/logo.gif");
 		logoDone = Toolkit.getDefaultToolkit().createImage("src/resources/logodone.gif");
+		tempLogoStartup = logoStartup.getScaledInstance(getWidth(), -1, Image.SCALE_DEFAULT);
+		tempLogoDone = logoDone.getScaledInstance(getWidth(), -1, Image.SCALE_DEFAULT);
 		if (startMillis == 0) {
 			startMillis = System.currentTimeMillis();
 		}
@@ -38,6 +44,7 @@ public class LoginWindow extends StatePanel {
 		action.setVisible(false);
 		JTextField username = new JTextField("Username");
 		username.setForeground(Color.GRAY);
+		username.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 50, getWidth() / 4, 50);
 		username.addFocusListener(new FocusListener() {
 			@Override
 			public void focusGained(FocusEvent e) {
@@ -58,6 +65,7 @@ public class LoginWindow extends StatePanel {
 
 		JTextField nickname = new JTextField("Nickname");
 		nickname.setForeground(Color.GRAY);
+		nickname.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 100, getWidth() / 4, 50);
 		nickname.addFocusListener(new FocusListener() {
 			@Override
 			public void focusGained(FocusEvent e) {
@@ -76,12 +84,17 @@ public class LoginWindow extends StatePanel {
 			}
 		});
 		submit = new JButton("Submit");
+		submit.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 150, getWidth() / 4, 50);
 		JProgressBar loggingIn = new JProgressBar();
 		loggingIn.setVisible(false);
 		loggingIn.setIndeterminate(true);
+		loggingIn.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 150, getWidth() / 4, 50);
 		loggingIn.setString("Logging in...");
 
 		submit.addActionListener(e -> {
+			username.setVisible(false);    
+	    	nickname.setVisible(false);
+	    	submit.setVisible(false);
 			if (username.getForeground() == Color.GRAY || nickname.getForeground() == Color.GRAY
 					|| username.getText().isEmpty() || nickname.getText().isEmpty()) {
 				action.setText("Please ensure username and nickname are set");
@@ -98,20 +111,41 @@ public class LoginWindow extends StatePanel {
 		this.add(nickname);
 		this.add(submit);
 		this.add(loggingIn);
-	}
+		this.addComponentListener(new ComponentListener() {
+		    public void componentResized(ComponentEvent e) {
+		    	username.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 50, getWidth() / 4, 50);    
+		    	nickname.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 100, getWidth() / 4, 50);
+		    	loggingIn.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 150, getWidth() / 4, 50);
+		    	submit.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 150, getWidth() / 4, 50);
+		    	tempLogoStartup = logoStartup.getScaledInstance(getWidth(), -1, Image.SCALE_DEFAULT);
+				tempLogoDone = logoDone.getScaledInstance(getWidth(), -1, Image.SCALE_DEFAULT);
+		    }
 
-	int cachedWidth = 0;
+			@Override
+			public void componentHidden(ComponentEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void componentMoved(ComponentEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void componentShown(ComponentEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+	}
 	Image tempLogoStartup;
 	Image tempLogoDone;
 
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		if (cachedWidth != getWidth()) {
-			tempLogoStartup = logoStartup.getScaledInstance(getWidth(), -1, Image.SCALE_DEFAULT);
-			tempLogoDone = logoDone.getScaledInstance(getWidth(), -1, Image.SCALE_DEFAULT);
-		}
-		cachedWidth = getWidth();
 		int x = getWidth() / 2 - tempLogoStartup.getWidth(null) / 2;
 		if (tempLogoStartup != null && (System.currentTimeMillis() - startMillis) < 4190)
 			g.drawImage(tempLogoStartup, x, 0, this);
@@ -119,7 +153,6 @@ public class LoginWindow extends StatePanel {
 			g.drawImage(tempLogoDone, x, 0, this);
 
 	}
-
 	public Optional<User> getLoginInfo() {
 		return Optional.ofNullable(loginInfo);
 	}
@@ -142,4 +175,5 @@ public class LoginWindow extends StatePanel {
 	public void setActionText(String text) {
 		action.setText(text);
 	}
+	
 }
