@@ -1,5 +1,6 @@
 package main;
 
+import java.awt.Color;
 import java.net.ConnectException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -21,7 +22,7 @@ public class Main {
         window.setStatePanel(window.loginWindow);
         window.setVisible(true);
         window.toFront();
-        
+        window.setBackground(new Color(60, 60, 60));
         NetworkInterface network = new MockServer();
         
         if(network instanceof MockServer) {
