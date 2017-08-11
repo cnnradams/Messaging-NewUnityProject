@@ -147,7 +147,7 @@ public class MessagingWindow extends StatePanel {
     
     @Override
     public String getTitle() {
-        return "NewUnityProject - Messaging";
+        return "jmessage - Messaging | Property of NewUnityProject Team!";
     }
 
     @Override
