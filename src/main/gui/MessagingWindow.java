@@ -87,6 +87,8 @@ public class MessagingWindow extends StatePanel {
         
         sendMessages = new PlaceHolderTextField("Type a message here");
         sendMessages.setVisible(false);
+        sendMessages.setLayout(null);
+        sendMessages.setBounds(300, 300, 100, 100);
         sendMessageButton = new JButton("Send");
         sendMessageButton.setVisible(false);
         sendMessageButton.addActionListener(e -> {
@@ -105,6 +107,8 @@ public class MessagingWindow extends StatePanel {
                 this.grabFocus();
             }
         });
+        sendMessageButton.setLayout(null);
+        sendMessageButton.setBounds(300, 300, 100, 100);
         JPanel tab1 = new JPanel();
         tab1.setLayout(null);
         chatScrollPane.setBounds(0, 0, 200, getHeight());
@@ -118,8 +122,7 @@ public class MessagingWindow extends StatePanel {
        // this.add(userScrollPane);
         //this.add(chatScrollPane);
         this.add(messagingPane);
-        this.add(sendMessages);
-        this.add(sendMessageButton);
+        
         this.addComponentListener(new ComponentListener() {
 
 			@Override
@@ -146,7 +149,8 @@ public class MessagingWindow extends StatePanel {
 				
 			}
         });
-        
+        this.add(sendMessages);
+        this.add(sendMessageButton);
     }
     
     @Override
