@@ -160,6 +160,7 @@ public class Main {
             try {
                 for(Message m : window.messagingWindow.getQueuedMessages()) {
                     network.sendMessage(m);
+                    
                 }
                 window.messagingWindow.emptyQueuedMessages();
                 

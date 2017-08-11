@@ -92,10 +92,14 @@ public class MessagingWindow extends StatePanel {
         sendMessageButton.addActionListener(e -> {
             if (sendMessages.isVisible() && !sendMessages.isPlaceHolder()) {
                 if(selectedChat.isPresent()) {
-                    messageQueue.add(new Message(selectedChat.get(), null, sendMessages.getText(), ZonedDateTime.now(ZoneId.ofOffset("UTC", ZoneOffset.UTC))));
+                    Message message = new Message(selectedChat.get(), null, sendMessages.getText(), ZonedDateTime.now(ZoneId.ofOffset("UTC", ZoneOffset.UTC)), true);
+                    messageQueue.add(message);
+                    addMessage(message);
                 }
                 else if(selectedUser.isPresent()) {
-                    messageQueue.add(new Message(selectedUser.get(), sendMessages.getText(), ZonedDateTime.now(ZoneId.ofOffset("UTC", ZoneOffset.UTC))));
+                    Message message = new Message(selectedUser.get(), sendMessages.getText(), ZonedDateTime.now(ZoneId.ofOffset("UTC", ZoneOffset.UTC)), true);
+                    messageQueue.add(message);
+                    addMessage(message);
                 }
                 sendMessages.reset();
                 this.grabFocus();

@@ -16,22 +16,39 @@ public class Message extends JPanel {
     public final Optional<ChatRoom> chatRoom;
     public final String message;
     public final ZonedDateTime dateTime;
+    public final boolean loopback;
     
     public Message(ChatRoom chatRoom, User user, String message, ZonedDateTime dateTime) {
-        this(Optional.of(chatRoom), user, message, dateTime);
+        this(chatRoom, user, message, dateTime, false);
+    }
+    
+    public Message(ChatRoom chatRoom, User user, String message, ZonedDateTime dateTime, boolean loopback) {
+        this(Optional.of(chatRoom), user, message, dateTime, loopback);
     }
     
     public Message(User user, String message, ZonedDateTime dateTime) {
-        this(Optional.empty(), user, message, dateTime);
+        this(user, message, dateTime, false);
     }
     
-    private Message(Optional<ChatRoom> chatRoom, User user, String message, ZonedDateTime dateTime) {
+    public Message(User user, String message, ZonedDateTime dateTime, boolean loopback) {
+        this(Optional.empty(), user, message, dateTime, loopback);
+    }
+    
+    private Message(Optional<ChatRoom> chatRoom, User user, String message, ZonedDateTime dateTime, boolean loopback) {
         this.user = user;
         this.chatRoom = chatRoom;
         this.message = message;
         this.dateTime = dateTime;
+        this.loopback = loopback;
         
-        JLabel userLabel = new JLabel(user.username + " (" + user.nickname + ")");
+        JLabel userLabel = new JLabel();
+        
+        if(loopback) {
+            userLabel.setText(user.username + " (" + user.nickname + ")");
+        }
+        else {
+            userLabel.setText("You");
+        }
         JLabel messageLabel = new JLabel(message);
         JLabel dateTimeLabel = new JLabel(dateTime.withZoneSameInstant(ZoneId.systemDefault()).format(DateTimeFormatter.ISO_DATE_TIME));
         
