@@ -3,14 +3,15 @@ package main.gui;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.IOException;
 import java.util.Optional;
 
 import javax.swing.BorderFactory;
@@ -34,6 +35,17 @@ public class LoginWindow extends StatePanel {
 	private long startMillis = 0;
 
 	public LoginWindow() {
+		Font font = null;
+		try {
+			font = Font.createFont(Font.TRUETYPE_FONT, getClass().getResource("/resources/font/RobotoMono-Medium.ttf").openStream());
+		} catch (FontFormatException | IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}   
+
+		GraphicsEnvironment genv = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		genv.registerFont(font);
+		font = font.deriveFont(15f);
 		this.setLayout(null);
 		this.setResizable(false);
 		this.setSize(800, 439);
@@ -48,16 +60,16 @@ public class LoginWindow extends StatePanel {
 		action = new JLabel();
 		action.setForeground(Color.white);
 		action.setVisible(false);
-		PlaceHolderTextField username = new PlaceHolderTextField("display name");
+		PlaceHolderTextField username = new PlaceHolderTextField("Display Name");
 		username.setBorder(BorderFactory.createMatteBorder(0,0,0,0, new Color(105,105,105)));
 		username.setFocusedColor(new Color(160,160,160));
 		username.setBackground(new Color(60,60,60));
 		username.setHorizontalAlignment(JTextField.LEFT);
-		
-		PlaceHolderTextField nickname = new PlaceHolderTextField("nickname");
-		nickname.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 100, getWidth() / 4, 50);
+		username.setFont(font);
+		PlaceHolderTextField nickname = new PlaceHolderTextField("Nickname");
 		nickname.setFocusedColor(new Color(160,160,160));
 		nickname.setBackground(new Color(60,60,60));
+		nickname.setFont(font);
 		nickname.setBorder(BorderFactory.createMatteBorder(0,0,0,0, new Color(105,105,105)));
 		nickname.setHorizontalAlignment(JTextField.LEFT);
 		
@@ -100,9 +112,9 @@ public class LoginWindow extends StatePanel {
 		this.addComponentListener(new ComponentListener() {
 		    public void componentResized(ComponentEvent e) {
 		    	action.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 5, getWidth() / 4, 50);
-		    	username.setBounds(460, 155, getWidth() / 3, 30);    
-		    	nickname.setBounds(460, 190, getWidth() / 3, 30);
-		    	loggingIn.setBounds(450, 185, getWidth() / 3, 30);
+		    	username.setBounds(456, 158, getWidth() / 3 - 8, 24);    
+		    	nickname.setBounds(456, 193, getWidth() / 3 - 8, 24);
+		    	loggingIn.setBounds(450, 188, getWidth() / 3, 24);
 		    	submit.setBounds(450, 230, getWidth() / 12, 30);
 		    	tempLogoStartup = logoStartup.getScaledInstance(getWidth() / 3, -1, Image.SCALE_DEFAULT);
 				tempLogoDone = logoDone.getScaledInstance(getWidth() / 3, -1, Image.SCALE_DEFAULT);
