@@ -154,7 +154,7 @@ public class Main {
             e.printStackTrace();
         }
         
-        window.setStatePanel(window.messagingWindow);
+        SwingUtilities.invokeLater(() -> window.setStatePanel(window.messagingWindow));
         
         while(window.isShowing()) {
             try {

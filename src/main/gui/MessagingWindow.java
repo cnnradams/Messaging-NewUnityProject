@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -19,6 +21,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
 import main.data.ChatRoom;
@@ -51,15 +54,15 @@ public class MessagingWindow extends StatePanel {
     private final List<Message> messageQueue;
     
     public MessagingWindow() {
-        this.setSize(848, 477);
-        
+    	this.setLayout(null);
+    	this.setSize(800, 439);
         JScrollPane userScrollPane = new JScrollPane();
         userScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         userScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         userListPanel.setLayout(new BoxLayout(userListPanel, BoxLayout.Y_AXIS));
         userScrollPane.setViewportView(userListPanel);
         userScrollPane.setPreferredSize(new Dimension(300, 300));
-        this.add(userScrollPane);
+        
         
         JScrollPane chatScrollPane = new JScrollPane();
         chatScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -67,7 +70,7 @@ public class MessagingWindow extends StatePanel {
         chatListPanel.setLayout(new BoxLayout(chatListPanel, BoxLayout.Y_AXIS));
         chatScrollPane.setViewportView(chatListPanel);
         chatScrollPane.setPreferredSize(new Dimension(300, 300));
-        this.add(chatScrollPane);
+      
         
         messagingWindow = new JPanel();
         
@@ -78,7 +81,7 @@ public class MessagingWindow extends StatePanel {
         messagingPane.setViewportView(messagingWindow);
         messagingPane.setPreferredSize(new Dimension(300, 300));
         messagingPane.setVisible(false);
-        this.add(messagingPane);
+        messagingPane.setBounds(200, 0, getWidth() - 210, getHeight() - 10);
         
         messageQueue = new ArrayList<>();
         
@@ -98,14 +101,53 @@ public class MessagingWindow extends StatePanel {
                 this.grabFocus();
             }
         });
-        
+        JPanel tab1 = new JPanel();
+        tab1.setLayout(null);
+        chatScrollPane.setBounds(0, 0, 200, getHeight());
+        userScrollPane.setBounds(0, 0, 200, getHeight());
+        	tab1.add(chatScrollPane);
+        	JTabbedPane tabPanel = new JTabbedPane();
+        	tabPanel.addTab("Groups", chatScrollPane);
+    tabPanel.addTab("Users", userScrollPane);
+    tabPanel.setBounds(0, 25, 200, getHeight() - 25);
+        this.add(tabPanel);
+       // this.add(userScrollPane);
+        //this.add(chatScrollPane);
+        this.add(messagingPane);
         this.add(sendMessages);
         this.add(sendMessageButton);
+        this.addComponentListener(new ComponentListener() {
+
+			@Override
+			public void componentHidden(ComponentEvent e) {
+				// TODO Auto-generated method stub
+			}
+
+			@Override
+			public void componentMoved(ComponentEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void componentResized(ComponentEvent e) {
+				// TODO Auto-generated method stub
+				tabPanel.setBounds(0, 25, 200, getHeight() - 25);
+				messagingPane.setBounds(200, 0, getWidth() - 210, getHeight() - 10);
+			}
+
+			@Override
+			public void componentShown(ComponentEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+        });
+        
     }
     
     @Override
     public String getTitle() {
-        return "NewUnityProject - Messaging";
+        return "jmessage - Messaging | Property of NewUnityProject Team!";
     }
 
     @Override
