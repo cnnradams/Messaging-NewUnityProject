@@ -38,7 +38,7 @@ public class Main {
             e1.printStackTrace();
         }
         
-        final NetworkInterface network = new ZeroMQServer(address, 5555);
+        final NetworkInterface network = new ZeroMQServer(address, 8743);
         
         if(network instanceof MockServer) {
             MockServer mockNetwork = (MockServer)network;
@@ -183,8 +183,9 @@ public class Main {
                 
                 SwingUtilities.invokeLater(window.messagingWindow::updateMessages);
                 
-                Thread.sleep(250);
-            } catch (InterruptedException | ConnectException e) {
+                SwingUtilities.invokeLater(() -> SwingUtilities.updateComponentTreeUI(window.messagingWindow));
+                Thread.sleep(1000);
+            } catch (ConnectException | InterruptedException e) {
                 e.printStackTrace();
             }
         }
