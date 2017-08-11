@@ -15,7 +15,7 @@ public class Window extends JFrame {
     public Window() {
         loginWindow = new LoginWindow();
         messagingWindow = new MessagingWindow();
-        
+        this.setResizable(false);
         loginWindow.setVisible(true);
         
         this.setTitle(loginWindow.getName());
