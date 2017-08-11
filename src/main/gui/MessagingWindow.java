@@ -56,7 +56,7 @@ public class MessagingWindow extends StatePanel {
     public MessagingWindow() {
     	this.setLayout(null);
         this.setSize(848, 477);
-        JTab userScrollPane = new JTab("Users","");
+        JScrollPane userScrollPane = new JScrollPane();
         userScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         userScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         userListPanel.setLayout(new BoxLayout(userListPanel, BoxLayout.Y_AXIS));
