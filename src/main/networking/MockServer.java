@@ -63,9 +63,9 @@ public class MockServer implements NetworkInterface {
         
         loggedIn = Optional.of(user);
         
-        System.out.println("[Mock] Login " + (loginResult == NetworkInterface.SUCCESS ? "successful" : "failure"));
+        System.out.println("[Mock] Login " + (loginResult == NetworkInterface.RESULT_SUCCESS ? "successful" : "failure"));
         
-        if(loginResult == NetworkInterface.SUCCESS)
+        if(loginResult == NetworkInterface.RESULT_SUCCESS)
             userMap.put(user.username, user.nickname);
         
         resultCode = loginResult;
@@ -73,7 +73,7 @@ public class MockServer implements NetworkInterface {
         
         System.out.println();
         
-        return loginResult == NetworkInterface.SUCCESS;
+        return loginResult == NetworkInterface.RESULT_SUCCESS;
     }
 
     @Override
@@ -82,7 +82,7 @@ public class MockServer implements NetworkInterface {
                         + "[Mock] Waiting for " + getAllChatsTime + " milliseconds");
        pause(getAllChatsTime);
        
-       if(getAllChatsResult != NetworkInterface.SUCCESS) {
+       if(getAllChatsResult != NetworkInterface.RESULT_SUCCESS) {
            System.out.println("[Mock] Failed to get chats");
            
            resultCode = getAllChatsResult;
@@ -116,7 +116,7 @@ public class MockServer implements NetworkInterface {
                        + "[Mock] Waiting for " + getChatNameTime + " milliseconds");
       pause(getChatNameTime);
       
-      if(getChatNameResult != NetworkInterface.SUCCESS && getChatNameResult != NetworkInterface.UNKNOWN_USERNAME) {
+      if(getChatNameResult != NetworkInterface.RESULT_SUCCESS && getChatNameResult != NetworkInterface.RESULT_UNKNOWN_USERNAME) {
           System.out.println("[Mock] Chat name for id " + id + " could not be checked");
           
           resultCode = getChatNameResult;
@@ -146,7 +146,7 @@ public class MockServer implements NetworkInterface {
                         +  "[Mock] Waiting for " + getChatUpdatesTime + " milliseconds");
        pause(getChatUpdatesTime);
        
-       if(getChatUpdatesResult != NetworkInterface.SUCCESS) {
+       if(getChatUpdatesResult != NetworkInterface.RESULT_SUCCESS) {
            System.out.println("[Mock] Failed to get chat updates");
            
            resultCode = getChatUpdatesResult;
@@ -168,13 +168,13 @@ public class MockServer implements NetworkInterface {
            for(ChatRoom chat : optional.get().keySet()) {
                for(int state : optional.get().get(chat)) {
                    switch(state) {
-                       case NetworkInterface.CONNECTED:
+                       case NetworkInterface.CHANGE_CONNECTED:
                            chatMap.put(chat.id, chat.name);
                        break;
-                       case NetworkInterface.DISCONNECTED:
+                       case NetworkInterface.CHANGE_DISCONNECTED:
                            chatMap.remove(chat.id);
                        break;
-                       case NetworkInterface.CHANGED_NICKNAME:
+                       case NetworkInterface.CHANGE_CHANGED_NICKNAME:
                            chatMap.remove(chat.id);
                            // May be null if user leaves server and changes nickname at same time
                            chatMap.put(chat.id, getChatName(chat.id).orElse(""));
@@ -197,7 +197,7 @@ public class MockServer implements NetworkInterface {
                          + "[Mock] Waiting for " + getNicknameTime + " milliseconds");
        pause(getNicknameTime);
        
-       if(getNicknameResult != NetworkInterface.SUCCESS && getNicknameResult != NetworkInterface.UNKNOWN_USERNAME) {
+       if(getNicknameResult != NetworkInterface.RESULT_SUCCESS && getNicknameResult != NetworkInterface.RESULT_UNKNOWN_USERNAME) {
            System.out.println("[Mock] Nickname for " + username + " could not be checked");
            
            resultCode = getNicknameResult;
@@ -227,7 +227,7 @@ public class MockServer implements NetworkInterface {
                         + "[Mock] Waiting for " + getUsersTime + " milliseconds");
        pause(getUsersTime);
        
-       if(getUsersResult != NetworkInterface.SUCCESS) {
+       if(getUsersResult != NetworkInterface.RESULT_SUCCESS) {
            System.out.println("[Mock] Failed to get users");
            
            resultCode = getMessagesResult;
@@ -261,7 +261,7 @@ public class MockServer implements NetworkInterface {
                         + "[Mock] Waiting for " + getUserUpdatesTime + " milliseconds");
        pause(getUserUpdatesTime);
        
-       if(getUserUpdatesResult != NetworkInterface.SUCCESS) {
+       if(getUserUpdatesResult != NetworkInterface.RESULT_SUCCESS) {
            System.out.println("[Mock] Failed to get user updates");
            
            resultCode = getMessagesResult;
@@ -283,13 +283,13 @@ public class MockServer implements NetworkInterface {
            for(User user : optional.get().keySet()) {
                for(int state : optional.get().get(user)) {
                    switch(state) {
-                       case NetworkInterface.CONNECTED:
+                       case NetworkInterface.CHANGE_CONNECTED:
                            userMap.put(user.username, user.nickname);
                        break;
-                       case NetworkInterface.DISCONNECTED:
+                       case NetworkInterface.CHANGE_DISCONNECTED:
                            userMap.remove(user.username);
                        break;
-                       case NetworkInterface.CHANGED_NICKNAME:
+                       case NetworkInterface.CHANGE_CHANGED_NICKNAME:
                            userMap.remove(user.username);
                            // May be null if user leaves server and changes nickname at same time
                            userMap.put(user.username, getNickname(user.username).orElse(""));
@@ -312,7 +312,7 @@ public class MockServer implements NetworkInterface {
                         + "[Mock] Waiting for " + getMessagesTime + " milliseconds");
        pause(getMessagesTime);
        
-       if(getMessagesResult != NetworkInterface.SUCCESS) {
+       if(getMessagesResult != NetworkInterface.RESULT_SUCCESS) {
            System.out.println("[Mock] Failed to get messages");
            
            resultCode = getMessagesResult;
@@ -360,14 +360,14 @@ public class MockServer implements NetworkInterface {
             messages.add(new Message(loggedIn.get(), message.message, message.dateTime));
         }
         
-        System.out.println("[Mock] Message sending " + (sendMessageResult == NetworkInterface.SUCCESS ? "successful" : "failure"));
+        System.out.println("[Mock] Message sending " + (sendMessageResult == NetworkInterface.RESULT_SUCCESS ? "successful" : "failure"));
         
         resultCode = sendMessageResult;
         printlnResult();
         
         System.out.println();
         
-        return sendMessageResult == NetworkInterface.SUCCESS;
+        return sendMessageResult == NetworkInterface.RESULT_SUCCESS;
     }
 
     @Override
@@ -376,13 +376,13 @@ public class MockServer implements NetworkInterface {
                          + "[Mock] Waiting for " + sendMessageTime + " milliseconds");
         pause(logoutTime);
         
-        System.out.println("[Mock] Logout " + (logoutResult == NetworkInterface.SUCCESS ? "successful" : "failure"));
+        System.out.println("[Mock] Logout " + (logoutResult == NetworkInterface.RESULT_SUCCESS ? "successful" : "failure"));
         
         resultCode = logoutResult;
         printlnResult();
         
         System.out.println();
         
-        return logoutResult == NetworkInterface.SUCCESS;
+        return logoutResult == NetworkInterface.RESULT_SUCCESS;
     }
 }

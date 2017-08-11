@@ -215,18 +215,18 @@ public class MessagingWindow extends StatePanel {
     
     public void updateUser(User user, int state, NetworkInterface network) {
         switch(state) {
-            case NetworkInterface.CONNECTED:
+            case NetworkInterface.CHANGE_CONNECTED:
                 onlineUsers.add(user);
                 JButton userButton = createButtonForUser(user);
                 userListPanel.add(userButton);
                 userButtons.add(userButton);
             break;
-            case NetworkInterface.DISCONNECTED:
+            case NetworkInterface.CHANGE_DISCONNECTED:
                 onlineUsers.remove(user);
                 userListPanel.remove(getUserButtonByUser(user).orElse(null));
                 userButtons.remove(getUserButtonByUser(user).orElse(null));
             break;
-            case NetworkInterface.CHANGED_NICKNAME:
+            case NetworkInterface.CHANGE_CHANGED_NICKNAME:
                 onlineUsers.remove(user);
                 userListPanel.remove(getUserButtonByUser(user).orElse(null));
                 userButtons.remove(getUserButtonByUser(user).orElse(null));
@@ -242,18 +242,18 @@ public class MessagingWindow extends StatePanel {
     
     public void updateChat(ChatRoom chat, int state, NetworkInterface network) {
         switch(state) {
-            case NetworkInterface.CONNECTED:
+            case NetworkInterface.CHANGE_CONNECTED:
                 onlineChats.add(chat);
                 JButton chatButton = createButtonForChat(chat);
                 chatListPanel.add(chatButton);
                 chatButtons.add(chatButton);
             break;
-            case NetworkInterface.DISCONNECTED:
+            case NetworkInterface.CHANGE_DISCONNECTED:
                 onlineChats.remove(chat);
                 chatListPanel.remove(getChatButtonByChat(chat).orElse(null));
                 chatButtons.remove(getChatButtonByChat(chat).orElse(null));
             break;
-            case NetworkInterface.CHANGED_NICKNAME:
+            case NetworkInterface.CHANGE_CHANGED_NICKNAME:
                 onlineChats.remove(chat);
                 chatListPanel.remove(getChatButtonByChat(chat).orElse(null));
                 chatButtons.remove(getChatButtonByChat(chat).orElse(null));
@@ -308,7 +308,7 @@ public class MessagingWindow extends StatePanel {
     private Optional<JButton> getUserButtonByUser(User user) {
         for(JButton userButton : userButtons) {
             for(ActionListener listener : userButton.getActionListeners()) {
-                if(listener instanceof UserButtonPress && ((UserButtonPress)listener).user == user) { 
+                if(listener instanceof UserButtonPress && ((UserButtonPress)listener).user.equals(user)) { 
                     return Optional.of(userButton);
                 }
             }
@@ -348,7 +348,7 @@ public class MessagingWindow extends StatePanel {
     private Optional<JButton> getChatButtonByChat(ChatRoom chat) {
         for(JButton chatButton : chatButtons) {
             for(ActionListener listener : chatButton.getActionListeners()) {
-                if(listener instanceof ChatButtonPress && ((ChatButtonPress)listener).chat == chat) { 
+                if(listener instanceof ChatButtonPress && ((ChatButtonPress)listener).chat.equals(chat)) { 
                     return Optional.of(chatButton);
                 }
             }

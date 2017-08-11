@@ -26,6 +26,9 @@ public class LoginWindow extends StatePanel {
 	private Image logoStartup;
 	private Image logoDone;
 	private long startMillis = 0;
+	private final PlaceHolderTextField username;
+	private final PlaceHolderTextField nickname;
+	private final JProgressBar loggingIn;
 
 	public LoginWindow() {
 		this.setLayout(null);
@@ -40,11 +43,11 @@ public class LoginWindow extends StatePanel {
 		}
 		action = new JLabel();
 		action.setVisible(false);
-		PlaceHolderTextField username = new PlaceHolderTextField("Username");
+		username = new PlaceHolderTextField("Username");
 		username.setBorder(BorderFactory.createMatteBorder(2,2,2,2, new Color(105,105,105)));
 		username.setHorizontalAlignment(JTextField.CENTER);
 		
-		PlaceHolderTextField nickname = new PlaceHolderTextField("Nickname");
+		nickname = new PlaceHolderTextField("Nickname");
 		nickname.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 100, getWidth() / 4, 50);
 		nickname.setBorder(BorderFactory.createMatteBorder(2,2, 2, 2, new Color(105,105,105)));
 		nickname.setHorizontalAlignment(JTextField.CENTER);
@@ -52,7 +55,7 @@ public class LoginWindow extends StatePanel {
 		submit = new JButton("Submit");
 		submit.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 150, getWidth() / 4, 50);
 		submit.setBackground( new Color(0,191,255));
-		JProgressBar loggingIn = new JProgressBar();
+		loggingIn = new JProgressBar();
 		loggingIn.setVisible(false);
 		loggingIn.setIndeterminate(true);
 		loggingIn.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 150, getWidth() / 4, 50);
@@ -143,6 +146,18 @@ public class LoginWindow extends StatePanel {
 		return Optional.ofNullable(loginInfo);
 	}
 
+	public void resetLoginInfo() {
+        hidden = false;
+        action.setVisible(true);
+        action.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2, getWidth() / 4, 50);
+        username.setVisible(true);    
+        nickname.setVisible(true);
+        submit.setVisible(true);
+        loggingIn.setVisible(false);
+        loginInfo = null;
+	}
+
+	
 	@Override
 	public String getTitle() {
 		return "NewUnityProject - Login";
