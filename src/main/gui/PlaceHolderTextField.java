@@ -52,6 +52,5 @@ public class PlaceHolderTextField extends JTextField {
                 text.setForeground(text.forground);
             }
         }
-        
     }
 }
