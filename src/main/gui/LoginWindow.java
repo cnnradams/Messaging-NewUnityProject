@@ -50,13 +50,13 @@ public class LoginWindow extends StatePanel {
 		action.setVisible(false);
 		PlaceHolderTextField username = new PlaceHolderTextField("display name");
 		username.setBorder(BorderFactory.createMatteBorder(0,0,0,0, new Color(105,105,105)));
-		username.setForeground(new Color(78,78,78));
+		username.setFocusedColor(new Color(160,160,160));
 		username.setBackground(new Color(60,60,60));
 		username.setHorizontalAlignment(JTextField.LEFT);
 		
 		PlaceHolderTextField nickname = new PlaceHolderTextField("nickname");
 		nickname.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 100, getWidth() / 4, 50);
-		nickname.setForeground(new Color(78,78,78));
+		nickname.setFocusedColor(new Color(160,160,160));
 		nickname.setBackground(new Color(60,60,60));
 		nickname.setBorder(BorderFactory.createMatteBorder(0,0,0,0, new Color(105,105,105)));
 		nickname.setHorizontalAlignment(JTextField.LEFT);

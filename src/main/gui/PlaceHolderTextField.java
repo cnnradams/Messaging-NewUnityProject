@@ -11,22 +11,40 @@ public class PlaceHolderTextField extends JTextField {
     private static final long serialVersionUID = 1L;
     
     public final String text;
-    public final Color forground = Color.GRAY;
+    
+    private Color unfocusedColor = Color.GRAY;
+    private Color focusedColor = Color.BLACK;
     
     public PlaceHolderTextField(String text) {
         this.text = text;
         this.addFocusListener(new PlaceHolderFocusListener(this));
-        this.setForeground(forground);
+        this.setForeground(unfocusedColor);
         this.setText(text);
     }
     
     public boolean isPlaceHolder() {
-        return (this.getText().equals(text) && this.getForeground().equals(Color.GRAY)) || this.getText().isEmpty();
+        return (this.getText().equals(text) && this.getForeground().equals(unfocusedColor)) || this.getText().isEmpty();
     }
     
     public void reset() {
         setText(text);
-        setForeground(forground);
+        setForeground(unfocusedColor);
+    }
+    
+    public void setFocusedColor(Color c) {
+        focusedColor = c;
+    }
+    
+    public Color getFocusedColor() {
+        return focusedColor;
+    }
+    
+    public void setUnfocusedColor(Color c) {
+        unfocusedColor = c;
+    }
+    
+    public Color getUnfocusedColor() {
+        return unfocusedColor;
     }
     
     class PlaceHolderFocusListener implements FocusListener {
@@ -39,9 +57,9 @@ public class PlaceHolderTextField extends JTextField {
         
         @Override
         public void focusGained(FocusEvent e) {
-            if (text.getText().equals(text.text) && text.getForeground() == text.forground) {
+            if (text.getText().equals(text.text) && text.getForeground() == text.unfocusedColor) {
                 text.setText("");
-                text.setForeground(Color.BLACK);
+                text.setForeground(focusedColor);
             }
         }
 
@@ -49,8 +67,9 @@ public class PlaceHolderTextField extends JTextField {
         public void focusLost(FocusEvent e) {
             if (text.getText().equals("")) {
                 text.setText(text.text);
-                text.setForeground(text.forground);
+                text.setForeground(unfocusedColor);
             }
         }
+        
     }
 }
