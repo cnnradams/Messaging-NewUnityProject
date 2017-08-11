@@ -86,11 +86,11 @@ public class MessagingWindow extends StatePanel {
         messageQueue = new ArrayList<>();
         
         sendMessages = new PlaceHolderTextField("Type a message here");
-        sendMessages.setVisible(false);
+        sendMessages.setVisible(true);
         sendMessages.setLayout(null);
         sendMessages.setBounds(300, 300, 100, 100);
         sendMessageButton = new JButton("Send");
-        sendMessageButton.setVisible(false);
+        sendMessageButton.setVisible(true);
         sendMessageButton.addActionListener(e -> {
             if (sendMessages.isVisible() && !sendMessages.isPlaceHolder()) {
                 if(selectedChat.isPresent()) {
@@ -108,7 +108,7 @@ public class MessagingWindow extends StatePanel {
             }
         });
         sendMessageButton.setLayout(null);
-        sendMessageButton.setBounds(300, 300, 100, 100);
+        sendMessageButton.setBounds(400, 300, 100, 100);
         JPanel tab1 = new JPanel();
         tab1.setLayout(null);
         chatScrollPane.setBounds(0, 0, 200, getHeight());
@@ -119,10 +119,11 @@ public class MessagingWindow extends StatePanel {
     tabPanel.addTab("Users", userScrollPane);
     tabPanel.setBounds(0, 25, 200, getHeight() - 25);
         this.add(tabPanel);
+        messagingPane.add(sendMessages);
+        messagingPane.add(sendMessageButton);
        // this.add(userScrollPane);
         //this.add(chatScrollPane);
         this.add(messagingPane);
-        
         this.addComponentListener(new ComponentListener() {
 
 			@Override
@@ -141,6 +142,8 @@ public class MessagingWindow extends StatePanel {
 				// TODO Auto-generated method stub
 				tabPanel.setBounds(0, 25, 200, getHeight() - 25);
 				messagingPane.setBounds(200, 0, getWidth() - 210, getHeight() - 10);
+				sendMessageButton.setBounds(400, 300, 100, 100);
+				sendMessages.setBounds(300, 300, 100, 100);
 			}
 
 			@Override
@@ -149,8 +152,7 @@ public class MessagingWindow extends StatePanel {
 				
 			}
         });
-        this.add(sendMessages);
-        this.add(sendMessageButton);
+        
     }
     
     @Override
