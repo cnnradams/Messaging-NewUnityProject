@@ -44,10 +44,10 @@ public class Message extends JPanel {
         JLabel userLabel = new JLabel();
         
         if(loopback) {
-            userLabel.setText(user.username + " (" + user.nickname + ")");
+            userLabel.setText("You");
         }
         else {
-            userLabel.setText("You");
+            userLabel.setText(user.username + " (" + user.nickname + ")");
         }
         JLabel messageLabel = new JLabel(message);
         JLabel dateTimeLabel = new JLabel(dateTime.withZoneSameInstant(ZoneId.systemDefault()).format(DateTimeFormatter.ISO_DATE_TIME));
