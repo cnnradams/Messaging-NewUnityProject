@@ -1,7 +1,9 @@
 package main.gui;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ComponentEvent;
@@ -44,12 +46,14 @@ public class LoginWindow extends StatePanel {
 		action.setForeground(Color.white);
 		action.setVisible(false);
 		PlaceHolderTextField username = new PlaceHolderTextField("  display name");
-		username.setBorder(BorderFactory.createMatteBorder(2,2,2,2, new Color(105,105,105)));
+		username.setBorder(BorderFactory.createMatteBorder(0,0,0,0, new Color(105,105,105)));
+		username.setBackground(new Color(60,60,60));
 		username.setHorizontalAlignment(JTextField.LEFT);
 		
 		PlaceHolderTextField nickname = new PlaceHolderTextField("  nickname");
 		nickname.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 100, getWidth() / 4, 50);
-		nickname.setBorder(BorderFactory.createMatteBorder(2,2, 2, 2, new Color(105,105,105)));
+		nickname.setBackground(new Color(60,60,60));
+		nickname.setBorder(BorderFactory.createMatteBorder(0,0,0,0, new Color(105,105,105)));
 		nickname.setHorizontalAlignment(JTextField.LEFT);
 		
 		submit = new JButton("login");
@@ -87,10 +91,10 @@ public class LoginWindow extends StatePanel {
 		this.addComponentListener(new ComponentListener() {
 		    public void componentResized(ComponentEvent e) {
 		    	action.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 5, getWidth() / 4, 50);
-		    	username.setBounds(450, 160, getWidth() / 3, 30);    
+		    	username.setBounds(450, 155, getWidth() / 3, 30);    
 		    	nickname.setBounds(450, 190, getWidth() / 3, 30);
-		    	loggingIn.setBounds(450, 190, getWidth() / 6, 30);
-		    	submit.setBounds(450, 220, getWidth() / 6, 30);
+		    	loggingIn.setBounds(450, 195, getWidth() / 6, 30);
+		    	submit.setBounds(450, 230, getWidth() / 6, 30);
 		    	tempLogoStartup = logoStartup.getScaledInstance(getWidth() / 3, -1, Image.SCALE_DEFAULT);
 				tempLogoDone = logoDone.getScaledInstance(getWidth() / 3, -1, Image.SCALE_DEFAULT);
 				rectX = getWidth() / 2 - getWidth() / 8 - 25;
@@ -137,7 +141,18 @@ public class LoginWindow extends StatePanel {
 			g.drawImage(tempLogoStartup, 74, 174, this);
 		else if (tempLogoDone != null)
 			g.drawImage(tempLogoDone, 74, 174, this);
+		//g.setColor(new Color(78,78,78));
+		//g.drawRoundRect(450, 160, getWidth() / 3, 30, 20, 20);//paint border
+		
 
+	}
+	@Override
+	public void paint(Graphics g) {
+		super.paint(g);
+		g.setColor(new Color(78,78,78));
+		((Graphics2D) g).setStroke(new BasicStroke(2));
+		g.drawRoundRect(450, 155, getWidth() / 3, 30, 10, 10);//paint border
+		g.drawRoundRect(450, 190, getWidth() / 3, 30, 10, 10);//paint border
 	}
 	public Optional<User> getLoginInfo() {
 		return Optional.ofNullable(loginInfo);
