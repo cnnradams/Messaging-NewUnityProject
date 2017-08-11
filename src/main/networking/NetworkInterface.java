@@ -73,12 +73,13 @@ public interface NetworkInterface {
         
         HashMap<Integer, String> decodings = new HashMap<>(5);
         decodings.put(RESULT_SUCCESS,              "Operation was successful");
-        decodings.put(RESULT_COULD_NOT_CONNECT,    "Could not connect to the server");
-        decodings.put(RESULT_USERNAME_TAKEN,       "The specified username has already been taken on the server");
-        decodings.put(RESULT_UNKNOWN_USERNAME,     "Could not find the specified username on the server");
-        decodings.put(RESULT_NOT_LOGGED_IN,        "No username has been specified to login to the server with");
-        decodings.put(RESULT_ALREADY_LOGGED_IN,    "Cannot login more than once without logging out");
-        decodings.put(RESULT_UNKNOWN_CHAT,         "Could not find the specified chat on the server");
+        decodings.put(RESULT_COULD_NOT_CONNECT,    "Unable to connect!");
+        decodings.put(RESULT_USERNAME_TAKEN,       "Username taken!");
+        decodings.put(RESULT_UNKNOWN_USERNAME,     "Unknown username!");
+        decodings.put(RESULT_NOT_LOGGED_IN,        "Username undefinied.");
+        decodings.put(RESULT_ALREADY_LOGGED_IN,    "You are already logged in!");
+        decodings.put(RESULT_UNKNOWN_CHAT,         "This chat is missing!");
+        decodings.put(RESULT_BAD_REQUEST,          "Bad request!");
         
         return Collections.unmodifiableMap(decodings);
     }

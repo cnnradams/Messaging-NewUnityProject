@@ -64,13 +64,13 @@ public class LoginWindow extends StatePanel {
 		action.setForeground(Color.white);
 		action.setVisible(false);
 		
-		username = new PlaceHolderTextField("Display Name");
+		username = new PlaceHolderTextField("display name");
 		username.setBorder(BorderFactory.createMatteBorder(0,0,0,0, new Color(105,105,105)));
 		username.setFocusedColor(new Color(160,160,160));
 		username.setBackground(new Color(60,60,60));
 		username.setHorizontalAlignment(JTextField.LEFT);
 		username.setFont(font);
-		nickname = new PlaceHolderTextField("Nickname");
+		nickname = new PlaceHolderTextField("nickname");
 		nickname.setFocusedColor(new Color(160,160,160));
 		nickname.setBackground(new Color(60,60,60));
 		nickname.setFont(font);
@@ -78,23 +78,28 @@ public class LoginWindow extends StatePanel {
 		nickname.setHorizontalAlignment(JTextField.LEFT);
 		
 		submit = new JButton("login");
+		submit.setHorizontalAlignment(JTextField.LEFT);
 		submit.setForeground(new Color(0, 255, 255));
 		submit.setBackground(new Color(60, 60, 60));
+		submit.setFont(font);
         submit.setBorderPainted(false); 
         submit.setContentAreaFilled(false); 
         submit.setFocusPainted(false); 
         submit.setOpaque(false);
+        
 		loggingIn = new JProgressBar();
-		
 		loggingIn.setVisible(false);
 		loggingIn.setIndeterminate(true);
 		loggingIn.setForeground(Color.white);
+		action.setFont(font);
+		loggingIn.setBackground(new Color(60,60,60));
+		loggingIn.setBorderPainted(false);
 		loggingIn.setString("Logging in...");
 
 		submit.addActionListener(e -> {
 	    	
 			if (username.isPlaceHolder() || nickname.isPlaceHolder()) {
-				action.setText("A display name and nickname are required.");
+				action.setText("Fill in all fields, please!");
 				action.setBounds(450, 130, getWidth() / 3, 30);
 				action.setVisible(true);
 			} else {
@@ -120,7 +125,7 @@ public class LoginWindow extends StatePanel {
 		    	username.setBounds(456, 158, getWidth() / 3 - 8, 24);    
 		    	nickname.setBounds(456, 193, getWidth() / 3 - 8, 24);
 		    	loggingIn.setBounds(450, 188, getWidth() / 3, 24);
-		    	submit.setBounds(450, 230, getWidth() / 12, 30);
+		    	submit.setBounds(450, 230, getWidth() / 8, 30);
 		    	tempLogoStartup = logoStartup.getScaledInstance(getWidth() / 3, -1, Image.SCALE_DEFAULT);
 				tempLogoDone = logoDone.getScaledInstance(getWidth() / 3, -1, Image.SCALE_DEFAULT);
 				rectX = getWidth() / 2 - getWidth() / 8 - 25;
@@ -181,7 +186,10 @@ public class LoginWindow extends StatePanel {
 			g.drawRoundRect(450, 155, getWidth() / 3, 30, 10, 10);//paint border
 			g.drawRoundRect(450, 190, getWidth() / 3, 30, 10, 10);//paint border
 			g.setColor(new Color(0, 255, 255));
-			g.drawRoundRect(450, 230, getWidth() / 12, 30, 10, 10);//paint border
+			g.drawRoundRect(450, 230, getWidth() / 10, 30, 10, 10);//paint border
+		}
+		if (hidden) {
+			g.drawRoundRect(450, 188, getWidth() / 3, 24, 10, 10);
 		}
 	}
 	public Optional<User> getLoginInfo() {
