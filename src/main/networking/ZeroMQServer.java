@@ -251,6 +251,11 @@ public class ZeroMQServer implements NetworkInterface {
         return resultCode == RESULT_SUCCESS;
     }
     
+    @Override
+    public void keepAlive() {
+        sendRequest(requester, requestToken, REQUEST_KEEP_ALIVE);
+    }
+    
     public void disconnect() {
         requester.close();
         context.term();

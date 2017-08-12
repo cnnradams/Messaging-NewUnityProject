@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -61,8 +62,11 @@ public class MessagingWindow extends StatePanel {
     private final PlaceHolderTextField sendMessages;
     private final JButton sendMessageButton;
     
-    private final List<Message> messageQueue;
     Font font = null;
+
+    private final JTabbedPane tabPanel;
+    
+    private final List<Message> messageQueue;
     public MessagingWindow() {
     	
     	
@@ -79,6 +83,7 @@ public class MessagingWindow extends StatePanel {
 		
     	this.setLayout(null);
     	this.setSize(800, 439);
+    	this.setBackground(new Color(60, 60, 60));
         JScrollPane userScrollPane = new JScrollPane();
         userScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         userScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -104,14 +109,13 @@ public class MessagingWindow extends StatePanel {
         messagingPane.setViewportView(messagingWindow);
         messagingPane.setPreferredSize(new Dimension(300, 300));
         messagingPane.setVisible(false);
-        messagingPane.setBounds(200, 0, getWidth() - 210, getHeight() - 10);
+        messagingPane.setBounds(200, 0, getWidth() - 210, getHeight() - 10 - 100);
         
         messageQueue = new ArrayList<>();
         
         sendMessages = new PlaceHolderTextField("Type a message here");
         sendMessages.setVisible(true);
         sendMessages.setLayout(null);
-        sendMessages.setBounds(300, 300, 100, 100);
         sendMessageButton = new JButton("Send");
         sendMessageButton.setVisible(true);
         sendMessageButton.addActionListener(e -> {
@@ -131,19 +135,20 @@ public class MessagingWindow extends StatePanel {
             }
         });
         sendMessageButton.setLayout(null);
-        sendMessageButton.setBounds(400, 300, 100, 100);
         JPanel tab1 = new JPanel();
         tab1.setLayout(null);
         chatScrollPane.setBounds(0, 0, 200, getHeight());
         userScrollPane.setBounds(0, 0, 200, getHeight());
         	tab1.add(chatScrollPane);
-        	JTabbedPane tabPanel = new JTabbedPane();
+        	tabPanel = new JTabbedPane();
         	tabPanel.addTab("Groups", chatScrollPane);
-    tabPanel.addTab("Users", userScrollPane);
-    tabPanel.setBounds(0, 25, 200, getHeight() - 25);
+        	tabPanel.addTab("Users", userScrollPane);
+        	tabPanel.setBounds(0, 25, 200, getHeight() - 25);
         this.add(tabPanel);
-        messagingPane.add(sendMessages);
-        messagingPane.add(sendMessageButton);
+        sendMessages.setVisible(false);
+        sendMessageButton.setVisible(false);
+        this.add(sendMessages);
+        this.add(sendMessageButton);
        // this.add(userScrollPane);
         //this.add(chatScrollPane);
         this.add(messagingPane);
@@ -164,9 +169,17 @@ public class MessagingWindow extends StatePanel {
 			public void componentResized(ComponentEvent e) {
 				// TODO Auto-generated method stub
 				tabPanel.setBounds(0, 25, 200, getHeight() - 25);
-				messagingPane.setBounds(200, 0, getWidth() - 210, getHeight() - 10);
-				sendMessageButton.setBounds(400, 300, 100, 100);
-				sendMessages.setBounds(300, 300, 100, 100);
+				messagingPane.setBounds(200, 0, getWidth() - 200, getHeight() - 20);
+				sendMessageButton.setBounds(getWidth() - 80, getHeight() - 20, 80, 20);
+				sendMessages.setBounds(200, getHeight() - 20, getWidth() - 280, 20);
+				messagingPane.setBackground(new Color(60, 60, 60));
+				sendMessages.setBackground(new Color(78, 78, 78));
+				sendMessageButton.setBackground(new Color(78, 78, 78));
+				sendMessages.setBorder(BorderFactory.createMatteBorder(0,0,0,0, new Color(105,105,105)));
+				sendMessageButton.setBorderPainted(false);
+				sendMessages.setFocusedColor(Color.WHITE);
+				sendMessageButton.setForeground(Color.WHITE);
+				
 			}
 
 			@Override
@@ -476,5 +489,27 @@ public class MessagingWindow extends StatePanel {
     
     public void emptyQueuedMessages() {
         while(messageQueue.size() != 0) messageQueue.remove(0);
+    }
+    
+    public void setSendMessagesOnTop() {
+        boolean wasFocused = sendMessages.hasFocus();
+        boolean textWasVisible = sendMessages.isVisible();
+        boolean buttonWasVisible = sendMessageButton.isVisible();
+        
+        
+        this.remove(sendMessages);
+        this.add(sendMessages);
+        this.remove(sendMessageButton);
+        this.add(sendMessageButton);
+        
+        if(wasFocused) {
+            sendMessages.requestFocus();
+        }
+        sendMessages.setVisible(textWasVisible);
+        sendMessageButton.setVisible(buttonWasVisible);
+    }
+    
+    public void updateComponents() {
+        SwingUtilities.updateComponentTreeUI(tabPanel);
     }
 }
