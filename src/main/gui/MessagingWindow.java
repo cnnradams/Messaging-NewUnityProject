@@ -116,7 +116,6 @@ public class MessagingWindow extends StatePanel {
         
         messageQueue = new ArrayList<>();
         
-     
         sendMessages = new PlaceHolderTextField("Type a message here");
         sendMessages.setVisible(true);
         sendMessages.setLayout(null);
@@ -155,6 +154,19 @@ public class MessagingWindow extends StatePanel {
        // this.add(userScrollPane);
         //this.add(chatScrollPane);
         this.add(messagingPane);
+        
+        //set all the ui colours
+		userListPanel.setBackground(new Color(60,60,60));
+		messagingPane.setBackground(new Color(40, 40, 40));
+		messagingWindow.setBackground(new Color (40, 40, 40));
+		sendMessages.setBackground(new Color(78, 78, 78));
+		sendMessageButton.setBackground(new Color(78, 78, 78));
+		tabPanel.setBackground(new Color(60, 60, 60));
+		tabPanel.setForeground(Color.WHITE);
+		sendMessages.setBorder(BorderFactory.createMatteBorder(0,0,0,0, new Color(105,105,105)));
+		sendMessageButton.setBorderPainted(false);
+		sendMessages.setFocusedColor(Color.WHITE);
+		sendMessageButton.setForeground(Color.WHITE);
         this.addComponentListener(new ComponentListener() {
 
 			@Override
@@ -175,13 +187,6 @@ public class MessagingWindow extends StatePanel {
 				messagingPane.setBounds(200, 0, getWidth() - 200, getHeight() - 20);
 				sendMessageButton.setBounds(getWidth() - 80, getHeight() - 20, 80, 20);
 				sendMessages.setBounds(200, getHeight() - 20, getWidth() - 280, 20);
-				messagingPane.setBackground(new Color(60, 60, 60));
-				sendMessages.setBackground(new Color(78, 78, 78));
-				sendMessageButton.setBackground(new Color(78, 78, 78));
-				sendMessages.setBorder(BorderFactory.createMatteBorder(0,0,0,0, new Color(105,105,105)));
-				sendMessageButton.setBorderPainted(false);
-				sendMessages.setFocusedColor(Color.WHITE);
-				sendMessageButton.setForeground(Color.WHITE);
 				
 			}
 
