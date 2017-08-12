@@ -214,6 +214,7 @@ public class Main {
                 }
                 List<Message> messages = network.getIncomingMessages().orElseThrow(network::makeException);
                 for(Message message : messages) {
+                    window.messagingWindow.playNewMessage();
                     SwingUtilities.invokeLater(() -> window.messagingWindow.addMessage(message));
                 }
                 

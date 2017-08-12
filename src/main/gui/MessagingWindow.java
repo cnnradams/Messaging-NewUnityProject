@@ -29,6 +29,11 @@ import java.util.Optional;
 import java.util.Set;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -41,7 +46,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import main.Main;
 import main.data.ChatRoom;
 import main.data.Message;
 import main.data.User;
@@ -79,6 +83,10 @@ public class MessagingWindow extends StatePanel {
     private BufferedImage userIcon;
     
     String nickname = null;
+    
+    private final Clip messageRecieved = getClip("src/resources/sound/messagerecieved.wav");
+    private final Clip userJoined = getClip("src/resources/sound/userjoined.wav");
+    private final Clip userLeft = getClip("src/resources/sound/userleft.wav");
     
     public MessagingWindow() {
     	
@@ -348,6 +356,7 @@ public class MessagingWindow extends StatePanel {
                 JButton userButton = createButtonForUser(user);
                 userListPanel.add(userButton);
                 userButtons.add(userButton);
+                playNewUser();
             break;
             case NetworkInterface.CHANGE_DISCONNECTED:
             	if(user.username.equals(User.getMe().username))
@@ -358,6 +367,7 @@ public class MessagingWindow extends StatePanel {
                 if(selectedUser.isPresent() && selectedUser.get().equals(user)) {
                     selectedUser = Optional.empty();
                 }
+                playLessUser();
                 
             break;
             case NetworkInterface.CHANGE_CHANGED_NICKNAME:
@@ -681,5 +691,30 @@ public class MessagingWindow extends StatePanel {
         String returnString = nickname;
         nickname = null;
         return returnString;
+    }
+    
+    private static Clip getClip(String location) {
+        try {
+            Clip clip = AudioSystem.getClip();
+            AudioInputStream in = AudioSystem.getAudioInputStream(new File(location));
+            clip.open(in);
+            return clip;
+        } catch (LineUnavailableException | UnsupportedAudioFileException | IOException e) {
+            e.printStackTrace();
+        }
+        
+        return null;
+    }
+    
+    public void playNewMessage() {
+        messageRecieved.start();
+    }
+    
+    public void playNewUser() {
+        userJoined.start();
+    }
+    
+    public void playLessUser() {
+        userLeft.start();
     }
 }
