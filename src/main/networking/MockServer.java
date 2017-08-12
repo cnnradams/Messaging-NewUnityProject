@@ -385,4 +385,9 @@ public class MockServer implements NetworkInterface {
         
         return logoutResult == NetworkInterface.RESULT_SUCCESS;
     }
+    
+    @Override
+    public void keepAlive() {
+        System.out.println("[Mock] Not dead!");
+    }
 }

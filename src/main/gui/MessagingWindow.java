@@ -121,6 +121,8 @@ public class MessagingWindow extends StatePanel {
     tabPanel.addTab("Users", userScrollPane);
     tabPanel.setBounds(0, 25, 200, getHeight() - 25);
         this.add(tabPanel);
+        sendMessages.setVisible(false);
+        sendMessageButton.setVisible(false);
         this.add(sendMessages);
         this.add(sendMessageButton);
        // this.add(userScrollPane);

@@ -50,6 +50,9 @@ public interface NetworkInterface {
     // () -> boolean success
     public static final int REQUEST_LOGOUT = 11;
     
+    // () -> void
+    public static final int REQUEST_KEEP_ALIVE = 12;
+    
     
     public static final int RESULT_SUCCESS = 0;
     public static final int RESULT_COULD_NOT_CONNECT = -1;
@@ -109,4 +112,6 @@ public interface NetworkInterface {
     public boolean sendMessage(Message message);
     
     public boolean logout();
+    
+    public void keepAlive();
 }
