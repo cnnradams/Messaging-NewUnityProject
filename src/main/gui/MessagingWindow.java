@@ -135,7 +135,7 @@ public class MessagingWindow extends StatePanel {
                     addMessage(message);
                 }
                 sendMessages.reset();
-                this.grabFocus();
+                sendMessages.requestFocus();
             }
         });
         sendMessageButton.setLayout(null);
