@@ -1,10 +1,16 @@
 package main.gui;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FileDialog;
+import java.awt.Font;
+import java.awt.FontFormatException;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,8 +31,10 @@ import java.util.Set;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -50,7 +58,7 @@ public class MessagingWindow extends StatePanel {
     
     private List<JButton> chatButtons = new ArrayList<>();
     private final JPanel chatListPanel = new JPanel();
-
+    private JPanel myUserPanel = new JPanel();
     private final JScrollPane messagingPane;
     private final JPanel messagingWindow;
     private Optional<User> selectedUser = Optional.empty();
@@ -59,11 +67,25 @@ public class MessagingWindow extends StatePanel {
     private final PlaceHolderTextField sendMessages;
     private final JButton sendMessageButton;
     
+    Font font = null;
+
     private final JTabbedPane tabPanel;
     
     private final List<Message> messageQueue;
-
     public MessagingWindow() {
+    	
+    	
+		try {
+			font = Font.createFont(Font.TRUETYPE_FONT, getClass().getResource("/resources/font/RobotoMono-Medium.ttf").openStream());
+		} catch (FontFormatException | IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}   
+
+		GraphicsEnvironment genv = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		genv.registerFont(font);
+		font = font.deriveFont(15f);
+		
     	this.setLayout(null);
     	this.setSize(800, 439);
     	this.setBackground(new Color(60, 60, 60));
@@ -90,6 +112,7 @@ public class MessagingWindow extends StatePanel {
         messagingPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         messagingWindow.setLayout(new BoxLayout(messagingWindow, BoxLayout.Y_AXIS));
         messagingPane.setViewportView(messagingWindow);
+        messagingPane.setAlignmentY(BOTTOM_ALIGNMENT);
         messagingPane.setPreferredSize(new Dimension(300, 300));
         messagingPane.setVisible(false);
         messagingPane.setBounds(200, 0, getWidth() - 210, getHeight() - 10 - 100);
@@ -114,7 +137,7 @@ public class MessagingWindow extends StatePanel {
                     addMessage(message);
                 }
                 sendMessages.reset();
-                this.grabFocus();
+                sendMessages.requestFocus();
             }
         });
         sendMessageButton.setLayout(null);
@@ -126,7 +149,6 @@ public class MessagingWindow extends StatePanel {
         	tabPanel = new JTabbedPane();
         	tabPanel.addTab("Groups", chatScrollPane);
         	tabPanel.addTab("Users", userScrollPane);
-        	tabPanel.setBounds(0, 25, 200, getHeight() - 25);
         this.add(tabPanel);
         sendMessages.setVisible(false);
         sendMessageButton.setVisible(false);
@@ -135,6 +157,19 @@ public class MessagingWindow extends StatePanel {
        // this.add(userScrollPane);
         //this.add(chatScrollPane);
         this.add(messagingPane);
+        
+        //set all the ui colours
+		userListPanel.setBackground(new Color(60,60,60));
+		messagingPane.setBackground(new Color(40, 40, 40));
+		messagingWindow.setBackground(new Color (40, 40, 40));
+		sendMessages.setBackground(new Color(78, 78, 78));
+		sendMessageButton.setBackground(new Color(78, 78, 78));
+		tabPanel.setBackground(new Color(60, 60, 60));
+		tabPanel.setForeground(Color.WHITE);
+		sendMessages.setBorder(BorderFactory.createMatteBorder(0,0,0,0, new Color(105,105,105)));
+		sendMessageButton.setBorderPainted(false);
+		sendMessages.setFocusedColor(Color.WHITE);
+		sendMessageButton.setForeground(Color.WHITE);
         this.addComponentListener(new ComponentListener() {
 
 			@Override
@@ -151,17 +186,10 @@ public class MessagingWindow extends StatePanel {
 			@Override
 			public void componentResized(ComponentEvent e) {
 				// TODO Auto-generated method stub
-				tabPanel.setBounds(0, 25, 200, getHeight() - 25);
+				tabPanel.setBounds(0, 75, 200, getHeight() - 75);
 				messagingPane.setBounds(200, 0, getWidth() - 200, getHeight() - 20);
 				sendMessageButton.setBounds(getWidth() - 80, getHeight() - 20, 80, 20);
 				sendMessages.setBounds(200, getHeight() - 20, getWidth() - 280, 20);
-				messagingPane.setBackground(new Color(60, 60, 60));
-				sendMessages.setBackground(new Color(78, 78, 78));
-				sendMessageButton.setBackground(new Color(78, 78, 78));
-				sendMessages.setBorder(BorderFactory.createMatteBorder(0,0,0,0, new Color(105,105,105)));
-				sendMessageButton.setBorderPainted(false);
-				sendMessages.setFocusedColor(Color.WHITE);
-				sendMessageButton.setForeground(Color.WHITE);
 				
 			}
 
@@ -191,8 +219,8 @@ public class MessagingWindow extends StatePanel {
     
     public void updateMessages() {
         if(selectedChat.isPresent()) {
+        	 messagingWindow.removeAll();
             List<Message> allChatMessages = new ArrayList<>();
-            
             for(Message m : messages) {
                 if(m.chatRoom.isPresent() && m.chatRoom.get().equals(selectedChat.get())) {
                     allChatMessages.add(m);
@@ -204,8 +232,13 @@ public class MessagingWindow extends StatePanel {
                         }
                     }
                     
-                    if(!added)
-                        messagingWindow.add(m);
+                    if(!added) {
+                    	m.setAlignmentX(LEFT_ALIGNMENT);
+                    	messagingWindow.add(m,0);
+                    	messagingWindow.setAlignmentX(LEFT_ALIGNMENT);
+                    	System.out.println(messagingWindow.getAlignmentX());
+                    }
+                        
                 }
             }
             
@@ -233,7 +266,7 @@ public class MessagingWindow extends StatePanel {
             };
         }
         else if(selectedUser.isPresent()) {
-            
+        	messagingWindow.removeAll();
             List<Message> allUserMessages = new ArrayList<>();
             
             for(Message m : messages) {
@@ -287,17 +320,23 @@ public class MessagingWindow extends StatePanel {
     public void updateUser(User user, int state, NetworkInterface network) {
         switch(state) {
             case NetworkInterface.CHANGE_CONNECTED:
+            	if(user.username.equals(User.getMe().username))
+            		break;
                 onlineUsers.add(user);
                 JButton userButton = createButtonForUser(user);
                 userListPanel.add(userButton);
                 userButtons.add(userButton);
             break;
             case NetworkInterface.CHANGE_DISCONNECTED:
+            	if(user.username.equals(User.getMe().username))
+            		break;
                 onlineUsers.remove(user);
                 userListPanel.remove(getUserButtonByUser(user).orElse(null));
                 userButtons.remove(getUserButtonByUser(user).orElse(null));
             break;
             case NetworkInterface.CHANGE_CHANGED_NICKNAME:
+            	if(user.username.equals(User.getMe().username))
+            		break;
                 onlineUsers.remove(user);
                 userListPanel.remove(getUserButtonByUser(user).orElse(null));
                 userButtons.remove(getUserButtonByUser(user).orElse(null));
@@ -349,22 +388,98 @@ public class MessagingWindow extends StatePanel {
     }
     
     public void initializeUserSet(Set<User> users) {
+    	   myUserPanel = createUserProfile();
+    	   myUserPanel.setLayout(null);
+           
+       	myUserPanel.setBounds(0, 0, 200, 50);
+           this.add(myUserPanel);
         onlineUsers = users;
         
         for(User user : onlineUsers) {
+        	if(user.username.equals(User.getMe().username))
+        		continue;
             JButton userButton = createButtonForUser(user);
             userListPanel.add(userButton);
             userButtons.add(userButton);
         }
     }
     
+    public JPanel createUserProfile() {
+    	 User user = User.getMe();
+    	 JPanel userButton = new JPanel();
+         userButton.setLayout(null);
+         userButton.setMaximumSize(new Dimension(2000, 50));
+         userButton.setOpaque(false);
+         BufferedImage bufferedImage = null;
+         try {
+         	bufferedImage = ImageIO.read(new File("src/resources/server-icon.png"));
+ 		} catch (IOException e) {
+ 			// TODO Auto-generated catch block
+ 			e.printStackTrace();
+ 		}
+         ImageIcon imageIcon = new ImageIcon(bufferedImage);
+         Image image = imageIcon.getImage(); // transform it 
+         Image newimg = image.getScaledInstance(30, 30,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+         imageIcon = new ImageIcon(newimg);  // transform it back
+         JButton button = new JButton();
+         button.setIcon(imageIcon);
+         button.setBounds(10, 10, 30, 30);
+         button.addActionListener(new ActionListener() {
+             @Override
+             public void actionPerformed(ActionEvent e) {
+                //INSERT RYAN HERE
+             }
+         });
+         JLabel nickname = new JLabel(user.nickname);
+         nickname.setFont(font);
+         nickname.setForeground(new Color(160,160,160));
+         nickname.setBounds(50,15,140,20);
+         nickname.setAlignmentY(CENTER_ALIGNMENT);
+         
+         userButton.add(button);
+         userButton.add(nickname);
+         
+         return userButton;
+    }
+    @Override
+	public void paintComponent(Graphics g) {
+			super.paintComponent(g);
+			g.setColor(new Color(78,78,78));
+			((Graphics2D) g).setStroke(new BasicStroke(2));
+			g.fillRoundRect(3, 3, 197, 47, 10, 10);//paint border
+	}
     public void addMessage(Message message) {
         messages.add(message);
     }
     
     public JButton createButtonForUser(User user) {
-        JButton userButton = new JButton(user.username + " (" + user.nickname + ")");
+        JButton userButton = new JButton();
+        userButton.setLayout(null);
         userButton.addActionListener(new UserButtonPress(user));
+        userButton.setMaximumSize(new Dimension(2000, 50));
+        userButton.setBackground(new Color(60,60,60));
+        BufferedImage bufferedImage = null;
+        try {
+        	bufferedImage = ImageIO.read(new File("src/resources/server-icon.png"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        ImageIcon imageIcon = new ImageIcon(bufferedImage);
+        Image image = imageIcon.getImage(); // transform it 
+        Image newimg = image.getScaledInstance(30, 30,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+        imageIcon = new ImageIcon(newimg);  // transform it back
+        
+        JLabel profilePic = new JLabel(imageIcon);
+        profilePic.setBounds(10, 10, 30, 30);
+        JLabel nickname = new JLabel(user.nickname);
+        nickname.setFont(font);
+        nickname.setForeground(new Color(160,160,160));
+        nickname.setBounds(50,15,140,20);
+        nickname.setAlignmentY(CENTER_ALIGNMENT);
+        
+        userButton.add(profilePic);
+        userButton.add(nickname);
         return userButton;
     }
     

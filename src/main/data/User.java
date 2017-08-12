@@ -21,6 +21,7 @@ public class User implements Comparable<User> {
     
     public User(String username, NetworkInterface network) throws NoSuchElementException {
         this(username, getNicknameOrThrowExceptionAnd("Unknown", network.getNickname(username), network));
+        
     }
     
     public User(String username, String nickname) {
@@ -68,5 +69,15 @@ public class User implements Comparable<User> {
         bytesIn.close();
         
         return image;
+    }
+    
+    private static User me;
+    
+    public static User getMe() {
+    	return me;
+    }
+    
+    public static void setMe(User me) {
+    	User.me = me;
     }
 }

@@ -63,13 +63,13 @@ public class LoginWindow extends StatePanel {
 		action.setForeground(Color.white);
 		action.setVisible(false);
 		
-		username = new PlaceHolderTextField("display name");
+		username = new PlaceHolderTextField("username");
 		username.setBorder(BorderFactory.createMatteBorder(0,0,0,0, new Color(105,105,105)));
 		username.setFocusedColor(new Color(160,160,160));
 		username.setBackground(new Color(60,60,60));
 		username.setHorizontalAlignment(JTextField.LEFT);
 		username.setFont(font);
-		nickname = new PlaceHolderTextField("nickname");
+		nickname = new PlaceHolderTextField("nickname (shown in chat)");
 		nickname.setFocusedColor(new Color(160,160,160));
 		nickname.setBackground(new Color(60,60,60));
 		nickname.setFont(font);

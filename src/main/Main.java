@@ -95,11 +95,11 @@ public class Main {
             
             window.loginWindow.setActionText("Logging in...");
             loggedIn = network.login(loginInfo.get());
-            
             if(!loggedIn) {
                 window.loginWindow.setActionText(NetworkInterface.ERROR_MEANINGS.get(network.getLastResultCode()));
                 window.loginWindow.resetLoginInfo();
             }
+            User.setMe(loginInfo.get());
         }
         
         if(network instanceof MockServer) {
