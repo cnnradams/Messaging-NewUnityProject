@@ -1,6 +1,10 @@
 package main;
 
 import java.awt.Color;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -31,12 +35,23 @@ public class Main {
         window.setBackground(new Color(60, 60, 60));
         
         InetAddress address = null;
-        try {
-            address = InetAddress.getLocalHost();
-        } catch (UnknownHostException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+        
+        File ipOverride = new File("ip-conf.txt");
+        if(!ipOverride.exists()) {
+            try {
+                address = InetAddress.getLocalHost();
+            } catch (UnknownHostException e) {
+                    e.printStackTrace();
+            }
         }
+        else {
+            try(BufferedReader br = new BufferedReader(new FileReader(ipOverride))) {
+                address = InetAddress.getByName(br.readLine());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         
         final NetworkInterface network = new ZeroMQServer(address, 8743);
         
