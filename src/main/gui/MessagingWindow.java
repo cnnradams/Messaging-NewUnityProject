@@ -41,6 +41,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import main.Main;
 import main.data.ChatRoom;
 import main.data.Message;
 import main.data.User;
@@ -67,6 +68,8 @@ public class MessagingWindow extends StatePanel {
     
     private final PlaceHolderTextField sendMessages;
     private final JButton sendMessageButton;
+    
+    private final JButton addGroupButton;
     
     Font font = null;
 
@@ -147,6 +150,12 @@ public class MessagingWindow extends StatePanel {
             }
         });
         sendMessageButton.setLayout(null);
+        addGroupButton = new JButton("Add Group");
+        addGroupButton.setVisible(true);
+        addGroupButton.addActionListener(e -> {
+        	
+        });
+        addGroupButton.setLayout(null);
         JPanel tab1 = new JPanel();
         tab1.setLayout(null);
         chatScrollPane.setBounds(0, 0, 200, getHeight());
@@ -163,6 +172,7 @@ public class MessagingWindow extends StatePanel {
        // this.add(userScrollPane);
         //this.add(chatScrollPane);
         this.add(messagingPane);
+        this.add(addGroupButton);
         
         //set all the ui colours
 		userListPanel.setBackground(new Color(60,60,60));
@@ -174,7 +184,12 @@ public class MessagingWindow extends StatePanel {
 		tabPanel.setForeground(Color.WHITE);
 		sendMessages.setBorder(BorderFactory.createMatteBorder(0,0,0,0, new Color(105,105,105)));
 		sendMessageButton.setBorderPainted(false);
-		sendMessageButton.setForeground(Color.WHITE);
+		sendMessageButton.setForeground(new Color(160,160,160));
+		addGroupButton.setBackground(new Color(78,78,78));
+		addGroupButton.setOpaque(false);
+		addGroupButton.setFont(font);
+		addGroupButton.setBorderPainted(false);
+		addGroupButton.setForeground(new Color(160,160,160));
         this.addComponentListener(new ComponentListener() {
 
 			@Override
@@ -194,6 +209,7 @@ public class MessagingWindow extends StatePanel {
 				tabPanel.setBounds(0, 75, 200, getHeight() - 75);
 				messagingPane.setBounds(200, 0, getWidth() - 200, getHeight() - 20);
 				sendMessageButton.setBounds(getWidth() - 80, getHeight() - 20, 80, 20);
+				addGroupButton.setBounds(3, 53, 197, 20);
 				sendMessages.setBounds(200, getHeight() - 20, getWidth() - 280, 20);
 				
 			}
@@ -456,7 +472,7 @@ public class MessagingWindow extends StatePanel {
              }
          });
          JTextField nickname = new JTextField(user.nickname);
-         nickname.setBackground(new Color(78,78,78));
+         nickname.setBackground(new Color(60,60,60));
          nickname.setBorder(BorderFactory.createMatteBorder(0,0,0,0, new Color(105,105,105)));
          nickname.setFont(font);
          nickname.setForeground(new Color(160,160,160));
@@ -481,7 +497,8 @@ public class MessagingWindow extends StatePanel {
 			super.paintComponent(g);
 			g.setColor(new Color(78,78,78));
 			((Graphics2D) g).setStroke(new BasicStroke(2));
-			g.fillRoundRect(3, 3, 197, 47, 10, 10);//paint border
+			g.drawRoundRect(3, 3, 197, 47, 10, 10);//paint border
+			g.fillRoundRect(3, 53, 197, 20, 10, 10);
 	}
     public void addMessage(Message message) {
     	message.reBreak(messagingPane.getWidth());
