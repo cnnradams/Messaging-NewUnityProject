@@ -201,7 +201,7 @@ public class Main {
                 
                 SwingUtilities.invokeLater(window.messagingWindow::updateComponents);
                 
-                
+                network.keepAlive();
                 
                 Thread.sleep(250);
             } catch (ConnectException | InterruptedException e) {
