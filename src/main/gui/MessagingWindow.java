@@ -143,6 +143,7 @@ public class MessagingWindow extends StatePanel {
                 }
                 sendMessages.reset();
                 this.requestFocus();
+                sendMessages.requestFocus();
             }
         });
         sendMessageButton.setLayout(null);
@@ -233,7 +234,7 @@ public class MessagingWindow extends StatePanel {
                     
                     if(!added) {
                     	m.setAlignmentX(LEFT_ALIGNMENT);
-                    	messagingWindow.add(m,0);
+                    	messagingWindow.add(m,-1);
                     	messagingWindow.setAlignmentX(LEFT_ALIGNMENT);
                     }
                         
@@ -279,8 +280,11 @@ public class MessagingWindow extends StatePanel {
                         }
                     }
                     
-                    if(!added)
-                        messagingWindow.add(m);
+                    if(!added) {
+                        m.setAlignmentX(LEFT_ALIGNMENT);
+                        messagingWindow.add(m,-1);
+                        messagingWindow.setAlignmentX(LEFT_ALIGNMENT);
+                    }
                 }
             }
             
@@ -346,7 +350,7 @@ public class MessagingWindow extends StatePanel {
                 onlineUsers.remove(user);
                 userListPanel.remove(getUserButtonByUser(user).orElse(null));
                 userButtons.remove(getUserButtonByUser(user).orElse(null));
-                SwingUtilities.invokeLater(() -> onlineUsers.add(new User(user.username, network)));
+                onlineUsers.add(new User(user.username, network));
                 userButton = createButtonForUser(user);
                 userListPanel.add(userButton);
                 userButtons.add(userButton);
@@ -357,7 +361,7 @@ public class MessagingWindow extends StatePanel {
                 onlineUsers.remove(user);
                 userListPanel.remove(getUserButtonByUser(user).orElse(null));
                 userButtons.remove(getUserButtonByUser(user).orElse(null));
-                SwingUtilities.invokeLater(() -> onlineUsers.add(new User(user.username, network)));
+                onlineUsers.add(new User(user.username, network));
                 userButton = createButtonForUser(user);
                 userListPanel.add(userButton);
                 userButtons.add(userButton);
@@ -547,6 +551,7 @@ public class MessagingWindow extends StatePanel {
         
         @Override
         public void actionPerformed(ActionEvent e) {
+            sendMessages.reset();
             showMessages(user);
         }
     }
@@ -587,6 +592,7 @@ public class MessagingWindow extends StatePanel {
         
         @Override
         public void actionPerformed(ActionEvent e) {
+            sendMessages.reset();
             showMessages(chat);
         }
     }

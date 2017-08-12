@@ -203,13 +203,13 @@ public class Main {
                 Map<ChatRoom, List<Integer>> chatUpdates = network.getChatUpdates().orElseThrow(network::makeException);
                 for(ChatRoom chat : chatUpdates.keySet()) {
                     for(int state : chatUpdates.get(chat)) {
-                        SwingUtilities.invokeLater(() -> window.messagingWindow.updateChat(chat, state, network));
+                        window.messagingWindow.updateChat(chat, state, network);
                     }
                 }
                 Map<User, List<Integer>> userUpdates = network.getUserUpdates().orElseThrow(network::makeException);
                 for(User user : userUpdates.keySet()) {
                     for(int state : userUpdates.get(user)) {
-                        SwingUtilities.invokeLater(() -> window.messagingWindow.updateUser(user, state, network));
+                        window.messagingWindow.updateUser(user, state, network);
                     }
                 }
                 List<Message> messages = network.getIncomingMessages().orElseThrow(network::makeException);
