@@ -314,7 +314,6 @@ public class MessagingWindow extends StatePanel {
                 messagingPane.setVisible(false);
             }
             
-            SwingUtilities.updateComponentTreeUI(this.getParent());
             return;
         }
     }

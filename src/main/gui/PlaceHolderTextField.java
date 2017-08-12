@@ -72,9 +72,4 @@ public class PlaceHolderTextField extends JTextField {
         }
         
     }
-    @Override
-    public void requestFocus() {
-    	super.requestFocus();
-    	setText("");
-    }
 }
