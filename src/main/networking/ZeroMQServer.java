@@ -122,7 +122,22 @@ public class ZeroMQServer implements NetworkInterface {
                 resultCode = chatUpdateResponse.resultCode;
                 return Optional.of(updates);
             }
-            ChatRoom chat = new ChatRoom(Integer.parseInt(chatUpdateResponse.response[0]), this);
+            
+            int id = -1;
+            try {
+                id = Integer.parseInt(chatUpdateResponse.response[0]);
+            }
+            catch(NumberFormatException e) {
+                e.printStackTrace();
+            }
+            
+            String name = "Don't care";
+            try {
+                name = getChatName(id).get();
+            }
+            catch(NoSuchElementException e) {}
+            
+            ChatRoom chat = new ChatRoom(id, name);
             List<Integer> updateValues = new ArrayList<>();
             for(String updateString : chatUpdateResponse.response[1].split(",")) {
                 updateValues.add(Integer.parseInt(updateString));

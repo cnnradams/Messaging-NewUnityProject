@@ -19,7 +19,6 @@ import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -310,11 +309,15 @@ public class MessagingWindow extends StatePanel {
             
             if(!messagingPane.isVisible()) {
                 messagingPane.setVisible(true);
+                SwingUtilities.updateComponentTreeUI(this);
             }
         }
         else {
             if(messagingPane.isVisible()) {
                 messagingPane.setVisible(false);
+                sendMessages.setVisible(false);
+                sendMessageButton.setVisible(false);
+                SwingUtilities.updateComponentTreeUI(this);
             }
             
             return;
@@ -337,6 +340,10 @@ public class MessagingWindow extends StatePanel {
                 onlineUsers.remove(user);
                 userListPanel.remove(getUserButtonByUser(user).orElse(null));
                 userButtons.remove(getUserButtonByUser(user).orElse(null));
+                if(selectedUser.isPresent() && selectedUser.get().equals(user)) {
+                    selectedUser = Optional.empty();
+                }
+                
             break;
             case NetworkInterface.CHANGE_CHANGED_NICKNAME:
             	if(user.username.equals(User.getMe().username))
@@ -377,6 +384,10 @@ public class MessagingWindow extends StatePanel {
                 onlineChats.remove(chat);
                 chatListPanel.remove(getChatButtonByChat(chat).orElse(null));
                 chatButtons.remove(getChatButtonByChat(chat).orElse(null));
+                
+                if(selectedChat.isPresent() && selectedChat.get().equals(chat)) {
+                    selectedChat = Optional.empty();
+                }
             break;
             case NetworkInterface.CHANGE_CHANGED_NICKNAME:
                 onlineChats.remove(chat);
