@@ -13,7 +13,7 @@ public class PlaceHolderTextField extends JTextField {
     public final String text;
     
     private Color unfocusedColor = Color.GRAY;
-    private Color focusedColor = Color.BLACK;
+    private Color focusedColor = Color.WHITE;
     
     public PlaceHolderTextField(String text) {
         this.text = text;
