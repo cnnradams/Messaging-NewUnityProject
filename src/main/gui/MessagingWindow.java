@@ -192,11 +192,7 @@ public class MessagingWindow extends StatePanel {
 			public void componentResized(ComponentEvent e) {
 				// TODO Auto-generated method stub
 				tabPanel.setBounds(0, 75, 200, getHeight() - 75);
-				if (tabPanel.getSelectedIndex() == 0) {
-					messagingPane.setBounds(200, 0, getWidth() - 400, getHeight() - 20);
-				} else if (tabPanel.getSelectedIndex() == 0) {
-					messagingPane.setBounds(200, 0, getWidth() - 200, getHeight() - 20);
-				}
+				messagingPane.setBounds(200, 0, getWidth() - 200, getHeight() - 20);
 				sendMessageButton.setBounds(getWidth() - 80, getHeight() - 20, 80, 20);
 				sendMessages.setBounds(200, getHeight() - 20, getWidth() - 280, 20);
 				
