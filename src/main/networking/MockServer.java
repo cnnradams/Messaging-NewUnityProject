@@ -400,9 +400,9 @@ public class MockServer implements NetworkInterface {
     }
 
     @Override
-    public BufferedImage getProfilePicture(User user) {
+    public Optional<BufferedImage> getProfilePicture(String username) {
         System.out.println("[Mock] Getting profile picture for user");
-        return null;
+        return Optional.empty();
     }
 
     @Override

@@ -72,6 +72,8 @@ public class MessagingWindow extends StatePanel {
     private final JTabbedPane tabPanel;
     
     private final List<Message> messageQueue;
+    private BufferedImage userIcon;
+    
     public MessagingWindow() {
     	
     	
@@ -345,6 +347,17 @@ public class MessagingWindow extends StatePanel {
                 userListPanel.add(userButton);
                 userButtons.add(userButton);
             break;
+            case NetworkInterface.CHANGE_CHANGED_PICTURE:
+                if(user.username.equals(User.getMe().username))
+                    break;
+                onlineUsers.remove(user);
+                userListPanel.remove(getUserButtonByUser(user).orElse(null));
+                userButtons.remove(getUserButtonByUser(user).orElse(null));
+                onlineUsers.add(new User(user.username, network));
+                userButton = createButtonForUser(user);
+                userListPanel.add(userButton);
+                userButtons.add(userButton);
+            break;
             default:
                 throw new IllegalArgumentException("Unknown user update state");
         }
@@ -414,20 +427,19 @@ public class MessagingWindow extends StatePanel {
          try {
          	bufferedImage = ImageIO.read(new File("src/resources/server-icon.png"));
  		} catch (IOException e) {
- 			// TODO Auto-generated catch block
  			e.printStackTrace();
  		}
-         ImageIcon imageIcon = new ImageIcon(bufferedImage);
-         Image image = imageIcon.getImage(); // transform it 
-         Image newimg = image.getScaledInstance(30, 30,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
-         imageIcon = new ImageIcon(newimg);  // transform it back
+         Image newimg = bufferedImage.getScaledInstance(30, 30,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
          JButton button = new JButton();
-         button.setIcon(imageIcon);
+         button.setIcon(new ImageIcon(newimg));
          button.setBounds(10, 10, 30, 30);
          button.addActionListener(new ActionListener() {
              @Override
              public void actionPerformed(ActionEvent e) {
-                //INSERT RYAN HERE
+                 BufferedImage bufferedImage = getImageFromFileSystem();
+                 Image newimg = bufferedImage.getScaledInstance(30, 30,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+                 button.setIcon(new ImageIcon(newimg));
+                 userIcon = bufferedImage;
              }
          });
          JLabel nickname = new JLabel(user.nickname);
@@ -460,9 +472,13 @@ public class MessagingWindow extends StatePanel {
         userButton.setBackground(new Color(60,60,60));
         BufferedImage bufferedImage = null;
         try {
-        	bufferedImage = ImageIO.read(new File("src/resources/server-icon.png"));
+            if(user.image != null) {
+                bufferedImage = user.image;
+            }
+            else {
+                bufferedImage = ImageIO.read(new File("src/resources/server-icon.png"));
+            }
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
         ImageIcon imageIcon = new ImageIcon(bufferedImage);
@@ -611,5 +627,11 @@ public class MessagingWindow extends StatePanel {
         }
         
         return null;
+    }
+    
+    public BufferedImage getNewIcon() {
+        BufferedImage returnImage = userIcon;
+        userIcon = null;
+        return returnImage;
     }
 }

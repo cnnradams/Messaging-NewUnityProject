@@ -108,7 +108,7 @@ public class LoginWindow extends StatePanel {
 				username.setVisible(false);    
 		    	nickname.setVisible(false);
 		    	submit.setVisible(false);
-				loginInfo = new User(username.getText(), nickname.getText());
+				loginInfo = new User(username.getText(), nickname.getText(), null);
 				loggingIn.setVisible(true);
 			}
 		});

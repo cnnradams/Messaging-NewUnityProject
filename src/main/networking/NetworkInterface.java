@@ -123,7 +123,7 @@ public interface NetworkInterface {
     
     public boolean setNickname(String nickname);
     
-    public BufferedImage getProfilePicture(User user);
+    public Optional<BufferedImage> getProfilePicture(String username);
     
     public boolean setProfilePicture(BufferedImage image);
     

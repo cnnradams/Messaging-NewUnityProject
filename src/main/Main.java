@@ -1,6 +1,7 @@
 package main;
 
 import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -99,9 +100,11 @@ public class Main {
                 window.loginWindow.setActionText(NetworkInterface.ERROR_MEANINGS.get(network.getLastResultCode()));
                 window.loginWindow.resetLoginInfo();
             }
-            User.setMe(loginInfo.get());
+            else {
+                User.setMe(loginInfo.get());
+            }
+            
         }
-        
         if(network instanceof MockServer) {
             MockServer mockNetwork = (MockServer)network;
             
@@ -141,9 +144,9 @@ public class Main {
             
             mockNetwork.getMessagesResult = NetworkInterface.RESULT_SUCCESS;
             mockNetwork.getMessagesTime = 750;
-            mockNetwork.messages.add(new Message(new User("Stealth", mockNetwork.userMap.get("Stealth")),
+            mockNetwork.messages.add(new Message(new User("Stealth", mockNetwork.userMap.get("Stealth"), null),
                                                  "I am angery!!!1!11", ZonedDateTime.now(ZoneId.ofOffset("UTC", ZoneOffset.UTC)).minusHours(1)));
-            mockNetwork.messages.add(new Message(new User("biscuitseed",  mockNetwork.userMap.get("biscuitseed")),
+            mockNetwork.messages.add(new Message(new User("biscuitseed",  mockNetwork.userMap.get("biscuitseed"), null),
                                                  "Ya dingus", ZonedDateTime.now(ZoneId.ofOffset("UTC", ZoneOffset.UTC)).minusHours(4)));
             
             mockNetwork.sendMessageResult = NetworkInterface.RESULT_SUCCESS;
@@ -195,6 +198,11 @@ public class Main {
                 List<Message> messages = network.getIncomingMessages().orElseThrow(network::makeException);
                 for(Message message : messages) {
                     SwingUtilities.invokeLater(() -> window.messagingWindow.addMessage(message));
+                }
+                
+                BufferedImage icon = window.messagingWindow.getNewIcon();
+                if(icon != null) {
+                    network.setProfilePicture(icon);
                 }
                 
                 SwingUtilities.invokeLater(window.messagingWindow::updateMessages);

@@ -18,15 +18,17 @@ import main.networking.NetworkInterface;
 public class User implements Comparable<User> {
 
     public final String username, nickname;
+    public final BufferedImage image;
     
     public User(String username, NetworkInterface network) throws NoSuchElementException {
-        this(username, getNicknameOrThrowExceptionAnd("Unknown", network.getNickname(username), network));
+        this(username, getNicknameOrThrowExceptionAnd("Unknown", network.getNickname(username), network), network.getProfilePicture(username).orElse(null));
         
     }
     
-    public User(String username, String nickname) {
+    public User(String username, String nickname, BufferedImage image) {
         this.username = username;
         this.nickname = nickname;
+        this.image = image;
     }
  
     private static String getNicknameOrThrowExceptionAnd(String fallbackNickname, Optional<String> nicknameOptional, NetworkInterface network) {

@@ -188,7 +188,13 @@ public class ZeroMQServer implements NetworkInterface {
             }
             catch(NoSuchElementException e) {}
             
-            User user = new User(username, nickname);
+            BufferedImage picture = null;
+            try {
+                picture = getProfilePicture(username).orElse(null);
+            }
+            catch(NoSuchElementException e) {}
+            
+            User user = new User(username, nickname, picture);
             List<Integer> updateValues = new ArrayList<>();
             for(String updateString : userUpdateResponse.response[1].split(",")) {
                 updateValues.add(Integer.parseInt(updateString));
@@ -273,21 +279,21 @@ public class ZeroMQServer implements NetworkInterface {
     }
 
     @Override
-    public BufferedImage getProfilePicture(User user) {
-        ServerResponse getUserPictureResponse = sendRequest(requester, requestToken, REQUEST_USER_PICTURE, user.username);
+    public Optional<BufferedImage> getProfilePicture(String username) {
+        ServerResponse getUserPictureResponse = sendRequest(requester, requestToken, REQUEST_USER_PICTURE, username);
         resultCode = getUserPictureResponse.resultCode;
         
-        if(Boolean.parseBoolean(getUserPictureResponse.response[0])) {
+        if(getUserPictureResponse.response.length > 0 && Boolean.parseBoolean(getUserPictureResponse.response[0])) {
             try {
-                return User.decodeImage(getUserPictureResponse.response[1]);
+                return Optional.of(User.decodeImage(getUserPictureResponse.response[1]));
             } catch (IOException e) {
                 e.initCause(makeException());
                 e.printStackTrace();
-                return null;
+                return Optional.empty();
             }
         }
         else {
-            return null;
+            return Optional.empty();
         }
     }
 
