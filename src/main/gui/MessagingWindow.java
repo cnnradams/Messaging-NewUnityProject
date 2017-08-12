@@ -142,7 +142,7 @@ public class MessagingWindow extends StatePanel {
                     addMessage(message);
                 }
                 sendMessages.reset();
-                sendMessages.requestFocus();
+                sendMessages.grabFocus();
             }
         });
         sendMessageButton.setLayout(null);
@@ -240,7 +240,6 @@ public class MessagingWindow extends StatePanel {
                     	m.setAlignmentX(LEFT_ALIGNMENT);
                     	messagingWindow.add(m,0);
                     	messagingWindow.setAlignmentX(LEFT_ALIGNMENT);
-                    	System.out.println(messagingWindow.getAlignmentX());
                     }
                         
                 }
@@ -274,6 +273,7 @@ public class MessagingWindow extends StatePanel {
             List<Message> allUserMessages = new ArrayList<>();
             
             for(Message m : messages) {
+            	m.reBreak(messagingPane.getWidth());
                 if(!m.chatRoom.isPresent() && m.user.equals(selectedUser.get())) {
                     allUserMessages.add(m);
                     
@@ -485,6 +485,7 @@ public class MessagingWindow extends StatePanel {
 			g.fillRoundRect(3, 3, 197, 47, 10, 10);//paint border
 	}
     public void addMessage(Message message) {
+    	message.reBreak(messagingPane.getWidth());
         messages.add(message);
     }
     
