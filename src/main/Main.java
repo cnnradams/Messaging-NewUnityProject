@@ -12,10 +12,12 @@ import java.net.UnknownHostException;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
 
 import main.data.ChatRoom;
@@ -34,6 +36,21 @@ public class Main {
         window.setVisible(true);
         window.toFront();
         window.setBackground(new Color(60, 60, 60));
+        
+        
+        List<BufferedImage> icons = new ArrayList<>(4);
+        
+        try {
+            icons.add(ImageIO.read(new File("src/resources/icon16.png")));
+            icons.add(ImageIO.read(new File("src/resources/icon32.png")));
+            icons.add(ImageIO.read(new File("src/resources/icon64.png")));
+            icons.add(ImageIO.read(new File("src/resources/icon128.png")));
+        }
+        catch(IOException e) {
+            e.printStackTrace();
+        }
+        
+        window.setIconImages(icons);
         
         InetAddress address = null;
         

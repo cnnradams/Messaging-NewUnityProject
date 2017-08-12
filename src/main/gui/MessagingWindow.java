@@ -142,7 +142,7 @@ public class MessagingWindow extends StatePanel {
                     addMessage(message);
                 }
                 sendMessages.reset();
-                sendMessages.grabFocus();
+                this.requestFocus();
             }
         });
         sendMessageButton.setLayout(null);
@@ -209,11 +209,6 @@ public class MessagingWindow extends StatePanel {
     @Override
     public String getTitle() {
         return "jmessage - Messaging | Property of NewUnityProject Team!";
-    }
-
-    @Override
-    public Image getImage() {
-        return null;
     }
 
     @Override

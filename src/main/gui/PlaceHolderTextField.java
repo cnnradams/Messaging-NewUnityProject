@@ -47,6 +47,15 @@ public class PlaceHolderTextField extends JTextField {
         return unfocusedColor;
     }
     
+    @Override
+    public void grabFocus() {
+       super.grabFocus();
+       if (getText().equals(text) && getForeground() == unfocusedColor) {
+           setText("");
+           setForeground(focusedColor);
+       }
+    }
+    
     class PlaceHolderFocusListener implements FocusListener {
 
         public final PlaceHolderTextField text;
