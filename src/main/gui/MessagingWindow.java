@@ -4,11 +4,15 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.FileDialog;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -18,14 +22,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
-import javax.swing.border.Border;
 
 import main.data.ChatRoom;
 import main.data.Message;
@@ -464,5 +469,32 @@ public class MessagingWindow extends StatePanel {
     
     public void updateComponents() {
         SwingUtilities.updateComponentTreeUI(tabPanel);
+    }
+    
+    public BufferedImage getImageFromFileSystem() {
+        JFrame fileFrame = new JFrame();
+        fileFrame.setSize(0, 0);
+        FileDialog fileDialog = new FileDialog(fileFrame, "Choose a profile picture", FileDialog.LOAD);
+        String fileTypes = "";
+        for(String reader : ImageIO.getReaderFileSuffixes()) {
+            fileTypes += "*." + reader + ";";
+        }
+        fileTypes = fileTypes.substring(0, fileTypes.length() - 1);
+        
+        fileDialog.setFile(fileTypes);
+        fileDialog.setVisible(true);
+        
+        
+        String imageFilename = fileDialog.getFile();
+        if(imageFilename != null) {
+            try {
+                return ImageIO.read(new File(fileDialog.getDirectory(), imageFilename));
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        
+        return null;
     }
 }

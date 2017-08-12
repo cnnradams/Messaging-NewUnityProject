@@ -1,5 +1,6 @@
 package main.networking;
 
+import java.awt.image.BufferedImage;
 import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -389,5 +390,24 @@ public class MockServer implements NetworkInterface {
     @Override
     public void keepAlive() {
         System.out.println("[Mock] Not dead!");
+    }
+    
+
+    @Override
+    public boolean setNickname(String nickname) {
+        System.out.println("[Mock] Nickname \"changed\"");
+        return true;
+    }
+
+    @Override
+    public BufferedImage getProfilePicture(User user) {
+        System.out.println("[Mock] Getting profile picture for user");
+        return null;
+    }
+
+    @Override
+    public boolean setProfilePicture(BufferedImage image) {
+        System.out.println("[Mock] \"Setting\" profile picture");
+        return true;
     }
 }

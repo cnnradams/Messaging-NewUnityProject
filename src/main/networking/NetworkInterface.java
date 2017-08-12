@@ -1,5 +1,6 @@
 package main.networking;
 
+import java.awt.image.BufferedImage;
 import java.net.ConnectException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -53,6 +54,14 @@ public interface NetworkInterface {
     // () -> void
     public static final int REQUEST_KEEP_ALIVE = 12;
     
+    // String nickname -> void
+    public static final int REQUEST_SET_NICKNAME = 13;
+    
+    // String username -> imagedatastream
+    public static final int REQUEST_USER_PICTURE = 14;
+    
+    // String imagedatastream -> void
+    public static final int REQUEST_SET_USER_PICTURE = 15;
     
     public static final int RESULT_SUCCESS = 0;
     public static final int RESULT_COULD_NOT_CONNECT = -1;
@@ -66,6 +75,7 @@ public interface NetworkInterface {
     public static final int CHANGE_CONNECTED = 1;
     public static final int CHANGE_DISCONNECTED = 2;
     public static final int CHANGE_CHANGED_NICKNAME = 3;
+    public static final int CHANGE_CHANGED_PICTURE = 4;
     
     public static final Map<Integer, String> ERROR_MEANINGS = initErrorCodeMap();
     
@@ -76,13 +86,13 @@ public interface NetworkInterface {
         
         HashMap<Integer, String> decodings = new HashMap<>(5);
         decodings.put(RESULT_SUCCESS,              "Operation was successful");
-        decodings.put(RESULT_COULD_NOT_CONNECT,    "Unable to connect!");
-        decodings.put(RESULT_USERNAME_TAKEN,       "Username taken!");
-        decodings.put(RESULT_UNKNOWN_USERNAME,     "Unknown username!");
-        decodings.put(RESULT_NOT_LOGGED_IN,        "Username undefinied.");
-        decodings.put(RESULT_ALREADY_LOGGED_IN,    "You are already logged in!");
-        decodings.put(RESULT_UNKNOWN_CHAT,         "This chat is missing!");
-        decodings.put(RESULT_BAD_REQUEST,          "Bad request!");
+        decodings.put(RESULT_COULD_NOT_CONNECT,    "Unable to connect");
+        decodings.put(RESULT_USERNAME_TAKEN,       "Username taken");
+        decodings.put(RESULT_UNKNOWN_USERNAME,     "Unknown username");
+        decodings.put(RESULT_NOT_LOGGED_IN,        "No user logged into server");
+        decodings.put(RESULT_ALREADY_LOGGED_IN,    "You are already logged in");
+        decodings.put(RESULT_UNKNOWN_CHAT,         "This chat is missing");
+        decodings.put(RESULT_BAD_REQUEST,          "Bad request");
         
         return Collections.unmodifiableMap(decodings);
     }
@@ -110,6 +120,12 @@ public interface NetworkInterface {
     public Optional<List<Message>> getIncomingMessages();
     
     public boolean sendMessage(Message message);
+    
+    public boolean setNickname(String nickname);
+    
+    public BufferedImage getProfilePicture(User user);
+    
+    public boolean setProfilePicture(BufferedImage image);
     
     public boolean logout();
     

@@ -152,7 +152,8 @@ public class LoginWindow extends StatePanel {
 			}
 		});
 	}
-	private void setResizable(boolean b) {
+	@SuppressWarnings("unused")
+    private void setResizable(boolean b) {
 		// TODO Auto-generated method stub
 		
 	}
