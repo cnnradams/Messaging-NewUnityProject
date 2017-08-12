@@ -1,11 +1,14 @@
 package main.gui;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -144,7 +147,6 @@ public class MessagingWindow extends StatePanel {
         	tabPanel = new JTabbedPane();
         	tabPanel.addTab("Groups", chatScrollPane);
         	tabPanel.addTab("Users", userScrollPane);
-        	tabPanel.setBounds(0, 75, 200, getHeight() - 75);
         this.add(tabPanel);
         sendMessages.setVisible(false);
         sendMessageButton.setVisible(false);
@@ -386,7 +388,7 @@ public class MessagingWindow extends StatePanel {
     	 JPanel userButton = new JPanel();
          userButton.setLayout(null);
          userButton.setMaximumSize(new Dimension(2000, 50));
-         userButton.setBackground(new Color(90,90,90));
+         userButton.setOpaque(false);
          BufferedImage bufferedImage = null;
          try {
          	bufferedImage = ImageIO.read(new File("src/resources/server-icon.png"));
@@ -411,6 +413,13 @@ public class MessagingWindow extends StatePanel {
          
          return userButton;
     }
+    @Override
+	public void paintComponent(Graphics g) {
+			super.paintComponent(g);
+			g.setColor(new Color(78,78,78));
+			((Graphics2D) g).setStroke(new BasicStroke(2));
+			g.fillRoundRect(3, 3, 197, 47, 10, 10);//paint border
+	}
     public void addMessage(Message message) {
         messages.add(message);
     }
