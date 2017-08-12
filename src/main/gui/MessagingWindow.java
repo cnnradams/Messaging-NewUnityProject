@@ -166,7 +166,6 @@ public class MessagingWindow extends StatePanel {
 		tabPanel.setForeground(Color.WHITE);
 		sendMessages.setBorder(BorderFactory.createMatteBorder(0,0,0,0, new Color(105,105,105)));
 		sendMessageButton.setBorderPainted(false);
-		sendMessages.setFocusedColor(Color.WHITE);
 		sendMessageButton.setForeground(Color.WHITE);
         this.addComponentListener(new ComponentListener() {
 
