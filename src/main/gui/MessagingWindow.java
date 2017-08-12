@@ -3,6 +3,7 @@ package main.gui;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.ComponentOrientation;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -110,6 +111,7 @@ public class MessagingWindow extends StatePanel {
         messagingPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         messagingWindow.setLayout(new BoxLayout(messagingWindow, BoxLayout.Y_AXIS));
         messagingPane.setViewportView(messagingWindow);
+        messagingPane.setAlignmentY(BOTTOM_ALIGNMENT);
         messagingPane.setPreferredSize(new Dimension(300, 300));
         messagingPane.setVisible(false);
         messagingPane.setBounds(200, 0, getWidth() - 210, getHeight() - 10 - 100);
@@ -224,8 +226,13 @@ public class MessagingWindow extends StatePanel {
                         }
                     }
                     
-                    if(!added)
-                        messagingWindow.add(m);
+                    if(!added) {
+                    	m.setAlignmentX(LEFT_ALIGNMENT);
+                    	messagingWindow.add(m,0);
+                    	messagingWindow.setAlignmentX(LEFT_ALIGNMENT);
+                    	System.out.println(messagingWindow.getAlignmentX());
+                    }
+                        
                 }
             }
             

@@ -1,5 +1,6 @@
 package main.data;
 
+import java.awt.Dimension;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -7,6 +8,7 @@ import java.util.Optional;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 public class Message extends JPanel {
     
@@ -50,12 +52,14 @@ public class Message extends JPanel {
             userLabel.setText(user.username + " (" + user.nickname + ")");
         }
         JLabel messageLabel = new JLabel(message);
-        JLabel dateTimeLabel = new JLabel(dateTime.withZoneSameInstant(ZoneId.systemDefault()).format(DateTimeFormatter.ISO_DATE_TIME));
         
+       
+        JLabel dateTimeLabel = new JLabel(dateTime.withZoneSameInstant(ZoneId.systemDefault()).format(DateTimeFormatter.ISO_DATE_TIME));
+        this.setMaximumSize(new Dimension(2000,20));
+        this.setMinimumSize(new Dimension(2000,20));
         userLabel.setVisible(true);
         messageLabel.setVisible(true);
         dateTimeLabel.setVisible(true);
-        
         this.add(userLabel);
         this.add(messageLabel);
         this.add(dateTimeLabel);
