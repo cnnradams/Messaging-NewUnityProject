@@ -79,7 +79,7 @@ public interface NetworkInterface {
         decodings.put(RESULT_COULD_NOT_CONNECT,    "Unable to connect!");
         decodings.put(RESULT_USERNAME_TAKEN,       "Username taken!");
         decodings.put(RESULT_UNKNOWN_USERNAME,     "Unknown username!");
-        decodings.put(RESULT_NOT_LOGGED_IN,        "Username undefinied.");
+        decodings.put(RESULT_NOT_LOGGED_IN,        "Username undefined.");
         decodings.put(RESULT_ALREADY_LOGGED_IN,    "You are already logged in!");
         decodings.put(RESULT_UNKNOWN_CHAT,         "This chat is missing!");
         decodings.put(RESULT_BAD_REQUEST,          "Bad request!");
