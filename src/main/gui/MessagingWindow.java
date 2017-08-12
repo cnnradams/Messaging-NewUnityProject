@@ -51,6 +51,8 @@ public class MessagingWindow extends StatePanel {
     private final PlaceHolderTextField sendMessages;
     private final JButton sendMessageButton;
     
+    private final JTabbedPane tabPanel;
+    
     private final List<Message> messageQueue;
     
     public MessagingWindow() {
@@ -81,7 +83,7 @@ public class MessagingWindow extends StatePanel {
         messagingPane.setViewportView(messagingWindow);
         messagingPane.setPreferredSize(new Dimension(300, 300));
         messagingPane.setVisible(false);
-        messagingPane.setBounds(200, 0, getWidth() - 210, getHeight() - 10);
+        messagingPane.setBounds(200, 0, getWidth() - 210, getHeight() - 10 - 100);
         
         messageQueue = new ArrayList<>();
         
@@ -114,13 +116,13 @@ public class MessagingWindow extends StatePanel {
         chatScrollPane.setBounds(0, 0, 200, getHeight());
         userScrollPane.setBounds(0, 0, 200, getHeight());
         	tab1.add(chatScrollPane);
-        	JTabbedPane tabPanel = new JTabbedPane();
+        	tabPanel = new JTabbedPane();
         	tabPanel.addTab("Groups", chatScrollPane);
     tabPanel.addTab("Users", userScrollPane);
     tabPanel.setBounds(0, 25, 200, getHeight() - 25);
         this.add(tabPanel);
-        messagingPane.add(sendMessages);
-        messagingPane.add(sendMessageButton);
+        this.add(sendMessages);
+        this.add(sendMessageButton);
        // this.add(userScrollPane);
         //this.add(chatScrollPane);
         this.add(messagingPane);
@@ -141,9 +143,9 @@ public class MessagingWindow extends StatePanel {
 			public void componentResized(ComponentEvent e) {
 				// TODO Auto-generated method stub
 				tabPanel.setBounds(0, 25, 200, getHeight() - 25);
-				messagingPane.setBounds(200, 0, getWidth() - 210, getHeight() - 10);
-				sendMessageButton.setBounds(400, 300, 100, 100);
-				sendMessages.setBounds(300, 300, 100, 100);
+				messagingPane.setBounds(200, 0, getWidth() - 210, getHeight() - 100 - 10);
+				sendMessageButton.setBounds(400, getHeight() - 100 - 10, 100, 90);
+				sendMessages.setBounds(300, getHeight() - 100 - 10, 100, 90);
 			}
 
 			@Override
@@ -428,5 +430,27 @@ public class MessagingWindow extends StatePanel {
     
     public void emptyQueuedMessages() {
         while(messageQueue.size() != 0) messageQueue.remove(0);
+    }
+    
+    public void setSendMessagesOnTop() {
+        boolean wasFocused = sendMessages.hasFocus();
+        boolean textWasVisible = sendMessages.isVisible();
+        boolean buttonWasVisible = sendMessageButton.isVisible();
+        
+        
+        this.remove(sendMessages);
+        this.add(sendMessages);
+        this.remove(sendMessageButton);
+        this.add(sendMessageButton);
+        
+        if(wasFocused) {
+            sendMessages.requestFocus();
+        }
+        sendMessages.setVisible(textWasVisible);
+        sendMessageButton.setVisible(buttonWasVisible);
+    }
+    
+    public void updateComponents() {
+        SwingUtilities.updateComponentTreeUI(tabPanel);
     }
 }

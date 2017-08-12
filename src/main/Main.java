@@ -198,8 +198,9 @@ public class Main {
                 
                 SwingUtilities.invokeLater(window.messagingWindow::updateMessages);
                 
-                SwingUtilities.invokeLater(() -> SwingUtilities.updateComponentTreeUI(window.messagingWindow));
-                Thread.sleep(1000);
+                SwingUtilities.invokeLater(window.messagingWindow::updateComponents);
+                
+                Thread.sleep(250);
             } catch (ConnectException | InterruptedException e) {
                 e.printStackTrace();
             }
