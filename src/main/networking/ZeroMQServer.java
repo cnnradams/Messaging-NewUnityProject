@@ -272,7 +272,7 @@ public class ZeroMQServer implements NetworkInterface {
 
     @Override
     public boolean setNickname(String nickname) {
-        ServerResponse setNicknameResponse = sendRequest(requester, requestToken, REQUEST_SET_NICKNAME);
+        ServerResponse setNicknameResponse = sendRequest(requester, requestToken, REQUEST_SET_NICKNAME, nickname);
         resultCode = setNicknameResponse.resultCode;
         
         return resultCode == RESULT_SUCCESS;

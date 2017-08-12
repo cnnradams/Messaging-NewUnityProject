@@ -205,6 +205,11 @@ public class Main {
                     network.setProfilePicture(icon);
                 }
                 
+                String nickname = window.messagingWindow.getNewNickname();
+                if(nickname != null) {
+                    network.setNickname(nickname);
+                }
+                
                 SwingUtilities.invokeLater(window.messagingWindow::updateMessages);
                 
                 SwingUtilities.invokeLater(window.messagingWindow::updateComponents);

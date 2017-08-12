@@ -19,6 +19,7 @@ import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -74,6 +75,8 @@ public class MessagingWindow extends StatePanel {
     
     private final List<Message> messageQueue;
     private BufferedImage userIcon;
+    
+    String nickname = null;
     
     public MessagingWindow() {
     	
@@ -341,7 +344,7 @@ public class MessagingWindow extends StatePanel {
                 onlineUsers.remove(user);
                 userListPanel.remove(getUserButtonByUser(user).orElse(null));
                 userButtons.remove(getUserButtonByUser(user).orElse(null));
-                onlineUsers.add(new User(user.username, network));
+                SwingUtilities.invokeLater(() -> onlineUsers.add(new User(user.username, network)));
                 userButton = createButtonForUser(user);
                 userListPanel.add(userButton);
                 userButtons.add(userButton);
@@ -352,7 +355,7 @@ public class MessagingWindow extends StatePanel {
                 onlineUsers.remove(user);
                 userListPanel.remove(getUserButtonByUser(user).orElse(null));
                 userButtons.remove(getUserButtonByUser(user).orElse(null));
-                onlineUsers.add(new User(user.username, network));
+                SwingUtilities.invokeLater(() -> onlineUsers.add(new User(user.username, network)));
                 userButton = createButtonForUser(user);
                 userListPanel.add(userButton);
                 userButtons.add(userButton);
@@ -448,6 +451,16 @@ public class MessagingWindow extends StatePanel {
          nickname.setFont(font);
          nickname.setForeground(new Color(160,160,160));
          nickname.setBounds(50,15,140,20);
+         nickname.addActionListener((e) -> {
+             if(e.getActionCommand().isEmpty()) {
+                 nickname.setText(user.nickname);
+                 this.requestFocus();
+             }
+             else {
+                 this.nickname = e.getActionCommand();
+                 this.requestFocus();
+             }
+         });
          userButton.add(button);
          userButton.add(nickname);
          
@@ -500,7 +513,6 @@ public class MessagingWindow extends StatePanel {
     }
     
     public void showMessages(User user) {
-        System.out.println("Showing messages for " + user.username + " (" + user.nickname + ")");
         selectedChat = Optional.empty();
         selectedUser = Optional.of(user);
         sendMessages.setVisible(true);
@@ -633,5 +645,11 @@ public class MessagingWindow extends StatePanel {
         BufferedImage returnImage = userIcon;
         userIcon = null;
         return returnImage;
+    }
+    
+    public String getNewNickname() {
+        String returnString = nickname;
+        nickname = null;
+        return returnString;
     }
 }
