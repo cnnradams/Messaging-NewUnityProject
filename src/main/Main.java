@@ -172,6 +172,7 @@ public class Main {
         SwingUtilities.invokeLater(() -> window.setStatePanel(window.messagingWindow));
         
         while(window.isShowing()) {
+        	window.setResizable(true);
             try {
                 for(Message m : window.messagingWindow.getQueuedMessages()) {
                     network.sendMessage(m);

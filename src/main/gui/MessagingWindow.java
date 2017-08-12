@@ -1,5 +1,6 @@
 package main.gui;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -17,12 +18,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
+import javax.swing.border.Border;
 
 import main.data.ChatRoom;
 import main.data.Message;
@@ -54,10 +57,11 @@ public class MessagingWindow extends StatePanel {
     private final JTabbedPane tabPanel;
     
     private final List<Message> messageQueue;
-    
+
     public MessagingWindow() {
     	this.setLayout(null);
     	this.setSize(800, 439);
+    	this.setBackground(new Color(60, 60, 60));
         JScrollPane userScrollPane = new JScrollPane();
         userScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         userScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -90,7 +94,6 @@ public class MessagingWindow extends StatePanel {
         sendMessages = new PlaceHolderTextField("Type a message here");
         sendMessages.setVisible(true);
         sendMessages.setLayout(null);
-        sendMessages.setBounds(300, 300, 100, 100);
         sendMessageButton = new JButton("Send");
         sendMessageButton.setVisible(true);
         sendMessageButton.addActionListener(e -> {
@@ -110,7 +113,6 @@ public class MessagingWindow extends StatePanel {
             }
         });
         sendMessageButton.setLayout(null);
-        sendMessageButton.setBounds(400, 300, 100, 100);
         JPanel tab1 = new JPanel();
         tab1.setLayout(null);
         chatScrollPane.setBounds(0, 0, 200, getHeight());
@@ -118,8 +120,8 @@ public class MessagingWindow extends StatePanel {
         	tab1.add(chatScrollPane);
         	tabPanel = new JTabbedPane();
         	tabPanel.addTab("Groups", chatScrollPane);
-    tabPanel.addTab("Users", userScrollPane);
-    tabPanel.setBounds(0, 25, 200, getHeight() - 25);
+        	tabPanel.addTab("Users", userScrollPane);
+        	tabPanel.setBounds(0, 25, 200, getHeight() - 25);
         this.add(tabPanel);
         this.add(sendMessages);
         this.add(sendMessageButton);
@@ -143,9 +145,17 @@ public class MessagingWindow extends StatePanel {
 			public void componentResized(ComponentEvent e) {
 				// TODO Auto-generated method stub
 				tabPanel.setBounds(0, 25, 200, getHeight() - 25);
-				messagingPane.setBounds(200, 0, getWidth() - 210, getHeight() - 100 - 10);
-				sendMessageButton.setBounds(400, getHeight() - 100 - 10, 100, 90);
-				sendMessages.setBounds(300, getHeight() - 100 - 10, 100, 90);
+				messagingPane.setBounds(200, 0, getWidth() - 200, getHeight() - 20);
+				sendMessageButton.setBounds(getWidth() - 80, getHeight() - 20, 80, 20);
+				sendMessages.setBounds(200, getHeight() - 20, getWidth() - 280, 20);
+				messagingPane.setBackground(new Color(60, 60, 60));
+				sendMessages.setBackground(new Color(78, 78, 78));
+				sendMessageButton.setBackground(new Color(78, 78, 78));
+				sendMessages.setBorder(BorderFactory.createMatteBorder(0,0,0,0, new Color(105,105,105)));
+				sendMessageButton.setBorderPainted(false);
+				sendMessages.setFocusedColor(Color.WHITE);
+				sendMessageButton.setForeground(Color.WHITE);
+				
 			}
 
 			@Override
