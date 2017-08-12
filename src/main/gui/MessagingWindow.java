@@ -307,17 +307,23 @@ public class MessagingWindow extends StatePanel {
     public void updateUser(User user, int state, NetworkInterface network) {
         switch(state) {
             case NetworkInterface.CHANGE_CONNECTED:
+            	if(user.username.equals(User.getMe().username))
+            		break;
                 onlineUsers.add(user);
                 JButton userButton = createButtonForUser(user);
                 userListPanel.add(userButton);
                 userButtons.add(userButton);
             break;
             case NetworkInterface.CHANGE_DISCONNECTED:
+            	if(user.username.equals(User.getMe().username))
+            		break;
                 onlineUsers.remove(user);
                 userListPanel.remove(getUserButtonByUser(user).orElse(null));
                 userButtons.remove(getUserButtonByUser(user).orElse(null));
             break;
             case NetworkInterface.CHANGE_CHANGED_NICKNAME:
+            	if(user.username.equals(User.getMe().username))
+            		break;
                 onlineUsers.remove(user);
                 userListPanel.remove(getUserButtonByUser(user).orElse(null));
                 userButtons.remove(getUserButtonByUser(user).orElse(null));
@@ -377,6 +383,8 @@ public class MessagingWindow extends StatePanel {
         onlineUsers = users;
         
         for(User user : onlineUsers) {
+        	if(user.username.equals(User.getMe().username))
+        		continue;
             JButton userButton = createButtonForUser(user);
             userListPanel.add(userButton);
             userButtons.add(userButton);
