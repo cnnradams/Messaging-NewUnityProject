@@ -8,7 +8,6 @@ import java.util.Optional;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 
 public class Message extends JPanel {
     
