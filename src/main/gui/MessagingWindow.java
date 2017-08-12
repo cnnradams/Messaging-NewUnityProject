@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.FileDialog;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Graphics;
@@ -32,6 +33,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -581,5 +583,32 @@ public class MessagingWindow extends StatePanel {
     
     public void updateComponents() {
         SwingUtilities.updateComponentTreeUI(tabPanel);
+    }
+    
+    public BufferedImage getImageFromFileSystem() {
+        JFrame fileFrame = new JFrame();
+        fileFrame.setSize(0, 0);
+        FileDialog fileDialog = new FileDialog(fileFrame, "Choose a profile picture", FileDialog.LOAD);
+        String fileTypes = "";
+        for(String reader : ImageIO.getReaderFileSuffixes()) {
+            fileTypes += "*." + reader + ";";
+        }
+        fileTypes = fileTypes.substring(0, fileTypes.length() - 1);
+        
+        fileDialog.setFile(fileTypes);
+        fileDialog.setVisible(true);
+        
+        
+        String imageFilename = fileDialog.getFile();
+        if(imageFilename != null) {
+            try {
+                return ImageIO.read(new File(fileDialog.getDirectory(), imageFilename));
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        
+        return null;
     }
 }

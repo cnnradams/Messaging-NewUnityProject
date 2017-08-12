@@ -1,5 +1,7 @@
 package main.networking;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -254,10 +256,63 @@ public class ZeroMQServer implements NetworkInterface {
     @Override
     public void keepAlive() {
         sendRequest(requester, requestToken, REQUEST_KEEP_ALIVE);
+        
     }
     
     public void disconnect() {
         requester.close();
         context.term();
+    }
+
+    @Override
+    public boolean setNickname(String nickname) {
+        ServerResponse setNicknameResponse = sendRequest(requester, requestToken, REQUEST_SET_NICKNAME);
+        resultCode = setNicknameResponse.resultCode;
+        
+        return resultCode == RESULT_SUCCESS;
+    }
+
+    @Override
+    public BufferedImage getProfilePicture(User user) {
+        ServerResponse getUserPictureResponse = sendRequest(requester, requestToken, REQUEST_USER_PICTURE, user.username);
+        resultCode = getUserPictureResponse.resultCode;
+        
+        if(Boolean.parseBoolean(getUserPictureResponse.response[0])) {
+            try {
+                return User.decodeImage(getUserPictureResponse.response[1]);
+            } catch (IOException e) {
+                e.initCause(makeException());
+                e.printStackTrace();
+                return null;
+            }
+        }
+        else {
+            return null;
+        }
+    }
+
+    @Override
+    public boolean setProfilePicture(BufferedImage image) {
+        if(image == null) {
+            ServerResponse setProfilePictureResponse = sendRequest(requester, requestToken, REQUEST_SET_USER_PICTURE, String.valueOf(false));
+            resultCode = setProfilePictureResponse.resultCode;
+            
+            return resultCode == RESULT_SUCCESS;
+        }
+        else {
+            String imageString = null;
+            
+            try {
+                imageString = User.encodeToString(image);
+            }
+            catch(IOException e) {
+                e.printStackTrace();
+            }
+            
+            ServerResponse setProfilePictureResponse = sendRequest(requester, requestToken, REQUEST_SET_USER_PICTURE, String.valueOf(true), imageString);
+            resultCode = setProfilePictureResponse.resultCode;
+            
+            return resultCode == RESULT_SUCCESS;
+        }
     }
 }
