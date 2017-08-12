@@ -435,8 +435,10 @@ public class MessagingWindow extends StatePanel {
              @Override
              public void actionPerformed(ActionEvent e) {
                  BufferedImage bufferedImage = getImageFromFileSystem();
-                 Image newimg = bufferedImage.getScaledInstance(30, 30,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
-                 button.setIcon(new ImageIcon(newimg));
+                 if(bufferedImage != null) {
+                     Image newimg = bufferedImage.getScaledInstance(30, 30,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+                     button.setIcon(new ImageIcon(newimg));
+                 }
                  userIcon = bufferedImage;
              }
          });
