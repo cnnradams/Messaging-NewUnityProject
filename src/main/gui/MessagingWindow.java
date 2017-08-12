@@ -217,8 +217,8 @@ public class MessagingWindow extends StatePanel {
     
     public void updateMessages() {
         if(selectedChat.isPresent()) {
+        	 messagingWindow.removeAll();
             List<Message> allChatMessages = new ArrayList<>();
-            
             for(Message m : messages) {
                 if(m.chatRoom.isPresent() && m.chatRoom.get().equals(selectedChat.get())) {
                     allChatMessages.add(m);
@@ -264,7 +264,7 @@ public class MessagingWindow extends StatePanel {
             };
         }
         else if(selectedUser.isPresent()) {
-            
+        	messagingWindow.removeAll();
             List<Message> allUserMessages = new ArrayList<>();
             
             for(Message m : messages) {
