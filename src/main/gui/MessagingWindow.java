@@ -212,11 +212,6 @@ public class MessagingWindow extends StatePanel {
     }
 
     @Override
-    public Image getImage() {
-        return null;
-    }
-
-    @Override
     public JButton getSubmitButton() {
         return sendMessageButton;
     }

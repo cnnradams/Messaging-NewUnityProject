@@ -224,11 +224,6 @@ public class LoginWindow extends StatePanel {
 	}
 
 	@Override
-	public Image getImage() {
-		return null;
-	}
-
-	@Override
 	public JButton getSubmitButton() {
 		return submit;
 	}
