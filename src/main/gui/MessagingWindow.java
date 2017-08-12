@@ -53,7 +53,7 @@ public class MessagingWindow extends StatePanel {
     
     private List<JButton> chatButtons = new ArrayList<>();
     private final JPanel chatListPanel = new JPanel();
-
+    private JPanel myUserPanel = new JPanel();
     private final JScrollPane messagingPane;
     private final JPanel messagingWindow;
     private Optional<User> selectedUser = Optional.empty();
@@ -113,6 +113,7 @@ public class MessagingWindow extends StatePanel {
         
         messageQueue = new ArrayList<>();
         
+     
         sendMessages = new PlaceHolderTextField("Type a message here");
         sendMessages.setVisible(true);
         sendMessages.setLayout(null);
@@ -143,7 +144,7 @@ public class MessagingWindow extends StatePanel {
         	tabPanel = new JTabbedPane();
         	tabPanel.addTab("Groups", chatScrollPane);
         	tabPanel.addTab("Users", userScrollPane);
-        	tabPanel.setBounds(0, 25, 200, getHeight() - 25);
+        	tabPanel.setBounds(0, 75, 200, getHeight() - 75);
         this.add(tabPanel);
         sendMessages.setVisible(false);
         sendMessageButton.setVisible(false);
@@ -168,7 +169,7 @@ public class MessagingWindow extends StatePanel {
 			@Override
 			public void componentResized(ComponentEvent e) {
 				// TODO Auto-generated method stub
-				tabPanel.setBounds(0, 25, 200, getHeight() - 25);
+				tabPanel.setBounds(0, 75, 200, getHeight() - 75);
 				messagingPane.setBounds(200, 0, getWidth() - 200, getHeight() - 20);
 				sendMessageButton.setBounds(getWidth() - 80, getHeight() - 20, 80, 20);
 				sendMessages.setBounds(200, getHeight() - 20, getWidth() - 280, 20);
@@ -366,6 +367,11 @@ public class MessagingWindow extends StatePanel {
     }
     
     public void initializeUserSet(Set<User> users) {
+    	   myUserPanel = createUserProfile();
+    	   myUserPanel.setLayout(null);
+           
+       	myUserPanel.setBounds(0, 0, 200, 50);
+           this.add(myUserPanel);
         onlineUsers = users;
         
         for(User user : onlineUsers) {
@@ -375,6 +381,36 @@ public class MessagingWindow extends StatePanel {
         }
     }
     
+    public JPanel createUserProfile() {
+    	 User user = User.getMe();
+    	 JPanel userButton = new JPanel();
+         userButton.setLayout(null);
+         userButton.setMaximumSize(new Dimension(2000, 50));
+         userButton.setBackground(new Color(90,90,90));
+         BufferedImage bufferedImage = null;
+         try {
+         	bufferedImage = ImageIO.read(new File("src/resources/server-icon.png"));
+ 		} catch (IOException e) {
+ 			// TODO Auto-generated catch block
+ 			e.printStackTrace();
+ 		}
+         ImageIcon imageIcon = new ImageIcon(bufferedImage);
+         Image image = imageIcon.getImage(); // transform it 
+         Image newimg = image.getScaledInstance(30, 30,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+         imageIcon = new ImageIcon(newimg);  // transform it back
+         JLabel profilePic = new JLabel(imageIcon);
+         profilePic.setBounds(10, 10, 30, 30);
+         JLabel nickname = new JLabel(user.nickname);
+         nickname.setFont(font);
+         nickname.setForeground(new Color(160,160,160));
+         nickname.setBounds(50,15,140,20);
+         nickname.setAlignmentY(CENTER_ALIGNMENT);
+         
+         userButton.add(profilePic);
+         userButton.add(nickname);
+         
+         return userButton;
+    }
     public void addMessage(Message message) {
         messages.add(message);
     }
