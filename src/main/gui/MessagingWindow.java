@@ -3,7 +3,6 @@ package main.gui;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.ComponentOrientation;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -420,15 +419,22 @@ public class MessagingWindow extends StatePanel {
          Image image = imageIcon.getImage(); // transform it 
          Image newimg = image.getScaledInstance(30, 30,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
          imageIcon = new ImageIcon(newimg);  // transform it back
-         JLabel profilePic = new JLabel(imageIcon);
-         profilePic.setBounds(10, 10, 30, 30);
+         JButton button = new JButton();
+         button.setIcon(imageIcon);
+         button.setBounds(10, 10, 30, 30);
+         button.addActionListener(new ActionListener() {
+             @Override
+             public void actionPerformed(ActionEvent e) {
+                //INSERT RYAN HERE
+             }
+         });
          JLabel nickname = new JLabel(user.nickname);
          nickname.setFont(font);
          nickname.setForeground(new Color(160,160,160));
          nickname.setBounds(50,15,140,20);
          nickname.setAlignmentY(CENTER_ALIGNMENT);
          
-         userButton.add(profilePic);
+         userButton.add(button);
          userButton.add(nickname);
          
          return userButton;
