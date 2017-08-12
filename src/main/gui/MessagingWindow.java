@@ -1,13 +1,20 @@
 package main.gui;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontFormatException;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -17,8 +24,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -52,8 +62,21 @@ public class MessagingWindow extends StatePanel {
     private final JButton sendMessageButton;
     
     private final List<Message> messageQueue;
-    
+    Font font = null;
     public MessagingWindow() {
+    	
+    	
+		try {
+			font = Font.createFont(Font.TRUETYPE_FONT, getClass().getResource("/resources/font/RobotoMono-Medium.ttf").openStream());
+		} catch (FontFormatException | IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}   
+
+		GraphicsEnvironment genv = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		genv.registerFont(font);
+		font = font.deriveFont(15f);
+		
     	this.setLayout(null);
     	this.setSize(800, 439);
         JScrollPane userScrollPane = new JScrollPane();
@@ -344,8 +367,33 @@ public class MessagingWindow extends StatePanel {
     }
     
     public JButton createButtonForUser(User user) {
-        JButton userButton = new JButton(user.username + " (" + user.nickname + ")");
+        JButton userButton = new JButton();
+        userButton.setLayout(null);
         userButton.addActionListener(new UserButtonPress(user));
+        userButton.setMaximumSize(new Dimension(2000, 50));
+        userButton.setBackground(new Color(60,60,60));
+        BufferedImage bufferedImage = null;
+        try {
+        	bufferedImage = ImageIO.read(new File("src/resources/server-icon.png"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        ImageIcon imageIcon = new ImageIcon(bufferedImage);
+        Image image = imageIcon.getImage(); // transform it 
+        Image newimg = image.getScaledInstance(30, 30,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+        imageIcon = new ImageIcon(newimg);  // transform it back
+        
+        JLabel profilePic = new JLabel(imageIcon);
+        profilePic.setBounds(10, 10, 30, 30);
+        JLabel nickname = new JLabel(user.nickname);
+        nickname.setFont(font);
+        nickname.setForeground(new Color(160,160,160));
+        nickname.setBounds(50,15,140,20);
+        nickname.setAlignmentY(CENTER_ALIGNMENT);
+        
+        userButton.add(profilePic);
+        userButton.add(nickname);
         return userButton;
     }
     
