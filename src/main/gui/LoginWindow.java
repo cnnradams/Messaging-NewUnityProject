@@ -50,7 +50,6 @@ public class LoginWindow extends StatePanel {
 		genv.registerFont(font);
 		font = font.deriveFont(15f);
 		this.setLayout(null);
-		this.setResizable(false);
 		this.setSize(800, 439);
 		logoStartup = Toolkit.getDefaultToolkit().createImage("src/resources/logo.gif");
 		logoDone = Toolkit.getDefaultToolkit().createImage("src/resources/logodone.gif");
