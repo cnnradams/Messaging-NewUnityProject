@@ -38,6 +38,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import main.data.ChatRoom;
@@ -402,7 +403,6 @@ public class MessagingWindow extends StatePanel {
             userButtons.add(userButton);
         }
     }
-    
     public JPanel createUserProfile() {
     	 User user = User.getMe();
     	 JPanel userButton = new JPanel();
@@ -429,12 +429,12 @@ public class MessagingWindow extends StatePanel {
                 //INSERT RYAN HERE
              }
          });
-         JLabel nickname = new JLabel(user.nickname);
+         JTextField nickname = new JTextField(user.nickname);
+         nickname.setBackground(new Color(78,78,78));
+         nickname.setBorder(BorderFactory.createMatteBorder(0,0,0,0, new Color(105,105,105)));
          nickname.setFont(font);
          nickname.setForeground(new Color(160,160,160));
          nickname.setBounds(50,15,140,20);
-         nickname.setAlignmentY(CENTER_ALIGNMENT);
-         
          userButton.add(button);
          userButton.add(nickname);
          
