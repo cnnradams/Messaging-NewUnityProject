@@ -23,6 +23,7 @@ import javax.swing.SwingUtilities;
 import main.data.ChatRoom;
 import main.data.Message;
 import main.data.User;
+import main.gui.MessagingWindow;
 import main.gui.Window;
 import main.networking.MockServer;
 import main.networking.NetworkInterface;
@@ -159,6 +160,7 @@ public class Main {
         
         while(window.isShowing()) {
             if(network.keepAlive() == NetworkInterface.RESULT_NOT_LOGGED_IN) {
+                window.messagingWindow = new MessagingWindow();
                 window.loginWindow.resetLoginInfo();							//log out the user and tell them they be gone
                 window.loginWindow.setActionText("Lost connection to server");
                 

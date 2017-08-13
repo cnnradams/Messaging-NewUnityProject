@@ -17,8 +17,8 @@ public class Window extends JFrame {
 
     private StatePanel currentPanel = null;
     
-    public final LoginWindow loginWindow;
-    public final MessagingWindow messagingWindow;
+    public LoginWindow loginWindow;
+    public MessagingWindow messagingWindow;
     
     public static final List<BufferedImage> ICONS = getImages();
     
