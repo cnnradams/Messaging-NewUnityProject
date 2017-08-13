@@ -5,6 +5,9 @@ import java.util.Optional;
 
 import main.networking.NetworkInterface;
 
+/**
+ * Stores data of a group chat room
+ */
 public class ChatRoom implements Comparable<ChatRoom> {
     
     public final int id;
