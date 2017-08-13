@@ -387,11 +387,6 @@ public class MessagingWindow extends StatePanel {
             
             return;
         }
-        if(newAdded) {
-        	newAdded = false;
-        	JScrollBar vertical = messagingPane.getVerticalScrollBar();
-        	vertical.setValue( vertical.getMaximum() );
-        }
     }
     
     public void updateUser(User user, int state, NetworkInterface network) {
@@ -557,11 +552,18 @@ public class MessagingWindow extends StatePanel {
 			g.drawRoundRect(3, 3, 197, 47, 10, 10);//paint border
 			g.fillRoundRect(3, 53, 197, 20, 10, 10);
 	}
-    boolean newAdded = false;
     public void addMessage(Message message) {
     	message.reBreak(messagingPane.getWidth());
         messages.add(message);
-    	newAdded = true;
+    	
+    	if(message.chatRoom.isPresent() && selectedChat.isPresent() && message.chatRoom.get().equals(selectedChat.get())) {
+    	    JScrollBar vertical = messagingPane.getVerticalScrollBar();
+    	    vertical.setValue( vertical.getMaximum() );
+    	}
+    	else if(!message.chatRoom.isPresent() && selectedUser.isPresent() && message.user.equals(selectedUser.get())) {
+            JScrollBar vertical = messagingPane.getVerticalScrollBar();
+            vertical.setValue( vertical.getMaximum() );
+    	}
         
         if(message.chatRoom.isPresent() && (!selectedChat.isPresent() || !message.chatRoom.get().equals(selectedChat.get()))) {
             Optional<JButton> button = getChatButtonByChat(message.chatRoom.get());
