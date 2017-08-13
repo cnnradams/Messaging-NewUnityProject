@@ -36,10 +36,11 @@ public class Main {
         window.setVisible(true);
         window.toFront();
         window.setBackground(new Color(60, 60, 60));
+        //Set parameters for windows
         
         
         List<BufferedImage> icons = new ArrayList<>(4);
-        
+        //All the icon sizes, 16 is used for small taskbar / titlebar, 32 for large taskbar etc.
         try {
             icons.add(ImageIO.read(new File("src/resources/icon16.png")));
             icons.add(ImageIO.read(new File("src/resources/icon32.png")));
@@ -48,21 +49,24 @@ public class Main {
         }
         catch(IOException e) {
             e.printStackTrace();
+            //If this happens something is seriously wrong
         }
         
+        //Set the window's titlebar icon
         window.setIconImages(icons);
         
+        //what is the address to the server?
         InetAddress address = null;
         
         File ipOverride = new File("ip-conf.txt");
         if(!ipOverride.exists()) {
             try {
                 address = InetAddress.getLocalHost();
-            } catch (UnknownHostException e) {
-                    e.printStackTrace();
+            } catch (UnknownHostException e) {				//if the file that lists the IP to the server
+                    e.printStackTrace();					//doesn't exist then try localhost
             }
         }
-        else {
+        else {												//if the file does exist then find the IP in the file
             try(BufferedReader br = new BufferedReader(new FileReader(ipOverride))) {
                 address = InetAddress.getByName(br.readLine());
             } catch (IOException e) {
@@ -73,7 +77,7 @@ public class Main {
         
         final NetworkInterface network = new ZeroMQServer(address, 8743);
         
-        if(network instanceof MockServer) {
+        if(network instanceof MockServer) {					//Mock server settings for testing
             MockServer mockNetwork = (MockServer)network;
             
             mockNetwork.loginResult = NetworkInterface.RESULT_SUCCESS;
@@ -104,14 +108,17 @@ public class Main {
             mockNetwork.loginResult = NetworkInterface.RESULT_ALREADY_LOGGED_IN;
             mockNetwork.loginTime = 0;
             
+            //create groups for mock server
             mockNetwork.getChatNameResult = NetworkInterface.RESULT_SUCCESS;
             mockNetwork.getChatNameTime = 75;
             mockNetwork.chatMap.put(0, "General");
             mockNetwork.chatMap.put(1, "Off topic");
             
+            //how often should the chat update in milliseconds
             mockNetwork.getChatUpdatesResult = NetworkInterface.RESULT_SUCCESS;
             mockNetwork.getChatUpdatesTime = 250;
             
+            //create users for mock server
             mockNetwork.getNicknameResult = NetworkInterface.RESULT_SUCCESS;
             mockNetwork.getNicknameTime = 75;
             mockNetwork.userMap.put("Stealth", "Stealth - 2706🍁");
@@ -137,6 +144,7 @@ public class Main {
             
             mockNetwork.getMessagesResult = NetworkInterface.RESULT_SUCCESS;
             mockNetwork.getMessagesTime = 750;
+            //mock messages
             mockNetwork.messages.add(new Message(new User("Stealth", mockNetwork.userMap.get("Stealth"), null),
                                                  "I am angery!!!1!11", ZonedDateTime.now(ZoneId.ofOffset("UTC", ZoneOffset.UTC)).minusHours(1)));
             mockNetwork.messages.add(new Message(new User("biscuitseed",  mockNetwork.userMap.get("biscuitseed"), null),
@@ -151,13 +159,13 @@ public class Main {
         
         while(window.isShowing()) {
             if(network.keepAlive() == NetworkInterface.RESULT_NOT_LOGGED_IN) {
-                window.loginWindow.resetLoginInfo();
+                window.loginWindow.resetLoginInfo();							//log out the user and tell them they be gone
                 window.loginWindow.setActionText("Lost connection to server");
                 
                 login(window, network);
             }
             
-        	window.setResizable(true);
+        	window.setResizable(true);						//now that we are out of the login screen we can resize window
             try {
                 for(Message m : window.messagingWindow.getQueuedMessages()) {
                     network.sendMessage(m);
@@ -168,37 +176,37 @@ public class Main {
                 Map<ChatRoom, List<Integer>> chatUpdates = network.getChatUpdates().orElseThrow(network::makeException);
                 for(ChatRoom chat : chatUpdates.keySet()) {
                     for(int state : chatUpdates.get(chat)) {
-                        window.messagingWindow.updateChat(chat, state, network);
+                        window.messagingWindow.updateChat(chat, state, network);	//Handling for group chats
                     }
                 }
                 Map<User, List<Integer>> userUpdates = network.getUserUpdates().orElseThrow(network::makeException);
                 for(User user : userUpdates.keySet()) {
                     for(int state : userUpdates.get(user)) {
-                        window.messagingWindow.updateUser(user, state, network);
+                        window.messagingWindow.updateUser(user, state, network);	//Handling for user chats
                     }
                 }
                 List<Message> messages = network.getIncomingMessages().orElseThrow(network::makeException);
                 for(Message message : messages) {
-                    window.messagingWindow.playNewMessage();
+                    window.messagingWindow.playNewMessage();						//play message sound if recieved message
                     SwingUtilities.invokeLater(() -> window.messagingWindow.addMessage(message));
                 }
                 
-                BufferedImage icon = window.messagingWindow.getNewIcon();
+                BufferedImage icon = window.messagingWindow.getNewIcon();			//profile pictures
                 if(icon != null) {
                     network.setProfilePicture(icon);
                 }
                 
-                String nickname = window.messagingWindow.getNewNickname();
+                String nickname = window.messagingWindow.getNewNickname();			//nicknames
                 if(nickname != null) {
                     network.setNickname(nickname);
                 }
                 
-                String groupName = window.messagingWindow.getNewGroup();
+                String groupName = window.messagingWindow.getNewGroup();			//group names
                 if(groupName != null) {
                     network.createChat(groupName);
                 }
                 
-                SwingUtilities.invokeLater(window.messagingWindow::updateMessages);
+                SwingUtilities.invokeLater(window.messagingWindow::updateMessages);	//Update messages etc every 250ms
                 
                 SwingUtilities.invokeLater(window.messagingWindow::updateComponents);
                 
@@ -270,7 +278,7 @@ public class Main {
         
         try {
             window.messagingWindow.initializeChatRoomSet(network.getAllChats().orElseThrow(network::makeException));
-        } catch (ConnectException e) {
+        } catch (ConnectException e) {									//List all available groups
             e.printStackTrace();
         }
         
@@ -278,7 +286,7 @@ public class Main {
         
         try {
             window.messagingWindow.initializeUserSet(network.getAllUsers().orElseThrow(network::makeException));
-        } catch (ConnectException e) {
+        } catch (ConnectException e) {									//List all available users
             e.printStackTrace();
         }
         
