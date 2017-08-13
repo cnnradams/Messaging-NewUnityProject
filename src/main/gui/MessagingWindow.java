@@ -258,7 +258,7 @@ public class MessagingWindow extends StatePanel {
                 userButton.setBackground(Color.YELLOW);
             }
             else {
-                userButton.setBackground(Color.BLACK);
+                userButton.setBackground(new Color(60,60,60));
             }
         }
         
@@ -268,7 +268,7 @@ public class MessagingWindow extends StatePanel {
                 chatButton.setBackground(Color.YELLOW);
             }
             else {
-                chatButton.setBackground(Color.BLACK);
+                chatButton.setBackground(new Color(60,60,60));
             }
         }
         
