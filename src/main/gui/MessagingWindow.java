@@ -765,7 +765,7 @@ public class MessagingWindow extends StatePanel {
     
     private static Clip getClip(String location) {
         try {
-            Clip clip = AudioSystem.getClip();
+            Clip clip = AudioSystem.getClip(null);
 
             InputStream in = MessagingWindow.class.getResourceAsStream(location);
             InputStream bufferedIn = new BufferedInputStream(in);

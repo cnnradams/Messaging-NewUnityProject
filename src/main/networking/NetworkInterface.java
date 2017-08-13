@@ -74,6 +74,7 @@ public interface NetworkInterface {
     public static final int RESULT_ALREADY_LOGGED_IN = -5;
     public static final int RESULT_UNKNOWN_CHAT = -6;
     public static final int RESULT_BAD_REQUEST = -7;
+    public static final int RESULT_FAILURE_UNKNOWN = -8;
     
     public static final int CHANGE_CONNECTED = 1;
     public static final int CHANGE_DISCONNECTED = 2;
@@ -96,6 +97,7 @@ public interface NetworkInterface {
         decodings.put(RESULT_ALREADY_LOGGED_IN,    "You are already logged in");
         decodings.put(RESULT_UNKNOWN_CHAT,         "This chat is missing");
         decodings.put(RESULT_BAD_REQUEST,          "Bad request");
+        decodings.put(RESULT_FAILURE_UNKNOWN,      "Unknown error occurred");
         
         return Collections.unmodifiableMap(decodings);
     }
