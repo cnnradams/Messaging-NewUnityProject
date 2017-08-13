@@ -147,10 +147,13 @@ public class Main {
         }
         
         while(window.isShowing()) {
-            if(network.keepAlive() == NetworkInterface.RESULT_NOT_LOGGED_IN) {
+            int keepAlive = network.keepAlive();
+            if(keepAlive != NetworkInterface.RESULT_SUCCESS) {
                 window.messagingWindow = new MessagingWindow();
-                window.loginWindow.resetLoginInfo();				
-                window.loginWindow.setActionText("Lost connection to server");
+
+                window.loginWindow.resetLoginInfo();							//log out the user and tell them they be gone
+                window.loginWindow.setActionText(NetworkInterface.ERROR_MEANINGS.get(keepAlive));
+
                 
                 login(window, network);
             }

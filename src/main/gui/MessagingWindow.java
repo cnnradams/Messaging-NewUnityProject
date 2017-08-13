@@ -16,8 +16,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -75,25 +77,25 @@ public class MessagingWindow extends StatePanel {
     private Optional<User> selectedUser = Optional.empty();
     private Optional<ChatRoom> selectedChat = Optional.empty();
     
-    public String groupName;
+    private String groupName;
     
     private final PlaceHolderTextField sendMessages;
     private final JButton sendMessageButton;
     
     private final JButton addGroupButton;
     
-    Font font = null;
+    private Font font = null;
 
     private final JTabbedPane tabPanel;
     
     private final List<Message> messageQueue;
     private BufferedImage userIcon;
     
-    String nickname = null;
+    private String nickname = null;
     
-    private final Clip messageRecieved = getClip("src/resources/sound/messagerecieved.wav");
-    private final Clip userJoined = getClip("src/resources/sound/userjoined.wav");
-    private final Clip userLeft = getClip("src/resources/sound/userleft.wav");
+    private final Clip messageRecieved = getClip("/resources/sound/messagerecieved.wav");
+    private final Clip userJoined = getClip("/resources/sound/userjoined.wav");
+    private final Clip userLeft = getClip("/resources/sound/userleft.wav");
     
     public MessagingWindow() {
     	
@@ -101,7 +103,6 @@ public class MessagingWindow extends StatePanel {
 		try {
 			font = Font.createFont(Font.TRUETYPE_FONT, getClass().getResource("/resources/font/RobotoMono-Medium.ttf").openStream());
 		} catch (FontFormatException | IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}   
 
@@ -255,7 +256,7 @@ public class MessagingWindow extends StatePanel {
     public void updateMessages() {
         for(JButton userButton : userButtons) {
             if(selectedUser.isPresent() && ((UserButtonPress)userButton.getActionListeners()[0]).user.equals(selectedUser.get())) {
-                userButton.setBackground(Color.WHITE);
+                userButton.setBackground(new Color(90,90,90));
             }
             else if(((UserButtonPress)userButton.getActionListeners()[0]).unread) {
                 userButton.setBackground(Color.YELLOW);
@@ -268,7 +269,7 @@ public class MessagingWindow extends StatePanel {
         
         for(JButton chatButton : chatButtons) {
             if(selectedChat.isPresent() && ((ChatButtonPress)chatButton.getActionListeners()[0]).chat.equals(selectedChat.get())) {
-                chatButton.setBackground(Color.WHITE);
+                chatButton.setBackground(new Color(90,90,90));
             }
             else if(((ChatButtonPress)chatButton.getActionListeners()[0]).unread) {
                 chatButton.setBackground(Color.YELLOW);
@@ -504,7 +505,7 @@ public class MessagingWindow extends StatePanel {
          userButton.setOpaque(false);
          BufferedImage bufferedImage = null;
          try {
-         	bufferedImage = ImageIO.read(new File("src/resources/server-icon.png"));
+         	bufferedImage = ImageIO.read(this.getClass().getResourceAsStream("/resources/server-icon.png"));
  		} catch (IOException e) {
  			e.printStackTrace();
  		}
@@ -590,7 +591,7 @@ public class MessagingWindow extends StatePanel {
                 bufferedImage = user.image;
             }
             else {
-                bufferedImage = ImageIO.read(new File("src/resources/server-icon.png"));
+                bufferedImage = ImageIO.read(this.getClass().getResourceAsStream("/resources/server-icon.png"));
             }
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -661,7 +662,6 @@ public class MessagingWindow extends StatePanel {
     }
     
     public void showMessages(ChatRoom chat) {
-        System.out.println("Showing messages for " + chat.name + " (#" + chat.id + ")");
         selectedChat = Optional.of(chat);
         selectedUser = Optional.empty();
         sendMessages.setVisible(true);
@@ -765,8 +765,12 @@ public class MessagingWindow extends StatePanel {
     private static Clip getClip(String location) {
         try {
             Clip clip = AudioSystem.getClip();
-            AudioInputStream in = AudioSystem.getAudioInputStream(new File(location));
-            clip.open(in);
+
+            InputStream in = MessagingWindow.class.getResourceAsStream(location);
+            InputStream bufferedIn = new BufferedInputStream(in);
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(bufferedIn);
+            
+            clip.open(audioStream);
             return clip;
         } catch (LineUnavailableException | UnsupportedAudioFileException | IOException e) {
             e.printStackTrace();
