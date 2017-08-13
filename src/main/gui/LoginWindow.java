@@ -214,6 +214,8 @@ public class LoginWindow extends StatePanel {
         nickname.setHorizontalAlignment(JTextField.LEFT);
         loggingIn.setVisible(false);
         loginInfo = null;
+        action.setLayout(null);
+        action.setBounds(450, 130, getWidth() / 3, 30);
         action.setVisible(true);
 	}
 

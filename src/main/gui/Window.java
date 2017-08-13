@@ -36,6 +36,10 @@ public class Window extends JFrame {
     }
     
     public void setStatePanel(StatePanel panel) {
+        if(currentPanel == panel) {
+            return;
+        }
+        
         this.setTitle(panel.getTitle());
         this.setSize(panel.getWidth(), panel.getHeight());
         this.getRootPane().setDefaultButton(panel.getSubmitButton());

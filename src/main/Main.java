@@ -95,33 +95,9 @@ public class Main {
             mockNetwork.logoutTime = 0;
         }
         
-        boolean loggedIn = false;
-        while(!loggedIn) {
-            Optional<User> loginInfo = null;
-            while(!(loginInfo = window.loginWindow.getLoginInfo()).isPresent()) {
-                try {
-                    Thread.sleep(250);
-                } catch (InterruptedException e) {
-                      e.printStackTrace();
-                }
-                
-                if(!window.isShowing()) {
-                    System.exit(1);
-                }
-            }
+
+        login(window, network);
         
-            
-            window.loginWindow.setActionText("Logging in...");
-            loggedIn = network.login(loginInfo.get());
-            if(!loggedIn) {
-                window.loginWindow.setActionText(NetworkInterface.ERROR_MEANINGS.get(network.getLastResultCode()));
-                window.loginWindow.resetLoginInfo();
-            }
-            else {
-                User.setMe(loginInfo.get());
-            }
-            
-        }
         if(network instanceof MockServer) {
             MockServer mockNetwork = (MockServer)network;
             
@@ -192,6 +168,12 @@ public class Main {
         SwingUtilities.invokeLater(() -> window.setStatePanel(window.messagingWindow));
         
         while(window.isShowing()) {
+            if(network.keepAlive() == NetworkInterface.RESULT_NOT_LOGGED_IN) {
+                window.loginWindow.resetLoginInfo();
+                window.loginWindow.setActionText("Lost connection to server");
+                login(window, network);
+            }
+            
         	window.setResizable(true);
             try {
                 for(Message m : window.messagingWindow.getQueuedMessages()) {
@@ -237,8 +219,6 @@ public class Main {
                 
                 SwingUtilities.invokeLater(window.messagingWindow::updateComponents);
                 
-                network.keepAlive();
-                
                 Thread.sleep(250);
             } catch (ConnectException | InterruptedException e) {
                 e.printStackTrace();
@@ -271,5 +251,35 @@ public class Main {
         
         System.exit(0);
     }
-    
+
+    private static void login(Window window, NetworkInterface network) {
+        window.setStatePanel(window.loginWindow);
+        
+        boolean loggedIn = false;
+        while(!loggedIn) {
+            Optional<User> loginInfo = null;
+            while(!(loginInfo = window.loginWindow.getLoginInfo()).isPresent()) {
+                try {
+                    Thread.sleep(250);
+                } catch (InterruptedException e) {
+                      e.printStackTrace();
+                }
+                
+                if(!window.isShowing()) {
+                    System.exit(1);
+                }
+            }
+        
+            
+            window.loginWindow.setActionText("Logging in...");
+            loggedIn = network.login(loginInfo.get());
+            if(!loggedIn) {
+                window.loginWindow.setActionText(NetworkInterface.ERROR_MEANINGS.get(network.getLastResultCode()));
+                window.loginWindow.resetLoginInfo();
+            }
+            else {
+                User.setMe(loginInfo.get());
+            }
+        }
+    }
 }

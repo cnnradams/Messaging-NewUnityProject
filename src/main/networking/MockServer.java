@@ -388,8 +388,10 @@ public class MockServer implements NetworkInterface {
     }
     
     @Override
-    public void keepAlive() {
+    public int keepAlive() {
         System.out.println("[Mock] Not dead!");
+        
+        return NetworkInterface.RESULT_SUCCESS;
     }
     
 

@@ -132,7 +132,7 @@ public interface NetworkInterface {
     
     public boolean logout();
     
-    public void keepAlive();
+    public int keepAlive();
     
     public Optional<ChatRoom> createChat(String name);
 }
