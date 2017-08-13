@@ -670,9 +670,6 @@ public class MessagingWindow extends StatePanel {
     }
     
     public BufferedImage getImageFromFileSystem() {
-        UIManager.put("FileChooser.listViewBackground", new Color(60,60,60));
-        UIManager.put("Panel.background", new Color(60,60,60));
-        UIManager.put("FileChooser.listFont", Color.WHITE);
         
         JFrame fileFrame = new JFrame();
         fileFrame.setSize(500, 500);
