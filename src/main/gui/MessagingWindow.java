@@ -58,7 +58,7 @@ public class MessagingWindow extends StatePanel {
     
     private static final long serialVersionUID = 1L;
     
-    public Set<User> onlineUsers = new HashSet<>();
+    private Set<User> onlineUsers = new HashSet<>();
     private Set<ChatRoom> onlineChats = new HashSet<>();
     private List<Message> messages = new ArrayList<Message>();
     
@@ -74,8 +74,6 @@ public class MessagingWindow extends StatePanel {
     private Optional<ChatRoom> selectedChat = Optional.empty();
     
     public String groupName;
-    public List<Boolean> unseen = new ArrayList<>();
-    public boolean userUnseen;
     
     private final PlaceHolderTextField sendMessages;
     private final JButton sendMessageButton;
@@ -740,9 +738,5 @@ public class MessagingWindow extends StatePanel {
         String returnGroup = groupName;
         groupName = null;
         return returnGroup;
-    }
-    public void unreadMessage () {
-    	
-    	
     }
 }
