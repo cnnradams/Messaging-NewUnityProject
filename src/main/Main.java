@@ -228,6 +228,11 @@ public class Main {
                     network.setNickname(nickname);
                 }
                 
+                String groupName = window.messagingWindow.getNewGroup();
+                if(groupName != null) {
+                    network.createChat(groupName);
+                }
+                
                 SwingUtilities.invokeLater(window.messagingWindow::updateMessages);
                 
                 SwingUtilities.invokeLater(window.messagingWindow::updateComponents);

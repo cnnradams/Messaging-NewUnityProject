@@ -410,4 +410,10 @@ public class MockServer implements NetworkInterface {
         System.out.println("[Mock] \"Setting\" profile picture");
         return true;
     }
+    
+    @Override
+    public Optional<ChatRoom> createChat(String name) {
+        System.out.println("[Mock] Getting profile picture for user");
+        return Optional.empty();
+    }
 }

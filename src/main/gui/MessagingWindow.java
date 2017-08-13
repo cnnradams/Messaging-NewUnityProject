@@ -206,7 +206,6 @@ public class MessagingWindow extends StatePanel {
 			UIManager.put("Panel.background", new Color(60,60,60));
 			UIManager.put("OptionPane.messageForeground", Color.WHITE);
 	        groupName = JOptionPane.showInputDialog("What should this group be called?");
-	        //do the group creation, yay
 	    });
         this.addComponentListener(new ComponentListener() {
 
@@ -724,14 +723,23 @@ public class MessagingWindow extends StatePanel {
     }
     
     public void playNewMessage() {
+        messageRecieved.setFramePosition(0);
         messageRecieved.start();
     }
     
     public void playNewUser() {
+        messageRecieved.setFramePosition(0);
         userJoined.start();
     }
     
     public void playLessUser() {
+        messageRecieved.setFramePosition(0);
         userLeft.start();
+    }
+    
+    public String getNewGroup() {
+        String returnGroup = groupName;
+        groupName = null;
+        return returnGroup;
     }
 }

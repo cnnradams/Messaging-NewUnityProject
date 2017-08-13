@@ -63,6 +63,9 @@ public interface NetworkInterface {
     // String imagedatastream -> void
     public static final int REQUEST_SET_USER_PICTURE = 15;
     
+    // String chatroom name -> chat id
+    public static final int REQUEST_CREATE_CHAT_ROOM = 16;
+    
     public static final int RESULT_SUCCESS = 0;
     public static final int RESULT_COULD_NOT_CONNECT = -1;
     public static final int RESULT_USERNAME_TAKEN = -2;
@@ -130,4 +133,6 @@ public interface NetworkInterface {
     public boolean logout();
     
     public void keepAlive();
+    
+    public Optional<ChatRoom> createChat(String name);
 }

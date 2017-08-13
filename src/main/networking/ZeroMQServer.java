@@ -336,4 +336,21 @@ public class ZeroMQServer implements NetworkInterface {
             return resultCode == RESULT_SUCCESS;
         }
     }
+    
+    @Override
+    public Optional<ChatRoom> createChat(String name) {
+        ServerResponse createChatResponse = sendRequest(requester, requestToken, REQUEST_CREATE_CHAT_ROOM, name);
+        resultCode = createChatResponse.resultCode;
+        
+        int id = -1;
+        try {
+            id = Integer.parseInt(createChatResponse.response[0]);
+        }
+        catch(NumberFormatException e) {
+            return Optional.empty();
+        }
+        
+        return Optional.of(new ChatRoom(id, name));
+        
+    }
 }
