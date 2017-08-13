@@ -42,6 +42,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
@@ -260,7 +261,7 @@ public class MessagingWindow extends StatePanel {
                 userButton.setBackground(Color.YELLOW);
             }
             else {
-                userButton.setBackground(Color.BLACK);
+                userButton.setBackground(new Color(60,60,60));
             }
         }
         
@@ -273,7 +274,7 @@ public class MessagingWindow extends StatePanel {
                 chatButton.setBackground(Color.YELLOW);
             }
             else {
-                chatButton.setBackground(Color.BLACK);
+                chatButton.setBackground(new Color(60,60,60));
             }
         }
         
@@ -385,6 +386,11 @@ public class MessagingWindow extends StatePanel {
             }
             
             return;
+        }
+        if(newAdded) {
+        	newAdded = false;
+        	JScrollBar vertical = messagingPane.getVerticalScrollBar();
+        	vertical.setValue( vertical.getMaximum() );
         }
     }
     
@@ -551,9 +557,11 @@ public class MessagingWindow extends StatePanel {
 			g.drawRoundRect(3, 3, 197, 47, 10, 10);//paint border
 			g.fillRoundRect(3, 53, 197, 20, 10, 10);
 	}
+    boolean newAdded = false;
     public void addMessage(Message message) {
     	message.reBreak(messagingPane.getWidth());
         messages.add(message);
+    	newAdded = true;
         
         if(message.chatRoom.isPresent() && (!selectedChat.isPresent() || !message.chatRoom.get().equals(selectedChat.get()))) {
             Optional<JButton> button = getChatButtonByChat(message.chatRoom.get());
