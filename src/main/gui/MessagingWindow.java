@@ -77,21 +77,21 @@ public class MessagingWindow extends StatePanel {
     private Optional<User> selectedUser = Optional.empty();
     private Optional<ChatRoom> selectedChat = Optional.empty();
     
-    public String groupName;
+    private String groupName;
     
     private final PlaceHolderTextField sendMessages;
     private final JButton sendMessageButton;
     
     private final JButton addGroupButton;
     
-    Font font = null;
+    private Font font = null;
 
     private final JTabbedPane tabPanel;
     
     private final List<Message> messageQueue;
     private BufferedImage userIcon;
     
-    String nickname = null;
+    private String nickname = null;
     
     private final Clip messageRecieved = getClip("/resources/sound/messagerecieved.wav");
     private final Clip userJoined = getClip("/resources/sound/userjoined.wav");
@@ -103,7 +103,6 @@ public class MessagingWindow extends StatePanel {
 		try {
 			font = Font.createFont(Font.TRUETYPE_FONT, getClass().getResource("/resources/font/RobotoMono-Medium.ttf").openStream());
 		} catch (FontFormatException | IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}   
 
@@ -664,7 +663,6 @@ public class MessagingWindow extends StatePanel {
     }
     
     public void showMessages(ChatRoom chat) {
-        System.out.println("Showing messages for " + chat.name + " (#" + chat.id + ")");
         selectedChat = Optional.of(chat);
         selectedUser = Optional.empty();
         sendMessages.setVisible(true);
