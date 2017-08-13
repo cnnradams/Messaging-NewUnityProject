@@ -51,9 +51,9 @@ public class LoginWindow extends StatePanel {
 		font = font.deriveFont(15f);
 		this.setLayout(null);
 		this.setSize(800, 439);																//set all the settings for the window,
-		logoStartup = Toolkit.getDefaultToolkit().createImage("src/resources/logo.gif");	//like size, logos, etc.
-		logoDone = Toolkit.getDefaultToolkit().createImage("src/resources/logodone.gif");
-		loginbg = Toolkit.getDefaultToolkit().createImage("src/resources/loginbg.png");
+		logoStartup = Toolkit.getDefaultToolkit().createImage(this.getClass().getResource("/resources/logo.gif"));	//like size, logos, etc.
+		logoDone = Toolkit.getDefaultToolkit().createImage(this.getClass().getResource("/resources/logodone.gif"));
+		loginbg = Toolkit.getDefaultToolkit().createImage(this.getClass().getResource("/resources/loginbg.png"));
 		tempLogoStartup = logoStartup.getScaledInstance(getWidth(), -1, Image.SCALE_DEFAULT);
 		tempLogoDone = logoDone.getScaledInstance(getWidth(), -1, Image.SCALE_DEFAULT);
 		if (startMillis == 0) {

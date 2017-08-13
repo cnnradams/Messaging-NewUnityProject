@@ -16,8 +16,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -91,9 +93,9 @@ public class MessagingWindow extends StatePanel {
     
     String nickname = null;
     
-    private final Clip messageRecieved = getClip("src/resources/sound/messagerecieved.wav");
-    private final Clip userJoined = getClip("src/resources/sound/userjoined.wav");
-    private final Clip userLeft = getClip("src/resources/sound/userleft.wav");
+    private final Clip messageRecieved = getClip("/resources/sound/messagerecieved.wav");
+    private final Clip userJoined = getClip("/resources/sound/userjoined.wav");
+    private final Clip userLeft = getClip("/resources/sound/userleft.wav");
     
     public MessagingWindow() {
     	
@@ -504,7 +506,7 @@ public class MessagingWindow extends StatePanel {
          userButton.setOpaque(false);
          BufferedImage bufferedImage = null;
          try {
-         	bufferedImage = ImageIO.read(new File("src/resources/server-icon.png"));
+         	bufferedImage = ImageIO.read(this.getClass().getResourceAsStream("/resources/server-icon.png"));
  		} catch (IOException e) {
  			e.printStackTrace();
  		}
@@ -591,7 +593,7 @@ public class MessagingWindow extends StatePanel {
                 bufferedImage = user.image;
             }
             else {
-                bufferedImage = ImageIO.read(new File("src/resources/server-icon.png"));
+                bufferedImage = ImageIO.read(this.getClass().getResourceAsStream("/resources/server-icon.png"));
             }
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -766,8 +768,12 @@ public class MessagingWindow extends StatePanel {
     private static Clip getClip(String location) {
         try {
             Clip clip = AudioSystem.getClip();
-            AudioInputStream in = AudioSystem.getAudioInputStream(new File(location));
-            clip.open(in);
+
+            InputStream in = MessagingWindow.class.getResourceAsStream(location);
+            InputStream bufferedIn = new BufferedInputStream(in);
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(bufferedIn);
+            
+            clip.open(audioStream);
             return clip;
         } catch (LineUnavailableException | UnsupportedAudioFileException | IOException e) {
             e.printStackTrace();

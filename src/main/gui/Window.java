@@ -1,7 +1,6 @@
 package main.gui;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -60,10 +59,10 @@ public class Window extends JFrame {
         List<BufferedImage> icons = new ArrayList<>(4);
         
         try {
-            icons.add(ImageIO.read(new File("src/resources/icon16.png")));
-            icons.add(ImageIO.read(new File("src/resources/icon32.png")));
-            icons.add(ImageIO.read(new File("src/resources/icon64.png")));
-            icons.add(ImageIO.read(new File("src/resources/icon128.png")));
+            icons.add(ImageIO.read(Window.class.getResourceAsStream("/resources/icon16.png")));
+            icons.add(ImageIO.read(Window.class.getResourceAsStream("/resources/icon16.png")));
+            icons.add(ImageIO.read(Window.class.getResourceAsStream("/resources/icon16.png")));
+            icons.add(ImageIO.read(Window.class.getResourceAsStream("/resources/icon16.png")));
         }
         catch(IOException e) {
             e.printStackTrace();
