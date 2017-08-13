@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FileDialog;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Graphics;
@@ -38,6 +37,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -48,7 +48,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-
+import javax.swing.filechooser.FileNameExtensionFilter;
 import main.data.ChatRoom;
 import main.data.Message;
 import main.data.User;
@@ -526,7 +526,7 @@ public class MessagingWindow extends StatePanel {
     }
     
     public JButton createButtonForUser(User user) {
-        JButton userButton = new JButton();
+        JButton userButton = new JButton(); 
         userButton.setLayout(null);
         userButton.addActionListener(new UserButtonPress(user));
         userButton.setMaximumSize(new Dimension(2000, 50));
@@ -671,23 +671,24 @@ public class MessagingWindow extends StatePanel {
     }
     
     public BufferedImage getImageFromFileSystem() {
+        UIManager.put("FileChooser.listViewBackground", new Color(60,60,60));
+        UIManager.put("Panel.background", new Color(60,60,60));
+        UIManager.put("FileChooser.listFont", Color.WHITE);
+        
         JFrame fileFrame = new JFrame();
-        fileFrame.setSize(0, 0);
-        FileDialog fileDialog = new FileDialog(fileFrame, "Choose a profile picture", FileDialog.LOAD);
-        String fileTypes = "";
-        for(String reader : ImageIO.getReaderFileSuffixes()) {
-            fileTypes += "*." + reader + ";";
-        }
-        fileTypes = fileTypes.substring(0, fileTypes.length() - 1);
+        fileFrame.setSize(500, 500);
+        fileFrame.setIconImages(Window.ICONS);
         
-        fileDialog.setFile(fileTypes);
-        fileDialog.setVisible(true);
+        JFileChooser fileChooser = new JFileChooser();
         
-        
-        String imageFilename = fileDialog.getFile();
+        fileChooser.setDialogTitle("Choose a profile picture");
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fileChooser.setFileFilter(new FileNameExtensionFilter("Image Files", ImageIO.getReaderFileSuffixes()));
+        fileChooser.showOpenDialog(fileFrame);
+        File imageFilename = fileChooser.getSelectedFile();
         if(imageFilename != null) {
             try {
-                return ImageIO.read(new File(fileDialog.getDirectory(), imageFilename));
+                return ImageIO.read(imageFilename);
             } catch (IOException e) {
                 e.printStackTrace();
                 return null;
