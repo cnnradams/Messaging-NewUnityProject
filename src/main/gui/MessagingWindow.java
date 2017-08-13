@@ -255,7 +255,7 @@ public class MessagingWindow extends StatePanel {
     public void updateMessages() {
         for(JButton userButton : userButtons) {
             if(selectedUser.isPresent() && ((UserButtonPress)userButton.getActionListeners()[0]).user.equals(selectedUser.get())) {
-                userButton.setBackground(Color.WHITE);
+                userButton.setBackground(new Color(90,90,90));
             }
             else if(((UserButtonPress)userButton.getActionListeners()[0]).unread) {
                 userButton.setBackground(Color.YELLOW);
@@ -268,7 +268,7 @@ public class MessagingWindow extends StatePanel {
         
         for(JButton chatButton : chatButtons) {
             if(selectedChat.isPresent() && ((ChatButtonPress)chatButton.getActionListeners()[0]).chat.equals(selectedChat.get())) {
-                chatButton.setBackground(Color.WHITE);
+                chatButton.setBackground(new Color(90,90,90));
             }
             else if(((ChatButtonPress)chatButton.getActionListeners()[0]).unread) {
                 chatButton.setBackground(Color.YELLOW);
