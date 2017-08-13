@@ -22,6 +22,9 @@ import javax.swing.JTextField;
 
 import main.data.User;
 
+/**
+ * Login screen frontend
+ */
 public class LoginWindow extends StatePanel {
 
 	private static final long serialVersionUID = 1L;

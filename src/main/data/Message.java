@@ -15,6 +15,11 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+/**
+ * 
+ * Stores data for each specific message
+ *
+ */
 public class Message extends JPanel {
     
     private static final long serialVersionUID = 1L;
@@ -27,6 +32,7 @@ public class Message extends JPanel {
     JTextArea messageLabel;
     JLabel dateTimeLabel;
     JLabel userLabel;
+    
     public Message(ChatRoom chatRoom, User user, String message, ZonedDateTime dateTime) {
         this(chatRoom, user, message, dateTime, false);
     }
@@ -53,6 +59,7 @@ public class Message extends JPanel {
         
          userLabel = new JLabel();
         
+        // If it's your own message don't print your username etc.
         if(loopback) {
             userLabel.setText("You, at");
         }
@@ -63,10 +70,13 @@ public class Message extends JPanel {
         messageLabel = new JTextArea(message);
         dateTimeLabel = new JLabel(dateTime.withZoneSameInstant(ZoneId.systemDefault()).format(DateTimeFormatter.ISO_LOCAL_TIME) + " said: ");
         
+        // Coloring of text
         this.setBackground(new Color(40,40,40));
         userLabel.setForeground(new Color(120,120,120));
         messageLabel.setForeground(new Color(255,255,255));
         dateTimeLabel.setForeground(new Color(120,120,120));
+        
+        // Allows the message to linebreak onto a new line
         messageLabel.setLineWrap(true);
         messageLabel.setWrapStyleWord(true);
         messageLabel.setMinimumSize(new Dimension(messageLabel.getMinimumSize().width, 20));
@@ -74,23 +84,32 @@ public class Message extends JPanel {
         this.setMinimumSize(new Dimension(this.getMinimumSize().width, 20));
         messageLabel.setOpaque(false);
         messageLabel.setEditable(false);
+        
+        // Makes sure you can actually see the message
         userLabel.setVisible(true);
         dateTimeLabel.setVisible(true);
         messageLabel.setVisible(true);
+        
+        // Adds the text to the JPanel
         this.add(userLabel);
         this.add(dateTimeLabel);
         this.add(messageLabel);
     }
     
+    /**
+     * Re linebreaks the message when the window is resized
+     * @param width Width of the message area
+     * @param pane Scrollbar details
+     */
     public void reBreak(int width, JScrollPane pane) {
+    	
+    	// Shrinks the useable space by the length of the username, the date, and the scrollbar space taken up
     	width -= userLabel.getFontMetrics(userLabel.getFont()).stringWidth(userLabel.getText());
     	width -= dateTimeLabel.getFontMetrics(dateTimeLabel.getFont()).stringWidth(dateTimeLabel.getText());
     	width -= 50;
+    	
+    	// Allocates the amount of lines needed to fit the message
     	 messageLabel.setPreferredSize(new Dimension(width, 20 * (int)Math.ceil(messageLabel.getFontMetrics(messageLabel.getFont()).stringWidth(messageLabel.getText())/(double)width)));
     	 this.setMaximumSize(new Dimension(2000, 20 * (int)Math.ceil(messageLabel.getFontMetrics(messageLabel.getFont()).stringWidth(messageLabel.getText())/(double)width)));
-    	  JScrollBar vertical = pane.getVerticalScrollBar();
-          if(vertical.getMaximum() > pane.getHeight()) {
-        	  vertical.setSize(new Dimension(vertical.getPreferredSize().width,vertical.getPreferredSize().height - 10));
-          }
     }
 }
