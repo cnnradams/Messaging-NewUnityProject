@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -19,24 +20,13 @@ public class Window extends JFrame {
     public final LoginWindow loginWindow;
     public final MessagingWindow messagingWindow;
     
+    public static final List<BufferedImage> ICONS = getImages();
+    
     public Window() {
         loginWindow = new LoginWindow();
         messagingWindow = new MessagingWindow();
         
-        
-        List<BufferedImage> icons = new ArrayList<>(4);
-        
-        try {
-            icons.add(ImageIO.read(new File("src/resources/icon16.png")));
-            icons.add(ImageIO.read(new File("src/resources/icon32.png")));
-            icons.add(ImageIO.read(new File("src/resources/icon64.png")));
-            icons.add(ImageIO.read(new File("src/resources/icon128.png")));
-        }
-        catch(IOException e) {
-            e.printStackTrace();
-        }
-        
-        this.setIconImages(icons);
+        this.setIconImages(ICONS);
         
         this.setResizable(false);
         loginWindow.setVisible(true);
@@ -60,5 +50,21 @@ public class Window extends JFrame {
         panel.setVisible(true);
         
         SwingUtilities.updateComponentTreeUI(this);
+    }
+    
+    private static List<BufferedImage> getImages() {
+        List<BufferedImage> icons = new ArrayList<>(4);
+        
+        try {
+            icons.add(ImageIO.read(new File("src/resources/icon16.png")));
+            icons.add(ImageIO.read(new File("src/resources/icon32.png")));
+            icons.add(ImageIO.read(new File("src/resources/icon64.png")));
+            icons.add(ImageIO.read(new File("src/resources/icon128.png")));
+        }
+        catch(IOException e) {
+            e.printStackTrace();
+        }
+        
+        return Collections.unmodifiableList(icons);
     }
 }
