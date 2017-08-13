@@ -149,28 +149,11 @@ public class Main {
             mockNetwork.logoutTime = 750;
         }
         
-        window.loginWindow.setActionText("Getting online chats...");
-        
-        try {
-            window.messagingWindow.initializeChatRoomSet(network.getAllChats().orElseThrow(network::makeException));
-        } catch (ConnectException e) {
-            e.printStackTrace();
-        }
-        
-        window.loginWindow.setActionText("Getting online users...");
-        
-        try {
-            window.messagingWindow.initializeUserSet(network.getAllUsers().orElseThrow(network::makeException));
-        } catch (ConnectException e) {
-            e.printStackTrace();
-        }
-        
-        SwingUtilities.invokeLater(() -> window.setStatePanel(window.messagingWindow));
-        
         while(window.isShowing()) {
             if(network.keepAlive() == NetworkInterface.RESULT_NOT_LOGGED_IN) {
                 window.loginWindow.resetLoginInfo();
                 window.loginWindow.setActionText("Lost connection to server");
+                
                 login(window, network);
             }
             
@@ -266,7 +249,7 @@ public class Main {
                 }
                 
                 if(!window.isShowing()) {
-                    System.exit(1);
+                    System.exit(0);
                 }
             }
         
@@ -281,5 +264,25 @@ public class Main {
                 User.setMe(loginInfo.get());
             }
         }
+        
+        
+        window.loginWindow.setActionText("Getting online chats...");
+        
+        try {
+            window.messagingWindow.initializeChatRoomSet(network.getAllChats().orElseThrow(network::makeException));
+        } catch (ConnectException e) {
+            e.printStackTrace();
+        }
+        
+        window.loginWindow.setActionText("Getting online users...");
+        
+        try {
+            window.messagingWindow.initializeUserSet(network.getAllUsers().orElseThrow(network::makeException));
+        } catch (ConnectException e) {
+            e.printStackTrace();
+        }
+        
+        SwingUtilities.invokeLater(() -> window.setStatePanel(window.messagingWindow));
+        
     }
 }
