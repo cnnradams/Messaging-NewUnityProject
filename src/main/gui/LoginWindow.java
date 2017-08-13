@@ -120,7 +120,7 @@ public class LoginWindow extends StatePanel {
 		this.add(loggingIn);
 		this.addComponentListener(new ComponentListener() {
 		    public void componentResized(ComponentEvent e) {
-		    	action.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 + 5, getWidth() / 4, 50);
+		    	action.setBounds(450, 130, getWidth() / 3, 30);
 		    	username.setBounds(456, 158, getWidth() / 3 - 8, 24);    
 		    	nickname.setBounds(456, 193, getWidth() / 3 - 8, 24);
 		    	loggingIn.setBounds(450, 188, getWidth() / 3, 24);
