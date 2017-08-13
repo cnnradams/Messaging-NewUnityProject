@@ -49,6 +49,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
 import main.data.ChatRoom;
 import main.data.Message;
 import main.data.User;
@@ -251,7 +252,29 @@ public class MessagingWindow extends StatePanel {
     }
     
     public void updateMessages() {
+        for(JButton userButton : userButtons) {
+            if(((UserButtonPress)userButton.getActionListeners()[0]).unread) {
+                userButton.setBackground(Color.YELLOW);
+            }
+            else {
+                userButton.setBackground(Color.BLACK);
+            }
+        }
+        
+        
+        for(JButton chatButton : chatButtons) {
+            if(((ChatButtonPress)chatButton.getActionListeners()[0]).unread) {
+                chatButton.setBackground(Color.YELLOW);
+            }
+            else {
+                chatButton.setBackground(Color.BLACK);
+            }
+        }
+        
         if(selectedChat.isPresent()) {
+            ChatButtonPress button = (ChatButtonPress)getChatButtonByChat(selectedChat.get()).get().getActionListeners()[0];
+            button.unread = false;
+            
         	 messagingWindow.removeAll();
             List<Message> allChatMessages = new ArrayList<>();
             for(Message m : messages) {
@@ -298,6 +321,9 @@ public class MessagingWindow extends StatePanel {
             };
         }
         else if(selectedUser.isPresent()) {
+            UserButtonPress button = (UserButtonPress)getUserButtonByUser(selectedUser.get()).get().getActionListeners()[0];
+            button.unread = false;
+            
         	messagingWindow.removeAll();
             List<Message> allUserMessages = new ArrayList<>();
             
@@ -522,14 +548,27 @@ public class MessagingWindow extends StatePanel {
     public void addMessage(Message message) {
     	message.reBreak(messagingPane.getWidth());
         messages.add(message);
+        
+        if(message.chatRoom.isPresent() && (!selectedChat.isPresent() || !message.chatRoom.get().equals(selectedChat.get()))) {
+            Optional<JButton> button = getChatButtonByChat(message.chatRoom.get());
+            if(button.isPresent()) {
+                ((ChatButtonPress)button.get().getActionListeners()[0]).unread = true;
+            }
+        }
+        else if(!selectedUser.isPresent() || !message.user.equals(selectedUser.get())) {
+            Optional<JButton> button = getUserButtonByUser(message.user);
+            if(button.isPresent()) {
+                ((UserButtonPress)button.get().getActionListeners()[0]).unread = true;
+            }
+        }
     }
     
     public JButton createButtonForUser(User user) {
         JButton userButton = new JButton(); 
         userButton.setLayout(null);
-        userButton.addActionListener(new UserButtonPress(user));
         userButton.setMaximumSize(new Dimension(2000, 50));
         userButton.setBackground(new Color(60,60,60));
+        userButton.addActionListener(new UserButtonPress(user));
         BufferedImage bufferedImage = null;
         try {
             if(user.image != null) {
@@ -580,6 +619,7 @@ public class MessagingWindow extends StatePanel {
     private class UserButtonPress implements ActionListener {
 
         private final User user;
+        public boolean unread = false;
         
         public UserButtonPress(User user) {
             this.user = user;
@@ -627,6 +667,7 @@ public class MessagingWindow extends StatePanel {
     private class ChatButtonPress implements ActionListener {
 
         private final ChatRoom chat;
+        public boolean unread = false;
         
         public ChatButtonPress(ChatRoom chat) {
             this.chat = chat;
