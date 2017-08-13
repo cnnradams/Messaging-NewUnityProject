@@ -40,11 +40,14 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 import main.data.ChatRoom;
 import main.data.Message;
@@ -69,6 +72,8 @@ public class MessagingWindow extends StatePanel {
     private final JPanel messagingWindow;
     private Optional<User> selectedUser = Optional.empty();
     private Optional<ChatRoom> selectedChat = Optional.empty();
+    
+    public String groupName;
     
     private final PlaceHolderTextField sendMessages;
     private final JButton sendMessageButton;
@@ -160,9 +165,6 @@ public class MessagingWindow extends StatePanel {
         sendMessageButton.setLayout(null);
         addGroupButton = new JButton("Add Group");
         addGroupButton.setVisible(true);
-        addGroupButton.addActionListener(e -> {
-        	
-        });
         addGroupButton.setLayout(null);
         JPanel tab1 = new JPanel();
         tab1.setLayout(null);
@@ -184,6 +186,7 @@ public class MessagingWindow extends StatePanel {
         
         //set all the ui colours
 		userListPanel.setBackground(new Color(60,60,60));
+		chatListPanel.setBackground(new Color(60,60,60));
 		messagingPane.setBackground(new Color(40, 40, 40));
 		messagingWindow.setBackground(new Color (40, 40, 40));
 		sendMessages.setBackground(new Color(78, 78, 78));
@@ -198,6 +201,13 @@ public class MessagingWindow extends StatePanel {
 		addGroupButton.setFont(font);
 		addGroupButton.setBorderPainted(false);
 		addGroupButton.setForeground(new Color(160,160,160));
+		addGroupButton.addActionListener(e -> {
+			UIManager.put("OptionPane.background", new Color(60,60,60));
+			UIManager.put("Panel.background", new Color(60,60,60));
+			UIManager.put("OptionPane.messageForeground", Color.WHITE);
+	        groupName = JOptionPane.showInputDialog("What should this group be called?");
+	        //do the group creation, yay
+	    });
         this.addComponentListener(new ComponentListener() {
 
 			@Override
@@ -586,7 +596,13 @@ public class MessagingWindow extends StatePanel {
     
     public JButton createButtonForChat(ChatRoom chat) {
         JButton userButton = new JButton(chat.name + " (#" + chat.id + ")");
+        userButton.setLayout(null);
+        userButton.setHorizontalAlignment(SwingConstants.LEFT);
+        userButton.setMaximumSize(new Dimension(2000, 50));
+        userButton.setBackground(new Color(60,60,60));
         userButton.addActionListener(new ChatButtonPress(chat));
+        userButton.setFont(font);
+        userButton.setForeground(new Color(160,160,160));
         return userButton;
     }
     
