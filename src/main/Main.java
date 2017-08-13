@@ -9,9 +9,6 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -29,45 +26,52 @@ import main.networking.MockServer;
 import main.networking.NetworkInterface;
 import main.networking.ZeroMQServer;
 
+/**
+ * Main class of the project, the shotcaller of the program
+ */
 public class Main {
     
+	public static String RESOURCE_PATH = "src/resources/";
     public static void main(String[] args) {
+    	
+    	// Creates the JFrame
         Window window = new Window();
         window.setStatePanel(window.loginWindow);
         window.setVisible(true);
         window.toFront();
         window.setBackground(new Color(60, 60, 60));
-        //Set parameters for windows
         
         
         List<BufferedImage> icons = new ArrayList<>(4);
-        //All the icon sizes, 16 is used for small taskbar / titlebar, 32 for large taskbar etc.
+        
+        // All the icon sizes, 16 is used for small taskbar / titlebar, 32 for large taskbar etc.
         try {
-            icons.add(ImageIO.read(new File("src/resources/icon16.png")));
-            icons.add(ImageIO.read(new File("src/resources/icon32.png")));
-            icons.add(ImageIO.read(new File("src/resources/icon64.png")));
-            icons.add(ImageIO.read(new File("src/resources/icon128.png")));
+            icons.add(ImageIO.read(new File(RESOURCE_PATH + "icon16.png")));
+            icons.add(ImageIO.read(new File(RESOURCE_PATH + "icon32.png")));
+            icons.add(ImageIO.read(new File(RESOURCE_PATH + "icon64.png")));
+            icons.add(ImageIO.read(new File(RESOURCE_PATH + "icon128.png")));
         }
         catch(IOException e) {
             e.printStackTrace();
-            //If this happens something is seriously wrong
         }
         
-        //Set the window's titlebar icon
+        // Set the window's titlebar icon
         window.setIconImages(icons);
         
-        //what is the address to the server?
+        // What is the address to the server?
         InetAddress address = null;
         
         File ipOverride = new File("ip-conf.txt");
         if(!ipOverride.exists()) {
             try {
+            	// If the file that lists the IP to the server doesn't exist then try localhost
                 address = InetAddress.getLocalHost();
-            } catch (UnknownHostException e) {				//if the file that lists the IP to the server
-                    e.printStackTrace();					//doesn't exist then try localhost
+            } catch (UnknownHostException e) {
+                    e.printStackTrace();
             }
         }
-        else {												//if the file does exist then find the IP in the file
+        else {												
+        	// If the file does exist then find the IP in the file
             try(BufferedReader br = new BufferedReader(new FileReader(ipOverride))) {
                 address = InetAddress.getByName(br.readLine());
             } catch (IOException e) {
@@ -78,7 +82,8 @@ public class Main {
         
         final NetworkInterface network = new ZeroMQServer(address, 8743);
         
-        if(network instanceof MockServer) {					//Mock server settings for testing
+      // Mock server settings for testing
+        if(network instanceof MockServer) {					
             MockServer mockNetwork = (MockServer)network;
             
             mockNetwork.loginResult = NetworkInterface.RESULT_SUCCESS;
@@ -100,9 +105,10 @@ public class Main {
             mockNetwork.logoutTime = 0;
         }
         
-
+        // Logs into jmessage
         login(window, network);
         
+        // In program mock settings
         if(network instanceof MockServer) {
             MockServer mockNetwork = (MockServer)network;
             
@@ -122,23 +128,9 @@ public class Main {
             //create users for mock server
             mockNetwork.getNicknameResult = NetworkInterface.RESULT_SUCCESS;
             mockNetwork.getNicknameTime = 75;
-            mockNetwork.userMap.put("Stealth", "Stealth - 2706🍁");
-            mockNetwork.userMap.put("biscuitseed", "builderman's son");
-            mockNetwork.userMap.put("C#", "Java 1.11");
-            mockNetwork.userMap.put("Java", "C+=2");
-            mockNetwork.userMap.put("cheeseburger", "Nathan");
-            mockNetwork.userMap.put("el Presidentai", "George");
-            mockNetwork.userMap.put("broom&scoop", "Matt");
-            mockNetwork.userMap.put("Kip", "Dario");
-            mockNetwork.userMap.put("Sweet Necture", "Ty");
-            mockNetwork.userMap.put("outof", "ideas");
-            mockNetwork.userMap.put("pi", "3.1415926535897932384664338327950288419716939937510582097492307");
-            mockNetwork.userMap.put("cheeselover1052", "Charles");
-            mockNetwork.userMap.put("rnande24", "Rick");
-            mockNetwork.userMap.put("nick_565", "Nick");
-            mockNetwork.userMap.put("windyman52", "Lori");
-            mockNetwork.userMap.put("rylon01", "Andy");
-            mockNetwork.userMap.put("baconburger202", "Glenn");
+            mockNetwork.userMap.put("TestUser1", "DisplayName1");
+            mockNetwork.userMap.put("TestUser2", "DisplayName2");
+            mockNetwork.userMap.put("TestUser3", "DisplayName3");
             
             mockNetwork.getUserUpdatesResult = NetworkInterface.RESULT_SUCCESS;
             mockNetwork.getUserUpdatesTime = 250;
@@ -146,10 +138,6 @@ public class Main {
             mockNetwork.getMessagesResult = NetworkInterface.RESULT_SUCCESS;
             mockNetwork.getMessagesTime = 750;
             //mock messages
-            mockNetwork.messages.add(new Message(new User("Stealth", mockNetwork.userMap.get("Stealth"), null),
-                                                 "I am angery!!!1!11", ZonedDateTime.now(ZoneId.ofOffset("UTC", ZoneOffset.UTC)).minusHours(1)));
-            mockNetwork.messages.add(new Message(new User("biscuitseed",  mockNetwork.userMap.get("biscuitseed"), null),
-                                                 "Ya dingus", ZonedDateTime.now(ZoneId.ofOffset("UTC", ZoneOffset.UTC)).minusHours(4)));
             
             mockNetwork.sendMessageResult = NetworkInterface.RESULT_SUCCESS;
             mockNetwork.sendMessageTime = 500;
@@ -162,18 +150,23 @@ public class Main {
             int keepAlive = network.keepAlive();
             if(keepAlive != NetworkInterface.RESULT_SUCCESS) {
                 window.messagingWindow = new MessagingWindow();
+
                 window.loginWindow.resetLoginInfo();							//log out the user and tell them they be gone
                 window.loginWindow.setActionText(NetworkInterface.ERROR_MEANINGS.get(keepAlive));
+
                 
                 login(window, network);
             }
-            
-        	window.setResizable(true);						//now that we are out of the login screen we can resize window
+
+            // Now that we are out of the login screen we can resize window
+        	window.setResizable(true);				
             try {
+            	
+            	
                 for(Message m : window.messagingWindow.getQueuedMessages()) {
-                    network.sendMessage(m);
-                    
+                    network.sendMessage(m);  
                 }
+                
                 window.messagingWindow.emptyQueuedMessages();
                 
                 Map<ChatRoom, List<Integer>> chatUpdates = network.getChatUpdates().orElseThrow(network::makeException);

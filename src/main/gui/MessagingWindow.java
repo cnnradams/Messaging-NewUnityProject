@@ -336,7 +336,7 @@ public class MessagingWindow extends StatePanel {
             List<Message> allUserMessages = new ArrayList<>();
             
             for(Message m : messages) {
-            	m.reBreak(messagingPane.getWidth());
+            	m.reBreak(messagingPane.getWidth(), messagingPane);
                 if(!m.chatRoom.isPresent() && m.user.equals(selectedUser.get())) {
                     allUserMessages.add(m);
                     
@@ -554,9 +554,8 @@ public class MessagingWindow extends StatePanel {
 			g.fillRoundRect(3, 53, 197, 20, 10, 10);
 	}
     public void addMessage(Message message) {
-    	message.reBreak(messagingPane.getWidth());
+    	message.reBreak(messagingPane.getWidth(), messagingPane);
         messages.add(message);
-    	
     	if(message.chatRoom.isPresent() && selectedChat.isPresent() && message.chatRoom.get().equals(selectedChat.get())) {
     	    JScrollBar vertical = messagingPane.getVerticalScrollBar();
     	    vertical.setValue( vertical.getMaximum() );
