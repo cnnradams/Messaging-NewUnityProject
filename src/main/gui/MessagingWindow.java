@@ -602,9 +602,7 @@ public class MessagingWindow extends StatePanel {
 	
 	// For adding the message to the chat box
 	public void addMessage(Message message) {
-		// Break a new line with a new message
 		message.reBreak(messagingPane.getWidth(), messagingPane);
-		// Add the message to said new line
 		messages.add(message);
 		// If you're in the chat that the message was added to, then drag the scrollbar to the bottom.
 		if (message.chatRoom.isPresent() && selectedChat.isPresent()
