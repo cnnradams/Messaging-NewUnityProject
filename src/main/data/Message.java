@@ -49,9 +49,10 @@ public class Message extends JPanel {
      * Whether the message is being sent directly to the 
      */
     public final boolean loopback;
-    JTextArea messageLabel;
-    JLabel dateTimeLabel;
-    JLabel userLabel;
+    
+    private JTextArea messageLabel;
+    private JLabel dateTimeLabel;
+    private JLabel userLabel;
     
     public Message(ChatRoom chatRoom, User user, String message, ZonedDateTime dateTime) {
         this(chatRoom, user, message, dateTime, false);

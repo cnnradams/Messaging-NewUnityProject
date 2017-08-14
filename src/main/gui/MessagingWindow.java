@@ -697,11 +697,8 @@ public class MessagingWindow extends StatePanel {
 		sendMessageButton.setVisible(true);
 	}
 	
-	
-	//TODO: ryan what
-	
-	
 	private Optional<JButton> getUserButtonByUser(User user) {
+	    // Finds a JButton for a given user by looking at an ActionListener that has the user in it
 		for (JButton userButton : userButtons) {
 			for (ActionListener listener : userButton.getActionListeners()) {
 				if (listener instanceof UserButtonPress && ((UserButtonPress) listener).user.equals(user)) {
@@ -749,10 +746,9 @@ public class MessagingWindow extends StatePanel {
 		sendMessages.setVisible(true);
 		sendMessageButton.setVisible(true);
 	}
-
-	//TODO: ryan what II
 	
 	private Optional<JButton> getChatButtonByChat(ChatRoom chat) {
+	    // Finds a JButton for a given chat by looking at an ActionListener that has the chat in it
 		for (JButton chatButton : chatButtons) {
 			for (ActionListener listener : chatButton.getActionListeners()) {
 				if (listener instanceof ChatButtonPress && ((ChatButtonPress) listener).chat.equals(chat)) {
