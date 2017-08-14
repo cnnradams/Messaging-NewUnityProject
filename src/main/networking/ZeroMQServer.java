@@ -66,6 +66,7 @@ public class ZeroMQServer implements NetworkInterface {
         Runtime.getRuntime().addShutdownHook(new Thread(this::disconnect));
     }
     
+    // Build request with correct format, send it, and return the response
     private ServerResponse sendRequest(ZMQ.Socket requester, String requestToken, int request, String... args) {
         String requestString = requestToken + "\n"
                              + request;
@@ -93,6 +94,8 @@ public class ZeroMQServer implements NetworkInterface {
 
     @Override
     public Optional<Set<ChatRoom>> getAllChats() {
+        
+        // Gets the number of chats
         ServerResponse chatSizeResponse = sendRequest(requester, requestToken, REQUEST_CHATS_ONLINE);
         if(chatSizeResponse.resultCode != RESULT_SUCCESS) {
             resultCode = chatSizeResponse.resultCode;
@@ -101,7 +104,9 @@ public class ZeroMQServer implements NetworkInterface {
         
         int onlineChats = Integer.parseInt(chatSizeResponse.response[0]);
         Set<ChatRoom> chats = new TreeSet<>();
+        // Loop through the number of onlineChats
         for(int i = 0; i < onlineChats; i++) {
+            // Get the ID of each chat
             ServerResponse chatIdResponse = sendRequest(requester, requestToken, REQUEST_CHAT, String.valueOf(i));
             if(chatIdResponse.resultCode != RESULT_SUCCESS) {
                 resultCode = chatIdResponse.resultCode;
@@ -110,6 +115,7 @@ public class ZeroMQServer implements NetworkInterface {
             
             int chatId = Integer.parseInt(chatIdResponse.response[0]);
             
+            // Create the chat object with the ID
             chats.add(new ChatRoom(chatId, this));
         }
         
@@ -131,12 +137,14 @@ public class ZeroMQServer implements NetworkInterface {
     public Optional<Map<ChatRoom, List<Integer>>> getChatUpdates() {
         Map<ChatRoom, List<Integer>> updates = new HashMap<>();
         while(true) {
+            // Get a new chat update
             ServerResponse chatUpdateResponse = sendRequest(requester, requestToken, REQUEST_CHAT_UPDATES);
             if(chatUpdateResponse.resultCode != RESULT_SUCCESS) {
                 resultCode = chatUpdateResponse.resultCode;
                 return Optional.empty();
             }
             if(chatUpdateResponse.response.length != 2) {
+                // No new chat updates, return
                 resultCode = chatUpdateResponse.resultCode;
                 return Optional.of(updates);
             }
@@ -149,12 +157,14 @@ public class ZeroMQServer implements NetworkInterface {
                 e.printStackTrace();
             }
             
+            // If the chat name can't be found, it's because it was remvoved so it doesn't matter
             String name = "Don't care";
             try {
                 name = getChatName(id).get();
             }
             catch(NoSuchElementException e) {}
             
+            // Add update to updates
             ChatRoom chat = new ChatRoom(id, name);
             List<Integer> updateValues = new ArrayList<>();
             for(String updateString : chatUpdateResponse.response[1].split(",")) {
@@ -177,23 +187,29 @@ public class ZeroMQServer implements NetworkInterface {
 
     @Override
     public Optional<Set<User>> getAllUsers() {
+        
+        // Gets the number of users
         ServerResponse userSizeResponse = sendRequest(requester, requestToken, REQUEST_USERS_ONLINE);
         if(userSizeResponse.resultCode != RESULT_SUCCESS) {
             resultCode = userSizeResponse.resultCode;
             return Optional.empty();
         }
         
+        // Loop through the number of onlineUsers
         int onlineUsers = Integer.parseInt(userSizeResponse.response[0]);
         Set<User> users = new TreeSet<>();
         for(int i = 0; i < onlineUsers; i++) {
+            // Get the username of each user
             ServerResponse usernameResponse = sendRequest(requester, requestToken, REQUEST_USER, String.valueOf(i));
             if(usernameResponse.resultCode != RESULT_SUCCESS) {
+                // No new user updates, return
                 resultCode = usernameResponse.resultCode;
                 return Optional.empty();
             }
             
             String username = usernameResponse.response[0];
             
+            // Create the user object with the username
             users.add(new User(username, this));
         }
         
@@ -204,6 +220,7 @@ public class ZeroMQServer implements NetworkInterface {
     public Optional<Map<User, List<Integer>>> getUserUpdates() {
         Map<User, List<Integer>> updates = new HashMap<>();
         while(true) {
+            // Get a new user update
             ServerResponse userUpdateResponse = sendRequest(requester, requestToken, REQUEST_USER_UPDATES);
             if(userUpdateResponse.resultCode != RESULT_SUCCESS) {
                 resultCode = userUpdateResponse.resultCode;
@@ -215,6 +232,8 @@ public class ZeroMQServer implements NetworkInterface {
             }
             
             String username = userUpdateResponse.response[0];
+            
+            // If the user can't be found, it's because they disconnected so nickname and profile picture don't matter
             String nickname = "Don't care";
             try {
                 nickname = getNickname(username).get();
@@ -227,6 +246,7 @@ public class ZeroMQServer implements NetworkInterface {
             }
             catch(NoSuchElementException e) {}
             
+            // Add update to updates
             User user = new User(username, nickname, picture);
             List<Integer> updateValues = new ArrayList<>();
             for(String updateString : userUpdateResponse.response[1].split(",")) {
@@ -240,16 +260,19 @@ public class ZeroMQServer implements NetworkInterface {
     public Optional<List<Message>> getIncomingMessages() {
         List<Message> messages = new ArrayList<>();
         while(true) {
+            // Get a new message
             ServerResponse newMessageResponse = sendRequest(requester, requestToken, REQUEST_NEW_MESSAGE);
             if(newMessageResponse.resultCode != RESULT_SUCCESS) {
                 resultCode = newMessageResponse.resultCode;
                 return Optional.empty();
             }
+            // When out of new messages, return
             if(newMessageResponse.response.length != 5) {
                 resultCode = newMessageResponse.resultCode;
                 return Optional.of(messages);
             }
             
+            // Build message information from response
             User fromUser = new User(newMessageResponse.response[0], this);
             String message = newMessageResponse.response[3];
             ZonedDateTime dateTime = ZonedDateTime.parse(newMessageResponse.response[4]);
@@ -266,18 +289,22 @@ public class ZeroMQServer implements NetworkInterface {
     @Override
     public boolean sendMessage(Message message) {
         String[] params = new String[4];
+        // false indicates the next value is an ID for a chatroom
         if(message.chatRoom.isPresent()) {
             params[0] = String.valueOf(false);
             params[1] = String.valueOf(message.chatRoom.get().id);
         }
+        // true indicates the next value is a username for a user
         else {
             params[0] = String.valueOf(true);
             params[1] = message.user.username;
         }
         
+        // Add other request parameters
         params[2] = message.message;
         params[3] = message.dateTime.format(DateTimeFormatter.ISO_ZONED_DATE_TIME);
         
+        // Send request with the parameters that were added
         ServerResponse sendMessageResponse = sendRequest(requester, requestToken, REQUEST_SEND_MESSAGE, params);
         
         resultCode = sendMessageResponse.resultCode;
@@ -296,12 +323,13 @@ public class ZeroMQServer implements NetworkInterface {
     public int keepAlive() {
         ServerResponse keepAliveResponse = sendRequest(requester, requestToken, REQUEST_KEEP_ALIVE);
         
+        // Return result code so client can disconnect if not logged in or server is shutting down
         resultCode = keepAliveResponse.resultCode;
-        
         return resultCode;
     }
     
     private void disconnect() {
+        // End connection so application can exit
         requester.close();
         context.term();
     }
@@ -316,41 +344,50 @@ public class ZeroMQServer implements NetworkInterface {
 
     @Override
     public Optional<BufferedImage> getProfilePicture(String username) {
+        // Request profile picture
         ServerResponse getUserPictureResponse = sendRequest(requester, requestToken, REQUEST_USER_PICTURE, username);
         resultCode = getUserPictureResponse.resultCode;
         
+        // The response contains a boolean whether there is a profile picture present
         if(getUserPictureResponse.response.length > 0 && Boolean.parseBoolean(getUserPictureResponse.response[0])) {
             try {
+                // Return the image decoded from a Base64 String
                 return Optional.of(User.decodeImage(getUserPictureResponse.response[1]));
             } catch (IOException e) {
+                // This should never happen but if it does, just return no image
                 e.initCause(makeException());
                 e.printStackTrace();
                 return Optional.empty();
             }
         }
         else {
+            // Return no image because there is no image
             return Optional.empty();
         }
     }
 
     @Override
     public boolean setProfilePicture(Optional<BufferedImage> image) {
+        // Set boolean whether there is an image to false because no image is present
         if(!image.isPresent()) {
             ServerResponse setProfilePictureResponse = sendRequest(requester, requestToken, REQUEST_SET_USER_PICTURE, String.valueOf(false));
             resultCode = setProfilePictureResponse.resultCode;
             
             return resultCode == RESULT_SUCCESS;
         }
+        // Image is present
         else {
             String imageString = null;
             
             try {
+                // Encode image to a Base64 String to send
                 imageString = User.encodeToString(image.get());
             }
             catch(IOException e) {
                 e.printStackTrace();
             }
             
+            // Send profile picture
             ServerResponse setProfilePictureResponse = sendRequest(requester, requestToken, REQUEST_SET_USER_PICTURE, String.valueOf(true), imageString);
             resultCode = setProfilePictureResponse.resultCode;
             
@@ -363,6 +400,7 @@ public class ZeroMQServer implements NetworkInterface {
         ServerResponse createChatResponse = sendRequest(requester, requestToken, REQUEST_CREATE_CHAT_ROOM, name);
         resultCode = createChatResponse.resultCode;
         
+        // Get the ID of the chat
         int id = -1;
         try {
             id = Integer.parseInt(createChatResponse.response[0]);
@@ -371,6 +409,7 @@ public class ZeroMQServer implements NetworkInterface {
             return Optional.empty();
         }
         
+        // Create and return the chat object
         return Optional.of(new ChatRoom(id, name));
         
     }
