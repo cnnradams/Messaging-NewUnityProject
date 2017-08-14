@@ -4,16 +4,22 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.LayoutManager;
+import java.text.DateFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 import java.util.Optional;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+
+import main.gui.ColorConstants;
 
 /**
  * 
@@ -60,35 +66,35 @@ public class Message extends JPanel {
          userLabel = new JLabel();
         
         // If it's your own message don't print your username etc.
-        if(loopback) {
+        if(loopback)
             userLabel.setText("You, at");
-        }
-        else {
+        else
             userLabel.setText(user.username + " (" + user.nickname + ") at");
-        }
 
         messageLabel = new JTextArea(message);
-        dateTimeLabel = new JLabel(dateTime.withZoneSameInstant(ZoneId.systemDefault()).format(DateTimeFormatter.ISO_LOCAL_TIME) + " said: ");
         
-        // Coloring of text
-        this.setBackground(new Color(40,40,40));
-        userLabel.setForeground(new Color(120,120,120));
-        messageLabel.setForeground(new Color(255,255,255));
-        dateTimeLabel.setForeground(new Color(120,120,120));
         
-        // Allows the message to linebreak onto a new line
+        
         messageLabel.setLineWrap(true);
         messageLabel.setWrapStyleWord(true);
+        
         messageLabel.setMinimumSize(new Dimension(messageLabel.getMinimumSize().width, 20));
-        messageLabel.setPreferredSize(new Dimension(messageLabel.getPreferredSize().width, 20));
+        
+        Calendar c = GregorianCalendar.getInstance();
+        String time = c.get(Calendar.HOUR) + ":" + c.get(Calendar.MINUTE);
+        dateTimeLabel = new JLabel(time + " said: ");
+        
+        // Coloring of text
+        this.setBackground(ColorConstants.MESSAGING_PANE_BACKGROUND_COLOR);
+        messageLabel.setForeground(ColorConstants.MESSAGE_COLOR);
+        userLabel.setForeground(ColorConstants.MESSAGE_INFO_COLOR);
+        dateTimeLabel.setForeground(ColorConstants.MESSAGE_INFO_COLOR);
+        
+        // Tells the BoxLayout not to fill the page with one message
         this.setMinimumSize(new Dimension(this.getMinimumSize().width, 20));
+        
         messageLabel.setOpaque(false);
         messageLabel.setEditable(false);
-        
-        // Makes sure you can actually see the message
-        userLabel.setVisible(true);
-        dateTimeLabel.setVisible(true);
-        messageLabel.setVisible(true);
         
         // Adds the text to the JPanel
         this.add(userLabel);

@@ -1,6 +1,5 @@
 package main.gui;
 
-import java.awt.Color;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
@@ -17,14 +16,10 @@ public class PlaceHolderTextField extends JTextField {
     
     public final String text;
     
-    // Focus colors
-    private Color unfocusedColor = Color.GRAY;
-    private Color focusedColor = Color.WHITE;
-    
     public PlaceHolderTextField(String text) {
         this.text = text;
         this.addFocusListener(new PlaceHolderFocusListener(this));
-        this.setForeground(unfocusedColor);
+        this.setForeground(ColorConstants.UNFOCUSED_COLOR);
         this.setText(text);
     }
     
@@ -33,7 +28,7 @@ public class PlaceHolderTextField extends JTextField {
      * @return Is the text a placeholder?
      */
     public boolean isPlaceHolder() {
-        return (this.getText().equals(text) && this.getForeground().equals(unfocusedColor)) || this.getText().isEmpty();
+        return (this.getText().equals(text) && this.getForeground().equals(ColorConstants.UNFOCUSED_COLOR)) || this.getText().isEmpty();
     }
     
     /**
@@ -41,31 +36,16 @@ public class PlaceHolderTextField extends JTextField {
      */
     public void reset() {
         setText(text);
-        setForeground(unfocusedColor);
+        setForeground(ColorConstants.UNFOCUSED_COLOR);
     }
-    
-    public void setFocusedColor(Color c) {
-        focusedColor = c;
-    }
-    
-    public Color getFocusedColor() {
-        return focusedColor;
-    }
-    
-    public void setUnfocusedColor(Color c) {
-        unfocusedColor = c;
-    }
-    
-    public Color getUnfocusedColor() {
-        return unfocusedColor;
-    }
+
     
     @Override
     public void grabFocus() {
        super.grabFocus();
-       if (getText().equals(text) && getForeground() == unfocusedColor) {
+       if (getText().equals(text) && getForeground() == ColorConstants.UNFOCUSED_COLOR) {
            setText("");
-           setForeground(focusedColor);
+           setForeground(ColorConstants.FOCUSED_COLOR);
        }
     }
     
@@ -79,9 +59,9 @@ public class PlaceHolderTextField extends JTextField {
         
         @Override
         public void focusGained(FocusEvent e) {
-            if (text.getText().equals(text.text) && text.getForeground() == text.unfocusedColor) {
+            if (text.getText().equals(text.text) && text.getForeground() == ColorConstants.UNFOCUSED_COLOR) {
                 text.setText("");
-                text.setForeground(focusedColor);
+                text.setForeground(ColorConstants.FOCUSED_COLOR);
             }
         }
 
@@ -89,7 +69,7 @@ public class PlaceHolderTextField extends JTextField {
         public void focusLost(FocusEvent e) {
             if (text.getText().equals("")) {
                 text.setText(text.text);
-                text.setForeground(unfocusedColor);
+                text.setForeground(ColorConstants.UNFOCUSED_COLOR);
             }
         }
         

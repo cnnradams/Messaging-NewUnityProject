@@ -22,7 +22,9 @@ public class Window extends JFrame {
     public static final List<BufferedImage> ICONS = getImages();
     
     public Window() {
-        loginWindow = new LoginWindow();
+
+    		loginWindow = new LoginWindow();
+    	
         messagingWindow = new MessagingWindow();
         
         this.setIconImages(ICONS);
