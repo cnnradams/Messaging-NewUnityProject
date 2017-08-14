@@ -67,22 +67,20 @@ public class LoginWindow extends StatePanel {
 		action.setVisible(false);
 		
 		username = new PlaceHolderTextField("username");									//Username input field
-		username.setBorder(BorderFactory.createMatteBorder(0,0,0,0, new Color(105,105,105)));
-		username.setFocusedColor(new Color(160,160,160));
-		username.setBackground(new Color(60,60,60));
+		username.setBorder(BorderFactory.createMatteBorder(0,0,0,0, ColorConstants.BACKGROUND_COLOR));
+		username.setBackground(ColorConstants.BACKGROUND_COLOR);
 		username.setHorizontalAlignment(JTextField.LEFT);
 		username.setFont(font);
 		nickname = new PlaceHolderTextField("nickname (shown in chat)");					//Nickname input field
-		nickname.setFocusedColor(new Color(160,160,160));
-		nickname.setBackground(new Color(60,60,60));
+		nickname.setBackground(ColorConstants.BACKGROUND_COLOR);
 		nickname.setFont(font);
-		nickname.setBorder(BorderFactory.createMatteBorder(0,0,0,0, new Color(105,105,105)));
+		nickname.setBorder(BorderFactory.createMatteBorder(0,0,0,0, ColorConstants.BACKGROUND_COLOR));
 		nickname.setHorizontalAlignment(JTextField.LEFT);
 		
 		submit = new JButton("login");														//login button
 		submit.setHorizontalAlignment(JTextField.LEFT);
-		submit.setForeground(new Color(0, 255, 255));
-		submit.setBackground(new Color(60, 60, 60));
+		submit.setForeground(ColorConstants.SUBMIT_FOREGROUND_COLOR);
+		submit.setBackground(ColorConstants.BACKGROUND_COLOR);
 		submit.setFont(font);
         submit.setBorderPainted(false); 
         submit.setContentAreaFilled(false); 
@@ -94,7 +92,7 @@ public class LoginWindow extends StatePanel {
 		loggingIn.setIndeterminate(true);
 		loggingIn.setForeground(Color.white);
 		action.setFont(font);
-		loggingIn.setBackground(new Color(60,60,60));
+		loggingIn.setBackground(ColorConstants.BACKGROUND_COLOR);
 		loggingIn.setBorderPainted(false);
 		loggingIn.setString("Logging in...");
 
@@ -115,7 +113,7 @@ public class LoginWindow extends StatePanel {
 				loggingIn.setVisible(true);
 			}
 		});
-		this.setBackground(new Color(60, 60, 60));
+		this.setBackground(ColorConstants.BACKGROUND_COLOR);
 		this.add(action);
 		this.add(username);
 		this.add(nickname);
@@ -175,20 +173,18 @@ public class LoginWindow extends StatePanel {
 			g.drawImage(tempLogoStartup, 74, 174, this);							//Do all the logo stuff mentioned earlier
 		else if (tempLogoDone != null)
 			g.drawImage(tempLogoDone, 74, 174, this);
-		//g.setColor(new Color(78,78,78));
-		//g.drawRoundRect(450, 160, getWidth() / 3, 30, 20, 20);//paint border
 		
 
 	}
 	@Override
 	public void paint(Graphics g) {
 			super.paint(g);
-			g.setColor(new Color(78,78,78));
+			g.setColor(ColorConstants.LOGIN_RECTANGLE_COLOR);
 			((Graphics2D) g).setStroke(new BasicStroke(2));
 		if (!hidden) {
 			g.drawRoundRect(450, 155, getWidth() / 3, 30, 10, 10);//paint border
 			g.drawRoundRect(450, 190, getWidth() / 3, 30, 10, 10);//paint border
-			g.setColor(new Color(0, 255, 255));										//Make rounded edges for the textboxes / buttons
+			g.setColor(ColorConstants.SUBMIT_FOREGROUND_COLOR);										//Make rounded edges for the textboxes / buttons
 			g.drawRoundRect(450, 230, getWidth() / 10, 30, 10, 10);//paint border
 		}
 		if (hidden) {
@@ -211,13 +207,11 @@ public class LoginWindow extends StatePanel {
         
         hidden = false;
         action.setBounds(450, 130, getWidth() / 3, 30);
-        username.setBorder(BorderFactory.createMatteBorder(0,0,0,0, new Color(105,105,105)));
-        username.setFocusedColor(new Color(160,160,160));
-        username.setBackground(new Color(60,60,60));
+        username.setBorder(BorderFactory.createMatteBorder(0,0,0,0, ColorConstants.BACKGROUND_COLOR));
+        username.setBackground(ColorConstants.BACKGROUND_COLOR);
         username.setHorizontalAlignment(JTextField.LEFT);
-        nickname.setFocusedColor(new Color(160,160,160));
-        nickname.setBackground(new Color(60,60,60));
-        nickname.setBorder(BorderFactory.createMatteBorder(0,0,0,0, new Color(105,105,105)));
+        nickname.setBackground(ColorConstants.BACKGROUND_COLOR);
+        nickname.setBorder(BorderFactory.createMatteBorder(0,0,0,0, ColorConstants.BACKGROUND_COLOR));
         nickname.setHorizontalAlignment(JTextField.LEFT);
         loggingIn.setVisible(false);
         loginInfo = null;

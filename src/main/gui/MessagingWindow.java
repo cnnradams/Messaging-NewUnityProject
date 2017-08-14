@@ -129,105 +129,105 @@ public class MessagingWindow extends StatePanel {
 		GraphicsEnvironment genv = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		genv.registerFont(font);
 		font = font.deriveFont(15f);
-
-		// Set the default size for the window, background color, etc.
-		this.setLayout(null);
-		this.setSize(800, 439);
-		this.setBackground(new Color(60, 60, 60));
-		JScrollPane userScrollPane = new JScrollPane();
-		userScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		userScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		userListPanel.setLayout(new BoxLayout(userListPanel, BoxLayout.Y_AXIS));
-		userScrollPane.setViewportView(userListPanel);
-		userScrollPane.setPreferredSize(new Dimension(300, 300));
-
-		JScrollPane chatScrollPane = new JScrollPane();
-		chatScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		chatScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		chatListPanel.setLayout(new BoxLayout(chatListPanel, BoxLayout.Y_AXIS));
-		chatScrollPane.setViewportView(chatListPanel);
-		chatScrollPane.setPreferredSize(new Dimension(300, 300));
-
-		messagingWindow = new JPanel();
-
-		messagingPane = new JScrollPane();
-		messagingPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		messagingPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		messagingWindow.setLayout(new BoxLayout(messagingWindow, BoxLayout.Y_AXIS));
-		messagingPane.setViewportView(messagingWindow);
-		messagingPane.setAlignmentY(BOTTOM_ALIGNMENT);
-		messagingPane.setPreferredSize(new Dimension(300, 300));
-		messagingPane.setVisible(false);
-		messagingPane.setBounds(200, 0, getWidth() - 210, getHeight() - 10 - 100);
-
-		messageQueue = new ArrayList<>();
-
-		sendMessages = new PlaceHolderTextField("Type a message here");
-		sendMessages.setVisible(true);
-		sendMessages.setLayout(null);
-		sendMessageButton = new JButton("Send");
-		sendMessageButton.setVisible(true);
-		sendMessageButton.addActionListener(e -> {
-			// When the user hits the send button, add the message to the panel and format it correctly
-			if (sendMessages.isVisible() && !sendMessages.isPlaceHolder()) {
-				if (selectedChat.isPresent()) {
-					Message message = new Message(selectedChat.get(), null, sendMessages.getText(),
-							ZonedDateTime.now(ZoneId.ofOffset("UTC", ZoneOffset.UTC)), true);
-					messageQueue.add(message);
-					addMessage(message);
-				} else if (selectedUser.isPresent()) {
-					Message message = new Message(selectedUser.get(), sendMessages.getText(),
-							ZonedDateTime.now(ZoneId.ofOffset("UTC", ZoneOffset.UTC)), true);
-					messageQueue.add(message);
-					addMessage(message);
-				}
-				sendMessages.reset();
-				this.requestFocus();
-				sendMessages.requestFocus();
-			}
-		});
-		sendMessageButton.setLayout(null);
-		addGroupButton = new JButton("Add Group");
-		addGroupButton.setVisible(true);
-		addGroupButton.setLayout(null);
-		JPanel tab1 = new JPanel();
-		tab1.setLayout(null);
-		chatScrollPane.setBounds(0, 0, 200, getHeight());
-		userScrollPane.setBounds(0, 0, 200, getHeight());
-		tab1.add(chatScrollPane);
-		tabPanel = new JTabbedPane();
-		tabPanel.addTab("Groups", chatScrollPane);
-		tabPanel.addTab("Users", userScrollPane);
-		this.add(tabPanel);
-		sendMessages.setVisible(false);
-		sendMessageButton.setVisible(false);
-		this.add(sendMessages);
-		this.add(sendMessageButton);
-		// this.add(userScrollPane);
-		// this.add(chatScrollPane);
-		this.add(messagingPane);
-		this.add(addGroupButton);
-
-		// Set all the UI Colours
-		userListPanel.setBackground(new Color(60, 60, 60));
-		chatListPanel.setBackground(new Color(60, 60, 60));
-		messagingPane.setBackground(new Color(40, 40, 40));
-		messagingWindow.setBackground(new Color(40, 40, 40));
-		sendMessages.setBackground(new Color(78, 78, 78));
-		sendMessageButton.setBackground(new Color(78, 78, 78));
-		tabPanel.setBackground(new Color(60, 60, 60));
+		
+    	this.setLayout(null);
+    	this.setSize(800, 439);
+    	this.setBackground(ColorConstants.BACKGROUND_COLOR);
+        JScrollPane userScrollPane = new JScrollPane();
+        userScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        userScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        userListPanel.setLayout(new BoxLayout(userListPanel, BoxLayout.Y_AXIS));
+        userScrollPane.setViewportView(userListPanel);
+        userScrollPane.setPreferredSize(new Dimension(300, 300));
+        
+        
+        JScrollPane chatScrollPane = new JScrollPane();
+        chatScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        chatScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        chatListPanel.setLayout(new BoxLayout(chatListPanel, BoxLayout.Y_AXIS));
+        chatScrollPane.setViewportView(chatListPanel);
+        chatScrollPane.setPreferredSize(new Dimension(300, 300));
+      
+        
+        messagingWindow = new JPanel();
+        
+        messagingPane = new JScrollPane();
+        messagingPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        messagingPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        messagingWindow.setLayout(new BoxLayout(messagingWindow, BoxLayout.Y_AXIS));
+        messagingPane.setViewportView(messagingWindow);
+        messagingPane.setAlignmentY(BOTTOM_ALIGNMENT);
+        messagingPane.setPreferredSize(new Dimension(300, 300));
+        messagingPane.setVisible(false);
+        messagingPane.setBounds(200, 0, getWidth() - 210, getHeight() - 10 - 100);
+        
+        messageQueue = new ArrayList<>();
+        
+        sendMessages = new PlaceHolderTextField("Type a message here");
+        sendMessages.setVisible(true);
+        sendMessages.setLayout(null);
+        sendMessageButton = new JButton("Send");
+        sendMessageButton.setVisible(true);
+        sendMessageButton.addActionListener(e -> {
+            if (sendMessages.isVisible() && !sendMessages.isPlaceHolder()) {
+                if(selectedChat.isPresent()) {
+                    Message message = new Message(selectedChat.get(), null, sendMessages.getText(), ZonedDateTime.now(ZoneId.ofOffset("UTC", ZoneOffset.UTC)), true);
+                    messageQueue.add(message);
+                    addMessage(message);
+                }
+                else if(selectedUser.isPresent()) {
+                    Message message = new Message(selectedUser.get(), sendMessages.getText(), ZonedDateTime.now(ZoneId.ofOffset("UTC", ZoneOffset.UTC)), true);
+                    messageQueue.add(message);
+                    addMessage(message);
+                }
+                sendMessages.reset();
+                this.requestFocus();
+                sendMessages.requestFocus();
+            }
+        });
+        sendMessageButton.setLayout(null);
+        addGroupButton = new JButton("Add Group");
+        addGroupButton.setVisible(true);
+        addGroupButton.setLayout(null);
+        JPanel tab1 = new JPanel();
+        tab1.setLayout(null);
+        chatScrollPane.setBounds(0, 0, 200, getHeight());
+        userScrollPane.setBounds(0, 0, 200, getHeight());
+        	tab1.add(chatScrollPane);
+        	tabPanel = new JTabbedPane();
+        	tabPanel.addTab("Groups", chatScrollPane);
+        	tabPanel.addTab("Users", userScrollPane);
+        this.add(tabPanel);
+        sendMessages.setVisible(false);
+        sendMessageButton.setVisible(false);
+        this.add(sendMessages);
+        this.add(sendMessageButton);
+       // this.add(userScrollPane);
+        //this.add(chatScrollPane);
+        this.add(messagingPane);
+        this.add(addGroupButton);
+        
+        //set all the ui colours
+		userListPanel.setBackground(ColorConstants.BACKGROUND_COLOR);
+		chatListPanel.setBackground(ColorConstants.BACKGROUND_COLOR);
+		messagingPane.setBackground(ColorConstants.MESSAGING_PANE_BACKGROUND_COLOR);
+		messagingWindow.setBackground(ColorConstants.MESSAGING_PANE_BACKGROUND_COLOR);
+		sendMessages.setBackground(ColorConstants.LOGIN_RECTANGLE_COLOR);
+		sendMessageButton.setBackground(ColorConstants.LOGIN_RECTANGLE_COLOR);
+		tabPanel.setBackground(ColorConstants.BACKGROUND_COLOR);
 		tabPanel.setForeground(Color.WHITE);
-		sendMessages.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 0, new Color(105, 105, 105)));
+		sendMessages.setBorder(BorderFactory.createMatteBorder(0,0,0,0, ColorConstants.BACKGROUND_COLOR));
 		sendMessageButton.setBorderPainted(false);
-		sendMessageButton.setForeground(new Color(160, 160, 160));
-		addGroupButton.setBackground(new Color(78, 78, 78));
+		sendMessageButton.setForeground(ColorConstants.FOCUSED_COLOR);
+		addGroupButton.setBackground(ColorConstants.LOGIN_RECTANGLE_COLOR);
 		addGroupButton.setOpaque(false);
 		addGroupButton.setFont(font);
 		addGroupButton.setBorderPainted(false);
-		addGroupButton.setForeground(new Color(160, 160, 160));
+		addGroupButton.setForeground(ColorConstants.FOCUSED_COLOR);
 		addGroupButton.addActionListener(e -> {
-			UIManager.put("OptionPane.background", new Color(60, 60, 60));
-			UIManager.put("Panel.background", new Color(60, 60, 60));
+			UIManager.put("OptionPane.background", ColorConstants.BACKGROUND_COLOR);
+			UIManager.put("Panel.background", ColorConstants.BACKGROUND_COLOR);
+
 			UIManager.put("OptionPane.messageForeground", Color.WHITE);
 			groupName = JOptionPane.showInputDialog("What should this group be called?");
 		});
@@ -280,22 +280,22 @@ public class MessagingWindow extends StatePanel {
 		for (JButton userButton : userButtons) {
 			if (selectedUser.isPresent()
 					&& ((UserButtonPress) userButton.getActionListeners()[0]).user.equals(selectedUser.get())) {
-				userButton.setBackground(new Color(90, 90, 90));
+				userButton.setBackground(ColorConstants.NEW_MESSAGES_BACKGROUND_COLOR);
 			} else if (((UserButtonPress) userButton.getActionListeners()[0]).unread) {
 				userButton.setBackground(Color.YELLOW);
 			} else {
-				userButton.setBackground(new Color(60, 60, 60));
+				userButton.setBackground(ColorConstants.BACKGROUND_COLOR);
 			}
 		}
 
 		for (JButton chatButton : chatButtons) {
 			if (selectedChat.isPresent()
 					&& ((ChatButtonPress) chatButton.getActionListeners()[0]).chat.equals(selectedChat.get())) {
-				chatButton.setBackground(new Color(90, 90, 90));
+				chatButton.setBackground(ColorConstants.NEW_MESSAGES_BACKGROUND_COLOR);
 			} else if (((ChatButtonPress) chatButton.getActionListeners()[0]).unread) {
 				chatButton.setBackground(Color.YELLOW);
 			} else {
-				chatButton.setBackground(new Color(60, 60, 60));
+				chatButton.setBackground(ColorConstants.BACKGROUND_COLOR);
 			}
 		}
 
@@ -574,10 +574,10 @@ public class MessagingWindow extends StatePanel {
 			}
 		});
 		JTextField nickname = new JTextField(user.nickname);
-		nickname.setBackground(new Color(60, 60, 60));
-		nickname.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 0, new Color(105, 105, 105)));
+		nickname.setBackground(ColorConstants.BACKGROUND_COLOR);
+		nickname.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 0, ColorConstants.BACKGROUND_COLOR));
 		nickname.setFont(font);
-		nickname.setForeground(new Color(160, 160, 160));
+		nickname.setForeground(ColorConstants.FOCUSED_COLOR);
 		nickname.setBounds(50, 15, 140, 20);
 		nickname.addActionListener((e) -> {
 			if (e.getActionCommand().isEmpty()) {
@@ -598,7 +598,7 @@ public class MessagingWindow extends StatePanel {
 	// This is for drawing the rounded rectangles around the Add Group button and the self-user profile
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		g.setColor(new Color(78, 78, 78));
+		g.setColor(ColorConstants.LOGIN_RECTANGLE_COLOR);
 		((Graphics2D) g).setStroke(new BasicStroke(2));
 		g.drawRoundRect(3, 3, 197, 47, 10, 10);// paint border
 		g.fillRoundRect(3, 53, 197, 20, 10, 10);
@@ -608,9 +608,7 @@ public class MessagingWindow extends StatePanel {
 	
 	// For adding the message to the chat box
 	public void addMessage(Message message) {
-		// Break a new line with a new message
 		message.reBreak(messagingPane.getWidth(), messagingPane);
-		// Add the message to said new line
 		messages.add(message);
 		// If you're in the chat that the message was added to, then drag the scrollbar to the bottom.
 		if (message.chatRoom.isPresent() && selectedChat.isPresent()
@@ -642,7 +640,7 @@ public class MessagingWindow extends StatePanel {
 		JButton userButton = new JButton();
 		userButton.setLayout(null);
 		userButton.setMaximumSize(new Dimension(2000, 50));
-		userButton.setBackground(new Color(60, 60, 60));
+		userButton.setBackground(ColorConstants.BACKGROUND_COLOR);
 		userButton.addActionListener(new UserButtonPress(user));
 		// Set the user profile picture to the default
 		BufferedImage bufferedImage = null;
@@ -664,7 +662,7 @@ public class MessagingWindow extends StatePanel {
 		profilePic.setBounds(10, 10, 30, 30);
 		JLabel nickname = new JLabel(user.nickname);
 		nickname.setFont(font);
-		nickname.setForeground(new Color(160, 160, 160));
+		nickname.setForeground(ColorConstants.FOCUSED_COLOR);
 		nickname.setBounds(50, 15, 140, 20);
 		nickname.setAlignmentY(CENTER_ALIGNMENT);
 
@@ -719,10 +717,10 @@ public class MessagingWindow extends StatePanel {
 		userButton.setLayout(null);
 		userButton.setHorizontalAlignment(SwingConstants.LEFT);
 		userButton.setMaximumSize(new Dimension(2000, 50));
-		userButton.setBackground(new Color(60, 60, 60));
+		userButton.setBackground(ColorConstants.BACKGROUND_COLOR);
 		userButton.addActionListener(new ChatButtonPress(chat));
 		userButton.setFont(font);
-		userButton.setForeground(new Color(160, 160, 160));
+		userButton.setForeground(ColorConstants.FOCUSED_COLOR);
 		return userButton;
 	}
 

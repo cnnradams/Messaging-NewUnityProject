@@ -20,6 +20,7 @@ import javax.swing.SwingUtilities;
 import main.data.ChatRoom;
 import main.data.Message;
 import main.data.User;
+import main.gui.ColorConstants;
 import main.gui.MessagingWindow;
 import main.gui.Window;
 import main.networking.MockServer;
@@ -37,7 +38,7 @@ public class Main {
         window.setStatePanel(window.loginWindow);
         window.setVisible(true);
         window.toFront();
-        window.setBackground(new Color(60, 60, 60));
+        window.setBackground(ColorConstants.BACKGROUND_COLOR);
         
         
         List<BufferedImage> icons = new ArrayList<>(4);
