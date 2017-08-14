@@ -196,7 +196,12 @@ public class Main {
                 }
                 List<Message> messages = network.getIncomingMessages().orElseThrow(network::makeException);
                 for(Message message : messages) {
-                    window.messagingWindow.playNewMessage();						//play message sound if recieved message
+            		//If the message contains my username or nickname, play different mention sound
+            		if (message.message.toLowerCase().contains(User.getMe().nickname.toLowerCase()) || message.message.toLowerCase().contains(User.getMe().username.toLowerCase())) {
+            			window.messagingWindow.playNewMention();
+            		} else {
+            			window.messagingWindow.playNewMessage();						//play message sound if recieved message w/o mention
+            		}
                     SwingUtilities.invokeLater(() -> window.messagingWindow.addMessage(message));
                 }
                 

@@ -38,7 +38,7 @@ public class Message extends JPanel {
     /**
      * The contents of the message
      */
-    public final String message;
+    public String message;
     
     /**
      * The time the message was sent in UTC

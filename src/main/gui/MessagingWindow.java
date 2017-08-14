@@ -112,6 +112,7 @@ public class MessagingWindow extends StatePanel {
 
 	// Audio files for users sending you messages, users joining, and users leaving
 	private final Clip messageRecieved = getClip("/resources/sound/messagerecieved.wav");
+	private final Clip mentionRecieved = getClip("/resources/sound/mentionrecieved.wav");
 	private final Clip userJoined = getClip("/resources/sound/userjoined.wav");
 	private final Clip userLeft = getClip("/resources/sound/userleft.wav");
 
@@ -854,6 +855,11 @@ public class MessagingWindow extends StatePanel {
 	public void playNewMessage() {
 		messageRecieved.setFramePosition(0);
 		messageRecieved.start();
+	}
+	// Play audio for getting a new mention from a user
+	public void playNewMention() {
+		mentionRecieved.setFramePosition(0);
+		mentionRecieved.start();
 	}
 
 	// Play audio for a new user joining jmessage
