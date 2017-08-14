@@ -156,8 +156,9 @@ public class MessagingWindow extends StatePanel {
         
         // The scroll bar inside of the messaging area
         messagingPane = new JScrollPane();
+        messagingPane.getVerticalScrollBar().setUnitIncrement(16);
         messagingPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        messagingPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        messagingPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         messagingPane.setViewportView(messagingWindow);
         messagingPane.setAlignmentY(BOTTOM_ALIGNMENT);
         messagingPane.setPreferredSize(new Dimension(300, 300));
@@ -642,7 +643,7 @@ public class MessagingWindow extends StatePanel {
 			if (button.isPresent()) {
 				((ChatButtonPress) button.get().getActionListeners()[0]).unread = true;
 			}
-		} else if (!selectedUser.isPresent() || !message.user.equals(selectedUser.get())) {
+		} else if (!message.chatRoom.isPresent() && (!selectedUser.isPresent() || !message.user.equals(selectedUser.get()))) {
 			Optional<JButton> button = getUserButtonByUser(message.user);
 			if (button.isPresent()) {
 				((UserButtonPress) button.get().getActionListeners()[0]).unread = true;
