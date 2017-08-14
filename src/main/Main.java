@@ -100,69 +100,8 @@ public class Main {
         
         final NetworkInterface network = new ZeroMQServer(address, 8743);
         
-      // Mock server settings for testing
-        if(network instanceof MockServer) {					
-            MockServer mockNetwork = (MockServer)network;
-            
-            mockNetwork.loginResult = NetworkInterface.RESULT_SUCCESS;
-            mockNetwork.loginTime = 2500;
-            
-            mockNetwork.getNicknameResult = NetworkInterface.RESULT_NOT_LOGGED_IN;
-            mockNetwork.getNicknameTime = 0;
-            
-            mockNetwork.getUserUpdatesResult = NetworkInterface.RESULT_NOT_LOGGED_IN;
-            mockNetwork.getUserUpdatesTime = 0;
-            
-            mockNetwork.getMessagesResult = NetworkInterface.RESULT_NOT_LOGGED_IN;
-            mockNetwork.getMessagesTime = 0;
-            
-            mockNetwork.sendMessageResult = NetworkInterface.RESULT_NOT_LOGGED_IN;
-            mockNetwork.sendMessageTime = 0;
-            
-            mockNetwork.logoutResult = NetworkInterface.RESULT_NOT_LOGGED_IN;
-            mockNetwork.logoutTime = 0;
-        }
-        
         // Logs into jmessage
         login(window, network);
-        
-        // In program mock settings
-        if(network instanceof MockServer) {
-            MockServer mockNetwork = (MockServer)network;
-            
-            mockNetwork.loginResult = NetworkInterface.RESULT_ALREADY_LOGGED_IN;
-            mockNetwork.loginTime = 0;
-            
-            //create groups for mock server
-            mockNetwork.getChatNameResult = NetworkInterface.RESULT_SUCCESS;
-            mockNetwork.getChatNameTime = 75;
-            mockNetwork.chatMap.put(0, "General");
-            mockNetwork.chatMap.put(1, "Off topic");
-            
-            //how often should the chat update in milliseconds
-            mockNetwork.getChatUpdatesResult = NetworkInterface.RESULT_SUCCESS;
-            mockNetwork.getChatUpdatesTime = 250;
-            
-            //create users for mock server
-            mockNetwork.getNicknameResult = NetworkInterface.RESULT_SUCCESS;
-            mockNetwork.getNicknameTime = 75;
-            mockNetwork.userMap.put("TestUser1", "DisplayName1");
-            mockNetwork.userMap.put("TestUser2", "DisplayName2");
-            mockNetwork.userMap.put("TestUser3", "DisplayName3");
-            
-            mockNetwork.getUserUpdatesResult = NetworkInterface.RESULT_SUCCESS;
-            mockNetwork.getUserUpdatesTime = 250;
-            
-            mockNetwork.getMessagesResult = NetworkInterface.RESULT_SUCCESS;
-            mockNetwork.getMessagesTime = 750;
-            //mock messages
-            
-            mockNetwork.sendMessageResult = NetworkInterface.RESULT_SUCCESS;
-            mockNetwork.sendMessageTime = 500;
-            
-            mockNetwork.logoutResult = NetworkInterface.RESULT_SUCCESS;
-            mockNetwork.logoutTime = 750;
-        }
         
         while(window.isShowing()) {
             int keepAlive = network.keepAlive();
@@ -257,6 +196,8 @@ public class Main {
             
             mockNetwork.logoutResult = NetworkInterface.RESULT_NOT_LOGGED_IN;
             mockNetwork.logoutTime = 0;
+            
+            
         }
         
         System.exit(0);
