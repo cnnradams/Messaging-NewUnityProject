@@ -184,13 +184,23 @@ public class MessagingWindow extends StatePanel {
             if (sendMessages.isVisible() && !sendMessages.isPlaceHolder()) {
                 if(selectedChat.isPresent()) {
                     Message message = new Message(selectedChat.get(), null, sendMessages.getText(), ZonedDateTime.now(ZoneId.ofOffset("UTC", ZoneOffset.UTC)), true);
+                    if (message.message.length() > 1000) {
+                    	Component frame = null;
+						JOptionPane.showMessageDialog(frame, "Messages have a character limit of 1000! Shorten your message.", "Chill out my dude", JOptionPane.ERROR_MESSAGE);
+                    } else {
                     messageQueue.add(message);
                     addMessage(message);
+                    }
                 }
                 else if(selectedUser.isPresent()) {
                     Message message = new Message(selectedUser.get(), sendMessages.getText(), ZonedDateTime.now(ZoneId.ofOffset("UTC", ZoneOffset.UTC)), true);
+                    if (message.message.length() > 1000) {
+                    	Component frame = null;
+						JOptionPane.showMessageDialog(frame, "Messages have a character limit of 1000! Shorten your message.", "Chill out my dude", JOptionPane.ERROR_MESSAGE);
+                    } else {
                     messageQueue.add(message);
                     addMessage(message);
+                    }
                 }
                 sendMessages.reset();
                 this.requestFocus();
