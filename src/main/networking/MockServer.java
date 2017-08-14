@@ -20,17 +20,27 @@ import main.data.User;
  */
 public class MockServer implements NetworkInterface {
 
+    /**
+     * The mock network is logged out
+     */
+    public static final int STATE_LOGGED_OUT = 0;
+    
+    /**
+     * The mock network is logged in
+     */
+    public static final int STATE_LOGGED_IN = 1;
+    
     private int resultCode;
     
     /**
      * The mock results for each operation
      */
-    public int loginResult, getAllChatsResult, getChatNameResult, getChatUpdatesResult, getNicknameResult, getUsersResult, getUserUpdatesResult, getMessagesResult, sendMessageResult, logoutResult;
+    public int loginResult, getAllChatsResult, getChatNameResult, getChatUpdatesResult, getNicknameResult, getUsersResult, getUserUpdatesResult, getMessagesResult, sendMessageResult, logoutResult, keepAliveResult, setNicknameResult, getProfilePictureResult, setProfilePictureResult, createChatResult;
     
     /**
      * The time it takes for each operation to complete
      */
-    public long loginTime, getAllChatsTime, getChatNameTime, getChatUpdatesTime, getNicknameTime, getUsersTime, getUserUpdatesTime, getMessagesTime, sendMessageTime, logoutTime;
+    public long loginTime, getAllChatsTime, getChatNameTime, getChatUpdatesTime, getNicknameTime, getUsersTime, getUserUpdatesTime, getMessagesTime, sendMessageTime, logoutTime, keepAliveTime, setNicknameTime, getProfilePictureTime, setProfilePictureTime, createChatTime;
     
     /**
      * All the users on the mock network
@@ -61,6 +71,11 @@ public class MockServer implements NetworkInterface {
      * The user that is logged in, {@code Optional.empty()} if no user is logged in
      */
     public Optional<User> loggedIn = Optional.empty();
+    
+    /**
+     * Holds a map of all profile pictures
+     */
+    public Map<String, Optional<BufferedImage>> pictureMap = new HashMap<>();
     
     private void pause(long time) {
         try {
@@ -105,6 +120,8 @@ public class MockServer implements NetworkInterface {
         printlnResult();
         
         System.out.println();
+        
+        setState(STATE_LOGGED_IN);
         
         return loginResult == NetworkInterface.RESULT_SUCCESS;
     }
@@ -416,38 +433,207 @@ public class MockServer implements NetworkInterface {
         
         System.out.println();
         
+        setState(STATE_LOGGED_OUT);
+        
         return logoutResult == NetworkInterface.RESULT_SUCCESS;
     }
     
     @Override
     public int keepAlive() {
-        System.out.println("[Mock] Not dead!");
+        System.out.println("[Mock] Keeping alive...\n"
+                         + "[Mock] Waiting for " + keepAliveTime + " milliseconds");
+        pause(keepAliveTime);
         
-        return NetworkInterface.RESULT_SUCCESS;
+        resultCode = keepAliveResult;
+        printlnResult();
+        
+        return keepAliveResult;
     }
     
 
     @Override
     public boolean setNickname(String nickname) {
-        System.out.println("[Mock] Nickname \"changed\"");
-        return true;
+        System.out.println("[Mock] Setting nickname to " + nickname + "...\n"
+                         + "[Mock] Waiting for " + setNicknameTime + " milliseconds");
+        pause(setNicknameTime);
+       
+        if(loggedIn.isPresent() && setNicknameResult == RESULT_SUCCESS) {
+            userMap.put(userMap.get(loggedIn.get().username), nickname);
+        }
+        else if(!loggedIn.isPresent()) {
+            resultCode = RESULT_NOT_LOGGED_IN;
+            printlnResult();
+            
+            System.out.println("[Mock] Nickname change " + (resultCode == NetworkInterface.RESULT_SUCCESS ? "successful" : "failure"));
+            
+            return resultCode == RESULT_SUCCESS;
+        }
+        
+        resultCode = setNicknameResult;
+        printlnResult();
+        
+        System.out.println("[Mock] Nickname change " + (resultCode == NetworkInterface.RESULT_SUCCESS ? "successful" : "failure"));
+       
+        return resultCode == RESULT_SUCCESS;
     }
 
     @Override
     public Optional<BufferedImage> getProfilePicture(String username) {
-        System.out.println("[Mock] Getting profile picture for user");
-        return Optional.empty();
+        System.out.println("[Mock] Getting profile picture for " + username + "...\n"
+                         + "[Mock] Waiting for " + getProfilePictureTime + " milliseconds");
+        pause(getProfilePictureTime);
+        
+        resultCode = getProfilePictureResult;
+        printlnResult();
+        
+        System.out.println("[Mock] Profile picture retrieval " + (resultCode == NetworkInterface.RESULT_SUCCESS ? "successful" : "failure"));
+        
+        if(resultCode == RESULT_SUCCESS) {
+            return pictureMap.getOrDefault(username, Optional.empty());
+        }
+        else {
+            return Optional.empty();
+        }
     }
 
     @Override
     public boolean setProfilePicture(Optional<BufferedImage> image) {
-        System.out.println("[Mock] \"Setting\" profile picture");
-        return true;
+        System.out.println("[Mock] Setting profile picture...\n"
+                         + "[Mock] Waiting for " + setProfilePictureTime + " milliseconds");
+        pause(setProfilePictureTime);
+      
+        if(loggedIn.isPresent() && setProfilePictureResult == RESULT_SUCCESS) {
+            pictureMap.put(userMap.get(loggedIn.get().username), image);
+        }
+        else if(!loggedIn.isPresent()) {
+            resultCode = RESULT_NOT_LOGGED_IN;
+            printlnResult();
+            
+            System.out.println("[Mock] Setting profile picture " + (resultCode == NetworkInterface.RESULT_SUCCESS ? "successful" : "failure"));
+            
+            return resultCode == RESULT_SUCCESS;
+        }
+        
+        resultCode = setProfilePictureResult;
+        printlnResult();
+        
+        System.out.println("[Mock] Setting profile picture " + (resultCode == NetworkInterface.RESULT_SUCCESS ? "successful" : "failure"));
+        
+        return resultCode == RESULT_SUCCESS;
     }
     
     @Override
     public Optional<ChatRoom> createChat(String name) {
-        System.out.println("[Mock] Getting profile picture for user");
-        return Optional.empty();
+        System.out.println("[Mock] Creating chat " + name + "...\n"
+                         + "[Mock] Waiting for " + createChatTime + " milliseconds");
+        pause(createChatTime);
+        
+        resultCode = createChatResult;
+        printlnResult();
+        
+        if(resultCode == RESULT_SUCCESS) {
+            int id = -1;
+            while(chatMap.containsKey(++id));
+            
+            chatMap.put(id, name);
+            return Optional.of(new ChatRoom(id, name));
+        }
+        else {
+            return Optional.empty();
+        }
+    }
+    
+    private void setState(int state) {
+        switch(state) {
+            case STATE_LOGGED_OUT: {
+                loginResult = NetworkInterface.RESULT_SUCCESS;
+                loginTime = 2500;
+                
+                getNicknameResult = NetworkInterface.RESULT_NOT_LOGGED_IN;
+                getNicknameTime = 0;
+                
+                getUserUpdatesResult = NetworkInterface.RESULT_NOT_LOGGED_IN;
+                getUserUpdatesTime = 0;
+                
+                getMessagesResult = NetworkInterface.RESULT_NOT_LOGGED_IN;
+                getMessagesTime = 0;
+                
+                sendMessageResult = NetworkInterface.RESULT_NOT_LOGGED_IN;
+                sendMessageTime = 0;
+                
+                logoutResult = NetworkInterface.RESULT_NOT_LOGGED_IN;
+                logoutTime = 0;
+                
+                keepAliveResult = NetworkInterface.RESULT_NOT_LOGGED_IN;
+                keepAliveTime = 0;
+                
+                setNicknameResult = NetworkInterface.RESULT_NOT_LOGGED_IN;
+                setNicknameTime = 0;
+                
+                getProfilePictureResult = NetworkInterface.RESULT_NOT_LOGGED_IN;
+                getProfilePictureResult = 0;
+                
+                setProfilePictureResult = NetworkInterface.RESULT_NOT_LOGGED_IN;
+                setProfilePictureTime = 0;
+                
+                createChatResult = NetworkInterface.RESULT_NOT_LOGGED_IN;
+                createChatTime = 0;
+            }
+            break;
+            case STATE_LOGGED_IN: {
+                loginResult = NetworkInterface.RESULT_ALREADY_LOGGED_IN;
+                loginTime = 0;
+                
+                //create groups for mock server
+                getChatNameResult = NetworkInterface.RESULT_SUCCESS;
+                getChatNameTime = 75;
+                chatMap.put(0, "General");
+                chatMap.put(1, "Off topic");
+                
+                //how often should the chat update in milliseconds
+                getChatUpdatesResult = NetworkInterface.RESULT_SUCCESS;
+                getChatUpdatesTime = 250;
+                
+                //create users for mock server
+                getNicknameResult = NetworkInterface.RESULT_SUCCESS;
+                getNicknameTime = 75;
+                userMap.put("TestUser1", "DisplayName1");
+                userMap.put("TestUser2", "DisplayName2");
+                userMap.put("TestUser3", "DisplayName3");
+                
+                getUserUpdatesResult = NetworkInterface.RESULT_SUCCESS;
+                getUserUpdatesTime = 250;
+                
+                getMessagesResult = NetworkInterface.RESULT_SUCCESS;
+                getMessagesTime = 750;
+                //mock messages
+                
+                sendMessageResult = NetworkInterface.RESULT_SUCCESS;
+                sendMessageTime = 500;
+                
+                logoutResult = NetworkInterface.RESULT_SUCCESS;
+                logoutTime = 750;
+                
+                keepAliveResult = NetworkInterface.RESULT_SUCCESS;
+                keepAliveTime = 50;
+                
+                setNicknameResult = NetworkInterface.RESULT_SUCCESS;
+                setNicknameResult = 250;
+                
+                getProfilePictureResult = NetworkInterface.RESULT_SUCCESS;
+                getProfilePictureTime = 500;
+                
+                setProfilePictureResult = NetworkInterface.RESULT_SUCCESS;
+                setProfilePictureTime = 500;
+                
+                createChatResult = NetworkInterface.RESULT_SUCCESS;
+                createChatTime = 100;
+            }
+            break;
+            default: {
+                ;
+            }
+            break;
+        }
     }
 }
