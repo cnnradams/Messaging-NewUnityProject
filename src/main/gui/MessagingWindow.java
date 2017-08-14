@@ -133,6 +133,8 @@ public class MessagingWindow extends StatePanel {
     	this.setLayout(null);
     	this.setSize(800, 439);
     	this.setBackground(ColorConstants.BACKGROUND_COLOR);
+
+    	// User list
         JScrollPane userScrollPane = new JScrollPane();
         userScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         userScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -140,7 +142,7 @@ public class MessagingWindow extends StatePanel {
         userScrollPane.setViewportView(userListPanel);
         userScrollPane.setPreferredSize(new Dimension(300, 300));
         
-        
+        // Groups list
         JScrollPane chatScrollPane = new JScrollPane();
         chatScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         chatScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -148,9 +150,10 @@ public class MessagingWindow extends StatePanel {
         chatScrollPane.setViewportView(chatListPanel);
         chatScrollPane.setPreferredSize(new Dimension(300, 300));
       
-        
+        // Messaging window
         messagingWindow = new JPanel();
         
+        // The scroll bar inside of the messaging area
         messagingPane = new JScrollPane();
         messagingPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         messagingPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -163,11 +166,15 @@ public class MessagingWindow extends StatePanel {
         
         messageQueue = new ArrayList<>();
         
+        // Send messages placeholder
         sendMessages = new PlaceHolderTextField("Type a message here");
         sendMessages.setVisible(true);
         sendMessages.setLayout(null);
+        
+        // Send Message buttpm
         sendMessageButton = new JButton("Send");
         sendMessageButton.setVisible(true);
+        sendMessageButton.setLayout(null);
         sendMessageButton.addActionListener(e -> {
             if (sendMessages.isVisible() && !sendMessages.isPlaceHolder()) {
                 if(selectedChat.isPresent()) {
@@ -185,29 +192,33 @@ public class MessagingWindow extends StatePanel {
                 sendMessages.requestFocus();
             }
         });
-        sendMessageButton.setLayout(null);
+      
+        // Add group button  
         addGroupButton = new JButton("Add Group");
         addGroupButton.setVisible(true);
         addGroupButton.setLayout(null);
-        JPanel tab1 = new JPanel();
-        tab1.setLayout(null);
+
+        // Fill each of the tabs with the chat list and user list
         chatScrollPane.setBounds(0, 0, 200, getHeight());
         userScrollPane.setBounds(0, 0, 200, getHeight());
-        	tab1.add(chatScrollPane);
-        	tabPanel = new JTabbedPane();
-        	tabPanel.addTab("Groups", chatScrollPane);
-        	tabPanel.addTab("Users", userScrollPane);
-        this.add(tabPanel);
+
+        // Groups and users tab
+        tabPanel = new JTabbedPane();
+        tabPanel.addTab("Groups", chatScrollPane);
+        tabPanel.addTab("Users", userScrollPane);
+        
+        // Don't see these until you start talking to someone
         sendMessages.setVisible(false);
         sendMessageButton.setVisible(false);
+
+        // Add everything to the view
+        this.add(tabPanel);
         this.add(sendMessages);
         this.add(sendMessageButton);
-       // this.add(userScrollPane);
-        //this.add(chatScrollPane);
         this.add(messagingPane);
         this.add(addGroupButton);
         
-        //set all the ui colours
+        // Set all the ui colours
 		userListPanel.setBackground(ColorConstants.BACKGROUND_COLOR);
 		chatListPanel.setBackground(ColorConstants.BACKGROUND_COLOR);
 		messagingPane.setBackground(ColorConstants.MESSAGING_PANE_BACKGROUND_COLOR);
@@ -231,6 +242,8 @@ public class MessagingWindow extends StatePanel {
 			UIManager.put("OptionPane.messageForeground", Color.WHITE);
 			groupName = JOptionPane.showInputDialog("What should this group be called?");
 		});
+		
+		// Whenever the view is resized let the messaging area move out to the max size
 		this.addComponentListener(new ComponentListener() {
 
 			@Override
@@ -261,7 +274,6 @@ public class MessagingWindow extends StatePanel {
 
 			}
 		});
-
 	}
 
 	@Override
@@ -300,10 +312,10 @@ public class MessagingWindow extends StatePanel {
 		}
 
 		if (selectedChat.isPresent()) {
-			ChatButtonPress button = (ChatButtonPress) getChatButtonByChat(selectedChat.get()).get()
-					.getActionListeners()[0];
+			ChatButtonPress button = (ChatButtonPress) getChatButtonByChat(selectedChat.get()).get().getActionListeners()[0];
 			button.unread = false;
 
+			// Resets the messages for recalculation purposes
 			messagingWindow.removeAll();
 			List<Message> allChatMessages = new ArrayList<>();
 			for (Message m : messages) {
@@ -350,14 +362,10 @@ public class MessagingWindow extends StatePanel {
 			}
 		} else if (selectedUser.isPresent()) {
 			
-			
-			// TODO: Comment this bit cause I don't really know what it does.
-			
-			
-			UserButtonPress button = (UserButtonPress) getUserButtonByUser(selectedUser.get()).get()
-					.getActionListeners()[0];
+			UserButtonPress button = (UserButtonPress) getUserButtonByUser(selectedUser.get()).get().getActionListeners()[0];
 			button.unread = false;
 
+			// Reset the messages
 			messagingWindow.removeAll();
 			List<Message> allUserMessages = new ArrayList<>();
 
@@ -412,6 +420,7 @@ public class MessagingWindow extends StatePanel {
 			}
 		}
 		
+		// If its not windows you have to resize to refresh for some stupid reason
         if(!System.getProperty("os.name").toLowerCase().contains("win")) {
             int width = this.getWidth();
             messagingPane.setSize(width + 1, this.getHeight());
@@ -546,17 +555,20 @@ public class MessagingWindow extends StatePanel {
 	// Set up the panel for the self-user in the top left.
 	public JPanel createUserProfile() {
 		User user = User.getMe();
-		JPanel userButton = new JPanel();
-		userButton.setLayout(null);
-		userButton.setMaximumSize(new Dimension(2000, 50));
-		userButton.setOpaque(false);
+		
+		// Unclickable panel
+		JPanel userPanel = new JPanel();
+		userPanel.setLayout(null);
+		userPanel.setMaximumSize(new Dimension(2000, 50));
+		userPanel.setOpaque(false);
+		
 		BufferedImage bufferedImage = null;
 		try {
 			bufferedImage = ImageIO.read(this.getClass().getResourceAsStream("/resources/server-icon.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		Image newimg = bufferedImage.getScaledInstance(30, 30, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
+		Image newimg = bufferedImage.getScaledInstance(30, 30, java.awt.Image.SCALE_SMOOTH);
 		JButton button = new JButton();
 		button.setIcon(new ImageIcon(newimg));
 		button.setBounds(10, 10, 30, 30);
@@ -565,14 +577,14 @@ public class MessagingWindow extends StatePanel {
 			public void actionPerformed(ActionEvent e) {
 				BufferedImage bufferedImage = getImageFromFileSystem();
 				if (bufferedImage != null) {
-					Image newimg = bufferedImage.getScaledInstance(30, 30, java.awt.Image.SCALE_SMOOTH); // scale it the
-																											// smooth
-																											// way
+					Image newimg = bufferedImage.getScaledInstance(30, 30, java.awt.Image.SCALE_SMOOTH);
 					button.setIcon(new ImageIcon(newimg));
 				}
 				userIcon = bufferedImage;
 			}
 		});
+		
+		// Your nickname
 		JTextField nickname = new JTextField(user.nickname);
 		nickname.setBackground(ColorConstants.BACKGROUND_COLOR);
 		nickname.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 0, ColorConstants.BACKGROUND_COLOR));
@@ -588,10 +600,11 @@ public class MessagingWindow extends StatePanel {
 				this.requestFocus();
 			}
 		});
-		userButton.add(button);
-		userButton.add(nickname);
+		
+		userPanel.add(button);
+		userPanel.add(nickname);
 
-		return userButton;
+		return userPanel;
 	}
 
 	@Override
@@ -637,6 +650,7 @@ public class MessagingWindow extends StatePanel {
 	
 	// When a user joins, create a button for them.
 	public JButton createButtonForUser(User user) {
+		
 		JButton userButton = new JButton();
 		userButton.setLayout(null);
 		userButton.setMaximumSize(new Dimension(2000, 50));
@@ -660,6 +674,7 @@ public class MessagingWindow extends StatePanel {
 
 		JLabel profilePic = new JLabel(imageIcon);
 		profilePic.setBounds(10, 10, 30, 30);
+		
 		JLabel nickname = new JLabel(user.nickname);
 		nickname.setFont(font);
 		nickname.setForeground(ColorConstants.FOCUSED_COLOR);
