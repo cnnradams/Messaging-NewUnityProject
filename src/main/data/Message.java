@@ -3,9 +3,9 @@ package main.data;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.LayoutManager;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import javax.swing.JLabel;
@@ -83,7 +83,7 @@ public class Message extends JPanel {
         if(loopback)
             userLabel.setText("You, at");
         else
-            userLabel.setText(user.username + " (" + user.nickname + ") at");
+            userLabel.setText(user.nickname + " at");
 
         messageLabel = new JTextArea(message);
         
@@ -94,9 +94,7 @@ public class Message extends JPanel {
         
         messageLabel.setMinimumSize(new Dimension(messageLabel.getMinimumSize().width, 20));
         
-        Calendar c = GregorianCalendar.getInstance();
-        String time = c.get(Calendar.HOUR) + ":" + c.get(Calendar.MINUTE);
-        dateTimeLabel = new JLabel(time + " said: ");
+        dateTimeLabel = new JLabel(dateTime.withZoneSameInstant(ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("hh:mma")) + " said: ");
         
         // Coloring of text
         this.setBackground(ColorConstants.MESSAGING_PANE_BACKGROUND_COLOR);

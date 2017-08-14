@@ -339,6 +339,9 @@ public class MessagingWindow extends StatePanel {
 						m.setAlignmentX(LEFT_ALIGNMENT);
 						messagingWindow.add(m, -1);
 						messagingWindow.setAlignmentX(LEFT_ALIGNMENT);
+					    // If you're in the chat that the message was added to, then drag the scrollbar to the bottom.
+						JScrollBar vertical = messagingPane.getVerticalScrollBar();
+						vertical.setValue(vertical.getMaximum());
 					}
 
 				}
@@ -391,6 +394,9 @@ public class MessagingWindow extends StatePanel {
 						m.setAlignmentX(LEFT_ALIGNMENT);
 						messagingWindow.add(m, -1);
 						messagingWindow.setAlignmentX(LEFT_ALIGNMENT);
+                        // If you're in the chat that the message was added to, then drag the scrollbar to the bottom.
+                        JScrollBar vertical = messagingPane.getVerticalScrollBar();
+                        vertical.setValue(vertical.getMaximum());
 					}
 				}
 			}
@@ -629,16 +635,6 @@ public class MessagingWindow extends StatePanel {
 	public void addMessage(Message message) {
 		message.reBreak(messagingPane.getWidth(), messagingPane);
 		messages.add(message);
-		// If you're in the chat that the message was added to, then drag the scrollbar to the bottom.
-		if (message.chatRoom.isPresent() && selectedChat.isPresent()
-				&& message.chatRoom.get().equals(selectedChat.get())) {
-			JScrollBar vertical = messagingPane.getVerticalScrollBar();
-			vertical.setValue(vertical.getMaximum());
-		} else if (!message.chatRoom.isPresent() && selectedUser.isPresent()
-				&& message.user.equals(selectedUser.get())) {
-			JScrollBar vertical = messagingPane.getVerticalScrollBar();
-			vertical.setValue(vertical.getMaximum());
-		}
 		// Otherwise, if you're not in the chat, make the unread notification go off for the user that sent the message.
 		if (message.chatRoom.isPresent()
 				&& (!selectedChat.isPresent() || !message.chatRoom.get().equals(selectedChat.get()))) {
