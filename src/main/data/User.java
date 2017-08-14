@@ -1,5 +1,7 @@
 package main.data;
 
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -137,5 +139,18 @@ public class User implements Comparable<User> {
      */
     public static void setMe(User me) {
     	User.me = me;
+    }
+    
+    public static BufferedImage scaleImage(BufferedImage image) {
+        double w = image.getWidth();
+        double h = image.getHeight();
+        BufferedImage scaled = new BufferedImage(30, 30, BufferedImage.TYPE_INT_ARGB);
+        AffineTransform at = new AffineTransform();
+        at.scale(30.0 / w, 30.0 / h);
+        AffineTransformOp scaleOp = 
+           new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
+        scaled = scaleOp.filter(image, scaled);
+        
+        return scaled;
     }
 }

@@ -22,7 +22,6 @@ import main.data.User;
 import main.gui.ColourConstants;
 import main.gui.MessagingWindow;
 import main.gui.Window;
-import main.networking.MockServer;
 import main.networking.NetworkInterface;
 import main.networking.ZeroMQServer;
 
@@ -151,6 +150,7 @@ public class Main {
                 
                 BufferedImage icon = window.messagingWindow.getNewIcon();			//profile pictures
                 if(icon != null) {
+                    
                     network.setProfilePicture(Optional.of(icon));
                 }
                 
@@ -175,30 +175,6 @@ public class Main {
         }
         
         network.logout();
-        
-        if(network instanceof MockServer) {
-            MockServer mockNetwork = (MockServer)network;
-            
-            mockNetwork.loginResult = NetworkInterface.RESULT_SUCCESS;
-            mockNetwork.loginTime = 2500;
-            
-            mockNetwork.getNicknameResult = NetworkInterface.RESULT_NOT_LOGGED_IN;
-            mockNetwork.getNicknameTime = 0;
-            
-            mockNetwork.getUserUpdatesResult = NetworkInterface.RESULT_NOT_LOGGED_IN;
-            mockNetwork.getUserUpdatesTime = 0;
-            
-            mockNetwork.getMessagesResult = NetworkInterface.RESULT_NOT_LOGGED_IN;
-            mockNetwork.getMessagesTime = 0;
-            
-            mockNetwork.sendMessageResult = NetworkInterface.RESULT_NOT_LOGGED_IN;
-            mockNetwork.sendMessageTime = 0;
-            
-            mockNetwork.logoutResult = NetworkInterface.RESULT_NOT_LOGGED_IN;
-            mockNetwork.logoutTime = 0;
-            
-            
-        }
         
         System.exit(0);
     }

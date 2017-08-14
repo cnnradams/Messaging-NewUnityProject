@@ -625,7 +625,7 @@ public class MessagingWindow extends StatePanel {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		Image newimg = bufferedImage.getScaledInstance(30, 30, java.awt.Image.SCALE_SMOOTH);
+		BufferedImage newimg = User.scaleImage(bufferedImage);
 		JButton button = new JButton();
 		button.setIcon(new ImageIcon(newimg));
 		button.setBounds(10, 10, 30, 30);
@@ -634,8 +634,8 @@ public class MessagingWindow extends StatePanel {
 			public void actionPerformed(ActionEvent e) {
 				BufferedImage bufferedImage = getImageFromFileSystem();
 				if (bufferedImage != null) {
-					Image newimg = bufferedImage.getScaledInstance(30, 30, java.awt.Image.SCALE_SMOOTH);
-					button.setIcon(new ImageIcon(newimg));
+					bufferedImage = User.scaleImage(bufferedImage);
+					button.setIcon(new ImageIcon(bufferedImage));
 				}
 				userIcon = bufferedImage;
 			}
