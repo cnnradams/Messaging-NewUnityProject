@@ -152,12 +152,12 @@ public class MessagingWindow extends StatePanel {
       
         // Messaging window
         messagingWindow = new JPanel();
+        messagingWindow.setLayout(new BoxLayout(messagingWindow, BoxLayout.Y_AXIS));
         
         // The scroll bar inside of the messaging area
         messagingPane = new JScrollPane();
         messagingPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         messagingPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        messagingWindow.setLayout(new BoxLayout(messagingWindow, BoxLayout.Y_AXIS));
         messagingPane.setViewportView(messagingWindow);
         messagingPane.setAlignmentY(BOTTOM_ALIGNMENT);
         messagingPane.setPreferredSize(new Dimension(300, 300));
@@ -221,20 +221,26 @@ public class MessagingWindow extends StatePanel {
         // Set all the ui colours
 		userListPanel.setBackground(ColorConstants.BACKGROUND_COLOR);
 		chatListPanel.setBackground(ColorConstants.BACKGROUND_COLOR);
+		
 		messagingPane.setBackground(ColorConstants.MESSAGING_PANE_BACKGROUND_COLOR);
 		messagingWindow.setBackground(ColorConstants.MESSAGING_PANE_BACKGROUND_COLOR);
+		
 		sendMessages.setBackground(ColorConstants.LOGIN_RECTANGLE_COLOR);
 		sendMessageButton.setBackground(ColorConstants.LOGIN_RECTANGLE_COLOR);
+		
 		tabPanel.setBackground(ColorConstants.BACKGROUND_COLOR);
 		tabPanel.setForeground(Color.WHITE);
+		
 		sendMessages.setBorder(BorderFactory.createMatteBorder(0,0,0,0, ColorConstants.BACKGROUND_COLOR));
 		sendMessageButton.setBorderPainted(false);
 		sendMessageButton.setForeground(ColorConstants.FOCUSED_COLOR);
+		
 		addGroupButton.setBackground(ColorConstants.LOGIN_RECTANGLE_COLOR);
 		addGroupButton.setOpaque(false);
 		addGroupButton.setFont(font);
 		addGroupButton.setBorderPainted(false);
 		addGroupButton.setForeground(ColorConstants.FOCUSED_COLOR);
+		
 		addGroupButton.addActionListener(e -> {
 			UIManager.put("OptionPane.background", ColorConstants.BACKGROUND_COLOR);
 			UIManager.put("Panel.background", ColorConstants.BACKGROUND_COLOR);
