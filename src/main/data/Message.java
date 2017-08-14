@@ -130,6 +130,5 @@ public class Message extends JPanel {
     	
     	// Allocates the amount of lines needed to fit the message
     	 messageLabel.setPreferredSize(new Dimension(width, 20 * (int)Math.ceil(messageLabel.getFontMetrics(messageLabel.getFont()).stringWidth(messageLabel.getText())/(double)width)));
-    	 this.setMaximumSize(new Dimension(2000, 20 * (int)Math.ceil(messageLabel.getFontMetrics(messageLabel.getFont()).stringWidth(messageLabel.getText())/(double)width)));
     }
 }
