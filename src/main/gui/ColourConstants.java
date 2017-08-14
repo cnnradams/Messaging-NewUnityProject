@@ -2,7 +2,10 @@ package main.gui;
 
 import java.awt.Color;
 
-public class ColorConstants {
+/**
+ * All the different colours used in the window
+ */
+public class ColourConstants {
 
 	public static final Color BACKGROUND_COLOR = new Color(60, 60, 60);
 	public static final Color FOCUSED_COLOR = new Color(160, 160, 160);

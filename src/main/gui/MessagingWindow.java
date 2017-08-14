@@ -116,6 +116,9 @@ public class MessagingWindow extends StatePanel {
 	private final Clip userJoined = getClip("/resources/sound/userjoined.wav");
 	private final Clip userLeft = getClip("/resources/sound/userleft.wav");
 
+	/**
+	 * Loads resources and adds all the {@code JComponent}s for this panel
+	 */
 	public MessagingWindow() {
 
 		// Set the font to Roboto-Mono, which is used for header-type stuff
@@ -133,7 +136,7 @@ public class MessagingWindow extends StatePanel {
 		
     	this.setLayout(null);
     	this.setSize(800, 439);
-    	this.setBackground(ColorConstants.BACKGROUND_COLOR);
+    	this.setBackground(ColourConstants.BACKGROUND_COLOR);
 
     	// User list
         JScrollPane userScrollPane = new JScrollPane();
@@ -221,31 +224,31 @@ public class MessagingWindow extends StatePanel {
         this.add(addGroupButton);
         
         // Set all the ui colours
-		userListPanel.setBackground(ColorConstants.BACKGROUND_COLOR);
-		chatListPanel.setBackground(ColorConstants.BACKGROUND_COLOR);
+		userListPanel.setBackground(ColourConstants.BACKGROUND_COLOR);
+		chatListPanel.setBackground(ColourConstants.BACKGROUND_COLOR);
 		
-		messagingPane.setBackground(ColorConstants.MESSAGING_PANE_BACKGROUND_COLOR);
-		messagingWindow.setBackground(ColorConstants.MESSAGING_PANE_BACKGROUND_COLOR);
+		messagingPane.setBackground(ColourConstants.MESSAGING_PANE_BACKGROUND_COLOR);
+		messagingWindow.setBackground(ColourConstants.MESSAGING_PANE_BACKGROUND_COLOR);
 		
-		sendMessages.setBackground(ColorConstants.LOGIN_RECTANGLE_COLOR);
-		sendMessageButton.setBackground(ColorConstants.LOGIN_RECTANGLE_COLOR);
+		sendMessages.setBackground(ColourConstants.LOGIN_RECTANGLE_COLOR);
+		sendMessageButton.setBackground(ColourConstants.LOGIN_RECTANGLE_COLOR);
 		
-		tabPanel.setBackground(ColorConstants.BACKGROUND_COLOR);
+		tabPanel.setBackground(ColourConstants.BACKGROUND_COLOR);
 		tabPanel.setForeground(Color.WHITE);
 		
-		sendMessages.setBorder(BorderFactory.createMatteBorder(0,0,0,0, ColorConstants.BACKGROUND_COLOR));
+		sendMessages.setBorder(BorderFactory.createMatteBorder(0,0,0,0, ColourConstants.BACKGROUND_COLOR));
 		sendMessageButton.setBorderPainted(false);
-		sendMessageButton.setForeground(ColorConstants.FOCUSED_COLOR);
+		sendMessageButton.setForeground(ColourConstants.FOCUSED_COLOR);
 		
-		addGroupButton.setBackground(ColorConstants.LOGIN_RECTANGLE_COLOR);
+		addGroupButton.setBackground(ColourConstants.LOGIN_RECTANGLE_COLOR);
 		addGroupButton.setOpaque(false);
 		addGroupButton.setFont(font);
 		addGroupButton.setBorderPainted(false);
-		addGroupButton.setForeground(ColorConstants.FOCUSED_COLOR);
+		addGroupButton.setForeground(ColourConstants.FOCUSED_COLOR);
 		
 		addGroupButton.addActionListener(e -> {
-			UIManager.put("OptionPane.background", ColorConstants.BACKGROUND_COLOR);
-			UIManager.put("Panel.background", ColorConstants.BACKGROUND_COLOR);
+			UIManager.put("OptionPane.background", ColourConstants.BACKGROUND_COLOR);
+			UIManager.put("Panel.background", ColourConstants.BACKGROUND_COLOR);
 
 			UIManager.put("OptionPane.messageForeground", Color.WHITE);
 			groupName = JOptionPane.showInputDialog("What should this group be called?");
@@ -295,27 +298,30 @@ public class MessagingWindow extends StatePanel {
 		return sendMessageButton;
 	}
 
+	/**
+	 * Makes change colour if selected or unread, makes sure only the messages for right selected user/chat are showing
+	 */
 	public void updateMessages() {
 		// This is used to check for unread messages, and if so then highlight the user that sent them
 		for (JButton userButton : userButtons) {
 			if (selectedUser.isPresent()
 					&& ((UserButtonPress) userButton.getActionListeners()[0]).user.equals(selectedUser.get())) {
-				userButton.setBackground(ColorConstants.NEW_MESSAGES_BACKGROUND_COLOR);
+				userButton.setBackground(ColourConstants.NEW_MESSAGES_BACKGROUND_COLOR);
 			} else if (((UserButtonPress) userButton.getActionListeners()[0]).unread) {
 				userButton.setBackground(Color.YELLOW);
 			} else {
-				userButton.setBackground(ColorConstants.BACKGROUND_COLOR);
+				userButton.setBackground(ColourConstants.BACKGROUND_COLOR);
 			}
 		}
 
 		for (JButton chatButton : chatButtons) {
 			if (selectedChat.isPresent()
 					&& ((ChatButtonPress) chatButton.getActionListeners()[0]).chat.equals(selectedChat.get())) {
-				chatButton.setBackground(ColorConstants.NEW_MESSAGES_BACKGROUND_COLOR);
+				chatButton.setBackground(ColourConstants.NEW_MESSAGES_BACKGROUND_COLOR);
 			} else if (((ChatButtonPress) chatButton.getActionListeners()[0]).unread) {
 				chatButton.setBackground(Color.YELLOW);
 			} else {
-				chatButton.setBackground(ColorConstants.BACKGROUND_COLOR);
+				chatButton.setBackground(ColourConstants.BACKGROUND_COLOR);
 			}
 		}
 
@@ -444,6 +450,13 @@ public class MessagingWindow extends StatePanel {
         }
 	}
 
+	/**
+	 * Change information displayed for a user
+	 * 
+	 * @param user The user to update
+	 * @param state The update
+	 * @param network The network to get new user information for
+	 */
 	public void updateUser(User user, int state, NetworkInterface network) {
 		switch (state) {
 		case NetworkInterface.CHANGE_CONNECTED:
@@ -508,6 +521,13 @@ public class MessagingWindow extends StatePanel {
 		}
 	}
 
+	/**
+     * Change information displayed for a chat
+     * 
+     * @param chat The chat to update
+     * @param state The update
+     * @param network The network to get new user information for
+     */
 	public void updateChat(ChatRoom chat, int state, NetworkInterface network) {
 		switch (state) {
 		case NetworkInterface.CHANGE_CONNECTED:
@@ -539,7 +559,11 @@ public class MessagingWindow extends StatePanel {
 		}
 	}
 
-	// Initialize the chatroom buttons
+	/**
+	 * Makes buttons for all of the chats and adds them to the window
+	 * 
+	 * @param chats The chats to display
+	 */
 	public void initializeChatRoomSet(Set<ChatRoom> chats) {
 		onlineChats = chats;
 		for (ChatRoom chat : onlineChats) {
@@ -550,6 +574,11 @@ public class MessagingWindow extends StatePanel {
 	}
 
 	// Initialize the user buttons
+	/**
+     * Makes buttons for all of the users and adds them to the window
+     * 
+     * @param users The users to display
+     */
 	public void initializeUserSet(Set<User> users) {
 		myUserPanel = createUserProfile();
 		myUserPanel.setLayout(null);
@@ -566,7 +595,11 @@ public class MessagingWindow extends StatePanel {
 		}
 	}
 
-	// Set up the panel for the self-user in the top left.
+	/**
+	 * Set up the panel for the self-user in the top left
+	 * 
+	 * @return The panel with user information
+	 */
 	public JPanel createUserProfile() {
 		User user = User.getMe();
 		
@@ -600,10 +633,10 @@ public class MessagingWindow extends StatePanel {
 		
 		// Your nickname
 		JTextField nickname = new JTextField(user.nickname);
-		nickname.setBackground(ColorConstants.BACKGROUND_COLOR);
-		nickname.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 0, ColorConstants.BACKGROUND_COLOR));
+		nickname.setBackground(ColourConstants.BACKGROUND_COLOR);
+		nickname.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 0, ColourConstants.BACKGROUND_COLOR));
 		nickname.setFont(font);
-		nickname.setForeground(ColorConstants.FOCUSED_COLOR);
+		nickname.setForeground(ColourConstants.FOCUSED_COLOR);
 		nickname.setBounds(50, 15, 140, 20);
 		nickname.addActionListener((e) -> {
 			if (e.getActionCommand().isEmpty()) {
@@ -625,7 +658,7 @@ public class MessagingWindow extends StatePanel {
 	// This is for drawing the rounded rectangles around the Add Group button and the self-user profile
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		g.setColor(ColorConstants.LOGIN_RECTANGLE_COLOR);
+		g.setColor(ColourConstants.LOGIN_RECTANGLE_COLOR);
 		((Graphics2D) g).setStroke(new BasicStroke(2));
 		g.drawRoundRect(3, 3, 197, 47, 10, 10);// paint border
 		g.fillRoundRect(3, 53, 197, 20, 10, 10);
@@ -633,7 +666,11 @@ public class MessagingWindow extends StatePanel {
 
 	
 	
-	// For adding the message to the chat box
+	/**
+	 * Adds message to the messaging window
+	 * 
+	 * @param message The message to add
+	 */
 	public void addMessage(Message message) {
 		message.reBreak(messagingPane.getWidth(), messagingPane);
 		messages.add(message);
@@ -653,12 +690,12 @@ public class MessagingWindow extends StatePanel {
 	}
 	
 	// When a user joins, create a button for them.
-	public JButton createButtonForUser(User user) {
+	private JButton createButtonForUser(User user) {
 		
 		JButton userButton = new JButton();
 		userButton.setLayout(null);
 		userButton.setMaximumSize(new Dimension(2000, 50));
-		userButton.setBackground(ColorConstants.BACKGROUND_COLOR);
+		userButton.setBackground(ColourConstants.BACKGROUND_COLOR);
 		userButton.addActionListener(new UserButtonPress(user));
 		// Set the user profile picture to the default
 		BufferedImage bufferedImage = null;
@@ -681,7 +718,7 @@ public class MessagingWindow extends StatePanel {
 		
 		JLabel nickname = new JLabel(user.nickname);
 		nickname.setFont(font);
-		nickname.setForeground(ColorConstants.FOCUSED_COLOR);
+		nickname.setForeground(ColourConstants.FOCUSED_COLOR);
 		nickname.setBounds(50, 15, 140, 20);
 		nickname.setAlignmentY(CENTER_ALIGNMENT);
 
@@ -690,7 +727,11 @@ public class MessagingWindow extends StatePanel {
 		return userButton;
 	}
 
-	// Show the messages of the user that you clicked on
+	/**
+	 * Show the messages of the user
+	 * 
+	 * @param user The user to show the messages for
+	 */
 	public void showMessages(User user) {
 		selectedChat = Optional.empty();
 		selectedUser = Optional.of(user);
@@ -710,12 +751,23 @@ public class MessagingWindow extends StatePanel {
 		return Optional.empty();
 	}
 	
-	// Call the show messages function mentioned earlier that shows the messages for the user you click
+	/**
+	 * Shows messages for a user when pressed, also identifies the user that the button is for
+	 */
 	private class UserButtonPress implements ActionListener {
 
 		private final User user;
+		
+		/**
+		 * Whether the user has unread messages
+		 */
 		public boolean unread = false;
 
+		/**
+		 * Sets the user to show messages for
+		 * 
+		 * @param user The user
+		 */
 		public UserButtonPress(User user) {
 			this.user = user;
 		}
@@ -728,19 +780,23 @@ public class MessagingWindow extends StatePanel {
 	}
 
 	// When a new chat is added create the button for it
-	public JButton createButtonForChat(ChatRoom chat) {
+	private JButton createButtonForChat(ChatRoom chat) {
 		JButton userButton = new JButton(chat.name + " (#" + chat.id + ")");
 		userButton.setLayout(null);
 		userButton.setHorizontalAlignment(SwingConstants.LEFT);
 		userButton.setMaximumSize(new Dimension(2000, 50));
-		userButton.setBackground(ColorConstants.BACKGROUND_COLOR);
+		userButton.setBackground(ColourConstants.BACKGROUND_COLOR);
 		userButton.addActionListener(new ChatButtonPress(chat));
 		userButton.setFont(font);
-		userButton.setForeground(ColorConstants.FOCUSED_COLOR);
+		userButton.setForeground(ColourConstants.FOCUSED_COLOR);
 		return userButton;
 	}
 
-	// When you click on a group, show the messages of that group
+	/**
+     * Show the messages of the chat
+     * 
+     * @param chat The chat to show the messages for
+     */
 	public void showMessages(ChatRoom chat) {
 		selectedChat = Optional.of(chat);
 		selectedUser = Optional.empty();
@@ -760,12 +816,23 @@ public class MessagingWindow extends StatePanel {
 		return Optional.empty();
 	}
 
-	// Call the function mentioned earlier for showing the group's messages when you click on it
+	/**
+     * Shows messages for a user when pressed, also identifies the user that the button is for
+     */
 	private class ChatButtonPress implements ActionListener {
 
 		private final ChatRoom chat;
+		
+         /**
+          * Whether the user has unread messages
+          */
 		public boolean unread = false;
 
+	    /**
+         * Sets the user to show messages for
+         * 
+         * @param user The user
+         */
 		public ChatButtonPress(ChatRoom chat) {
 			this.chat = chat;
 		}
@@ -777,24 +844,32 @@ public class MessagingWindow extends StatePanel {
 		}
 	}
 
-	// Incoming messages queue
+	/**
+	 * Gets a copy of the incoming messages queue
+	 * 
+	 * @return The copy of {@code messageQueue}
+	 */
 	public List<Message> getQueuedMessages() {
 		return new ArrayList<>(messageQueue);
 	}
 
-	// Remove the incoming messages when they have been seen
+	/**
+	 * Remove the all incoming messages
+	 */
 	public void emptyQueuedMessages() {
 		while (messageQueue.size() != 0)
 			messageQueue.remove(0);
 	}
 
-	// Update the tab panel for groups and users
+	/**
+	 * Update the tab panel for groups and users
+	 */
 	public void updateComponents() {
 		SwingUtilities.updateComponentTreeUI(tabPanel);
 	}
 
 	// For when a user clicks on their profile picture to choose a new one
-	public BufferedImage getImageFromFileSystem() {
+	private BufferedImage getImageFromFileSystem() {
 
 		JFrame fileFrame = new JFrame();
 		fileFrame.setSize(500, 500);
@@ -819,14 +894,22 @@ public class MessagingWindow extends StatePanel {
 		return null;
 	}
 
-	// Refresh user icon when changed
+	/**
+	 * Returns a newly set user profile picture, otherwise null
+	 * 
+	 * @return The new profile picture
+	 */
 	public BufferedImage getNewIcon() {
 		BufferedImage returnImage = userIcon;
 		userIcon = null;
 		return returnImage;
 	}
 
-	// Refresh user nickname when changed
+	/**
+     * Returns a newly set user nickname, otherwise null
+     * 
+     * @return The new nickname
+     */
 	public String getNewNickname() {
 		String returnString = nickname;
 		nickname = null;
@@ -851,30 +934,42 @@ public class MessagingWindow extends StatePanel {
 		return null;
 	}
 
-	// Play audio for getting a new message from a user
+	/**
+	 * Play audio for getting a new message from a user
+	 */
 	public void playNewMessage() {
 		messageRecieved.setFramePosition(0);
 		messageRecieved.start();
 	}
-	// Play audio for getting a new mention from a user
+	/**
+	 * Play audio for getting a new mention from a user
+	 */
 	public void playNewMention() {
 		mentionRecieved.setFramePosition(0);
 		mentionRecieved.start();
 	}
 
-	// Play audio for a new user joining jmessage
+	/**
+	 * Play audio for a new user joining jmessage
+	 */
 	public void playNewUser() {
 		messageRecieved.setFramePosition(0);
 		userJoined.start();
 	}
 
-	// Play audio for a user leaving jmessage
+	/**
+	 * Play audio for a user leaving jmessage
+	 */
 	public void playLessUser() {
 		messageRecieved.setFramePosition(0);
 		userLeft.start();
 	}
 
-	// Refresh groups
+	/**
+     * Returns a newly create chat, otherwise null
+     * 
+     * @return The new chat
+     */
 	public String getNewGroup() {
 		String returnGroup = groupName;
 		groupName = null;

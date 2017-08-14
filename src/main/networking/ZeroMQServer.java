@@ -21,9 +21,21 @@ import main.data.ChatRoom;
 import main.data.Message;
 import main.data.User;
 
+/**
+ * A real network implementation that uses the JeroMQ pure Java implementation
+ * of the ZeroMQ library. This was used because it does not require any separate native files.
+ * And can be packaged in the final JAR.
+ */
 public class ZeroMQServer implements NetworkInterface {
 
+    /**
+     * The IP address of the server
+     */
     public final InetAddress ip;
+    
+    /**
+     * The port that the server is on
+     */
     public final int port;
     
     private final ZMQ.Context context;
@@ -33,6 +45,12 @@ public class ZeroMQServer implements NetworkInterface {
     
     private String requestToken;
     
+    /**
+     * Constructs the server with the IP and port
+     * 
+     * @param ip The IP of the server
+     * @param port The port the server is on
+     */
     public ZeroMQServer(InetAddress ip, int port) {
         this.ip = ip;
         this.port = port;
@@ -283,7 +301,7 @@ public class ZeroMQServer implements NetworkInterface {
         return resultCode;
     }
     
-    public void disconnect() {
+    private void disconnect() {
         requester.close();
         context.term();
     }
@@ -316,8 +334,8 @@ public class ZeroMQServer implements NetworkInterface {
     }
 
     @Override
-    public boolean setProfilePicture(BufferedImage image) {
-        if(image == null) {
+    public boolean setProfilePicture(Optional<BufferedImage> image) {
+        if(!image.isPresent()) {
             ServerResponse setProfilePictureResponse = sendRequest(requester, requestToken, REQUEST_SET_USER_PICTURE, String.valueOf(false));
             resultCode = setProfilePictureResponse.resultCode;
             
@@ -327,7 +345,7 @@ public class ZeroMQServer implements NetworkInterface {
             String imageString = null;
             
             try {
-                imageString = User.encodeToString(image);
+                imageString = User.encodeToString(image.get());
             }
             catch(IOException e) {
                 e.printStackTrace();

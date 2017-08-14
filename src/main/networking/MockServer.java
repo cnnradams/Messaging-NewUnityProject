@@ -15,19 +15,51 @@ import main.data.ChatRoom;
 import main.data.Message;
 import main.data.User;
 
+/**
+ * Doesn't actually connect to a server over a network, instead has mock values to simulate a real server
+ */
 public class MockServer implements NetworkInterface {
 
     private int resultCode;
     
+    /**
+     * The mock results for each operation
+     */
     public int loginResult, getAllChatsResult, getChatNameResult, getChatUpdatesResult, getNicknameResult, getUsersResult, getUserUpdatesResult, getMessagesResult, sendMessageResult, logoutResult;
+    
+    /**
+     * The time it takes for each operation to complete
+     */
     public long loginTime, getAllChatsTime, getChatNameTime, getChatUpdatesTime, getNicknameTime, getUsersTime, getUserUpdatesTime, getMessagesTime, sendMessageTime, logoutTime;
     
+    /**
+     * All the users on the mock network
+     */
     public Map<String, String> userMap = new HashMap<>();
+    
+    /**
+     * All the messages on the mock network
+     */
     public List<Message> messages = new ArrayList<>();
+    
+    /**
+     * All the queued updates to users on the mock network
+     */
     public Map<User, List<Integer>> userUpdateMap = new HashMap<>();
+    
+    /**
+     * All the chats on the mock network
+     */
     public Map<Integer, String> chatMap = new HashMap<>();
+    
+    /**
+     * All the queued updates to chats on the mock network
+     */
     public Map<ChatRoom, List<Integer>> chatUpdateMap = new HashMap<>();
     
+    /**
+     * The user that is logged in, {@code Optional.empty()} if no user is logged in
+     */
     public Optional<User> loggedIn = Optional.empty();
     
     private void pause(long time) {
@@ -408,7 +440,7 @@ public class MockServer implements NetworkInterface {
     }
 
     @Override
-    public boolean setProfilePicture(BufferedImage image) {
+    public boolean setProfilePicture(Optional<BufferedImage> image) {
         System.out.println("[Mock] \"Setting\" profile picture");
         return true;
     }

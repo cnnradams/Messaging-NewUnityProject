@@ -19,7 +19,7 @@ import javax.swing.SwingUtilities;
 import main.data.ChatRoom;
 import main.data.Message;
 import main.data.User;
-import main.gui.ColorConstants;
+import main.gui.ColourConstants;
 import main.gui.MessagingWindow;
 import main.gui.Window;
 import main.networking.MockServer;
@@ -31,13 +31,18 @@ import main.networking.ZeroMQServer;
  */
 public class Main {
     
+    /**
+     * Entry point for the program
+     * 
+     * @param args The program arguments (unused)
+     */
     public static void main(String[] args) {
     	// Creates the JFrame
         Window window = new Window();
         window.setStatePanel(window.loginWindow);
         window.setVisible(true);
         window.toFront();
-        window.setBackground(ColorConstants.BACKGROUND_COLOR);
+        window.setBackground(ColourConstants.BACKGROUND_COLOR);
         
         
         List<BufferedImage> icons = new ArrayList<>(4);
@@ -207,7 +212,7 @@ public class Main {
                 
                 BufferedImage icon = window.messagingWindow.getNewIcon();			//profile pictures
                 if(icon != null) {
-                    network.setProfilePicture(icon);
+                    network.setProfilePicture(Optional.of(icon));
                 }
                 
                 String nickname = window.messagingWindow.getNewNickname();			//nicknames

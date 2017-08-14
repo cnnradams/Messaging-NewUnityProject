@@ -40,6 +40,9 @@ public class LoginWindow extends StatePanel {
 	private final PlaceHolderTextField nickname;
 	private final JProgressBar loggingIn;
 
+	/**
+	 * Loads resources and adds all the {@code JComponent}s for this panel
+	 */
 	public LoginWindow() {
 		Font font = null;
 		try {
@@ -75,23 +78,23 @@ public class LoginWindow extends StatePanel {
 		
 		// Username field
 		username = new PlaceHolderTextField("username");
-		username.setBorder(BorderFactory.createMatteBorder(0,0,0,0, ColorConstants.BACKGROUND_COLOR));
-		username.setBackground(ColorConstants.BACKGROUND_COLOR);
+		username.setBorder(BorderFactory.createMatteBorder(0,0,0,0, ColourConstants.BACKGROUND_COLOR));
+		username.setBackground(ColourConstants.BACKGROUND_COLOR);
 		username.setHorizontalAlignment(JTextField.LEFT);
 		username.setFont(font);
 		
 		// Nickname field
 		nickname = new PlaceHolderTextField("nickname (shown in chat)");
-		nickname.setBackground(ColorConstants.BACKGROUND_COLOR);
+		nickname.setBackground(ColourConstants.BACKGROUND_COLOR);
 		nickname.setFont(font);
-		nickname.setBorder(BorderFactory.createMatteBorder(0,0,0,0, ColorConstants.BACKGROUND_COLOR));
+		nickname.setBorder(BorderFactory.createMatteBorder(0,0,0,0, ColourConstants.BACKGROUND_COLOR));
 		nickname.setHorizontalAlignment(JTextField.LEFT);
 		
 		// Submit button
 		submit = new JButton("login");
 		submit.setHorizontalAlignment(JTextField.LEFT);
-		submit.setForeground(ColorConstants.SUBMIT_FOREGROUND_COLOR);
-		submit.setBackground(ColorConstants.BACKGROUND_COLOR);
+		submit.setForeground(ColourConstants.SUBMIT_FOREGROUND_COLOR);
+		submit.setBackground(ColourConstants.BACKGROUND_COLOR);
 		submit.setFont(font);
         submit.setBorderPainted(false); 
         submit.setContentAreaFilled(false); 
@@ -103,7 +106,7 @@ public class LoginWindow extends StatePanel {
 		loggingIn.setVisible(false);
 		loggingIn.setIndeterminate(true);
 		loggingIn.setForeground(Color.white);
-		loggingIn.setBackground(ColorConstants.BACKGROUND_COLOR);
+		loggingIn.setBackground(ColourConstants.BACKGROUND_COLOR);
 		loggingIn.setBorderPainted(false);
 		loggingIn.setString("Logging in...");
 
@@ -128,7 +131,7 @@ public class LoginWindow extends StatePanel {
 		});
 		
 		// Adding everything to the login JPanel
-		this.setBackground(ColorConstants.BACKGROUND_COLOR);
+		this.setBackground(ColourConstants.BACKGROUND_COLOR);
 		this.add(action);
 		this.add(username);
 		this.add(nickname);
@@ -171,9 +174,9 @@ public class LoginWindow extends StatePanel {
 		});
 	}
 
-	Image tempLogoStartup;
-	Image tempLogoDone;
-	boolean hidden = false;
+	private Image tempLogoStartup;
+	private Image tempLogoDone;
+	private boolean hidden = false;
 	
 	@Override
 	public void paintComponent(Graphics g) {
@@ -192,14 +195,14 @@ public class LoginWindow extends StatePanel {
 	public void paint(Graphics g) {
 			super.paint(g);
 			
-			g.setColor(ColorConstants.LOGIN_RECTANGLE_COLOR);
+			g.setColor(ColourConstants.LOGIN_RECTANGLE_COLOR);
 			((Graphics2D) g).setStroke(new BasicStroke(2));
 			
 			// Draw the rectangles OVER the other components
 		if (!hidden) {
 			g.drawRoundRect(450, 155, getWidth() / 3, 30, 10, 10);//paint border
 			g.drawRoundRect(450, 190, getWidth() / 3, 30, 10, 10);//paint border
-			g.setColor(ColorConstants.SUBMIT_FOREGROUND_COLOR);										//Make rounded edges for the textboxes / buttons
+			g.setColor(ColourConstants.SUBMIT_FOREGROUND_COLOR);										//Make rounded edges for the textboxes / buttons
 			g.drawRoundRect(450, 230, getWidth() / 10, 30, 10, 10);//paint border
 		}
 		if (hidden) {
@@ -211,24 +214,24 @@ public class LoginWindow extends StatePanel {
 		return Optional.ofNullable(loginInfo);
 	}
 
+    /**
+     * Reset all the settings because the user
+     * went back to the login screen, either
+     * cause they were kicked, server stopped, etc.
+     */
 	public void resetLoginInfo() {
-        /*
-         * Reset all the settings because the user
-         * went back to the login screen, either
-         * cause they were kicked, server stopped, etc.
-         */
         username.setVisible(true);    
         nickname.setVisible(true);
         submit.setVisible(true);
         
         hidden = false;
         
-        username.setBorder(BorderFactory.createMatteBorder(0,0,0,0, ColorConstants.BACKGROUND_COLOR));
-        username.setBackground(ColorConstants.BACKGROUND_COLOR);
+        username.setBorder(BorderFactory.createMatteBorder(0,0,0,0, ColourConstants.BACKGROUND_COLOR));
+        username.setBackground(ColourConstants.BACKGROUND_COLOR);
         username.setHorizontalAlignment(JTextField.LEFT);
         
-        nickname.setBackground(ColorConstants.BACKGROUND_COLOR);
-        nickname.setBorder(BorderFactory.createMatteBorder(0,0,0,0, ColorConstants.BACKGROUND_COLOR));
+        nickname.setBackground(ColourConstants.BACKGROUND_COLOR);
+        nickname.setBorder(BorderFactory.createMatteBorder(0,0,0,0, ColourConstants.BACKGROUND_COLOR));
         nickname.setHorizontalAlignment(JTextField.LEFT);
         
         loggingIn.setVisible(false);
@@ -251,6 +254,11 @@ public class LoginWindow extends StatePanel {
 		return submit;
 	}
 
+	/**
+	 * Sets the message to display when attempting to log in
+	 * 
+	 * @param text The message to display
+	 */
 	public void setActionText(String text) {
 		action.setText(text);
 	}

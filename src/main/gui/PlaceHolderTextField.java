@@ -14,12 +14,20 @@ public class PlaceHolderTextField extends JTextField {
 
     private static final long serialVersionUID = 1L;
     
+    /**
+     * The placeholder text to display when the text field is not selected
+     */
     public final String text;
     
+    /**
+     * Constructs the placeholder text field with a placeholder
+     * 
+     * @param text The placeholder text
+     */
     public PlaceHolderTextField(String text) {
         this.text = text;
         this.addFocusListener(new PlaceHolderFocusListener(this));
-        this.setForeground(ColorConstants.UNFOCUSED_COLOR);
+        this.setForeground(ColourConstants.UNFOCUSED_COLOR);
         this.setText(text);
     }
     
@@ -28,7 +36,7 @@ public class PlaceHolderTextField extends JTextField {
      * @return Is the text a placeholder?
      */
     public boolean isPlaceHolder() {
-        return (this.getText().equals(text) && this.getForeground().equals(ColorConstants.UNFOCUSED_COLOR)) || this.getText().isEmpty();
+        return (this.getText().equals(text) && this.getForeground().equals(ColourConstants.UNFOCUSED_COLOR)) || this.getText().isEmpty();
     }
     
     /**
@@ -36,32 +44,32 @@ public class PlaceHolderTextField extends JTextField {
      */
     public void reset() {
         setText(text);
-        setForeground(ColorConstants.UNFOCUSED_COLOR);
+        setForeground(ColourConstants.UNFOCUSED_COLOR);
     }
 
     
     @Override
     public void grabFocus() {
        super.grabFocus();
-       if (getText().equals(text) && getForeground() == ColorConstants.UNFOCUSED_COLOR) {
+       if (getText().equals(text) && getForeground() == ColourConstants.UNFOCUSED_COLOR) {
            setText("");
-           setForeground(ColorConstants.FOCUSED_COLOR);
+           setForeground(ColourConstants.FOCUSED_COLOR);
        }
     }
     
-    class PlaceHolderFocusListener implements FocusListener {
+    private class PlaceHolderFocusListener implements FocusListener {
 
-        public final PlaceHolderTextField text;
+        private final PlaceHolderTextField text;
         
-        public PlaceHolderFocusListener(PlaceHolderTextField text) {
+        private PlaceHolderFocusListener(PlaceHolderTextField text) {
             this.text = text;
         }
         
         @Override
         public void focusGained(FocusEvent e) {
-            if (text.getText().equals(text.text) && text.getForeground() == ColorConstants.UNFOCUSED_COLOR) {
+            if (text.getText().equals(text.text) && text.getForeground() == ColourConstants.UNFOCUSED_COLOR) {
                 text.setText("");
-                text.setForeground(ColorConstants.FOCUSED_COLOR);
+                text.setForeground(ColourConstants.FOCUSED_COLOR);
             }
         }
 
@@ -69,7 +77,7 @@ public class PlaceHolderTextField extends JTextField {
         public void focusLost(FocusEvent e) {
             if (text.getText().equals("")) {
                 text.setText(text.text);
-                text.setForeground(ColorConstants.UNFOCUSED_COLOR);
+                text.setForeground(ColourConstants.UNFOCUSED_COLOR);
             }
         }
         
