@@ -225,9 +225,14 @@ public interface NetworkInterface {
     public static final int RESULT_BAD_REQUEST = -7;
     
     /**
+     * Text was too long
+     */
+    public static final int RESULT_TEXT_TOO_LONG = -8;
+    
+    /**
      * Unknown error occurred
      */
-    public static final int RESULT_FAILURE_UNKNOWN = -8;
+    public static final int RESULT_FAILURE_UNKNOWN = -9;
     
     /**
      * A map with all the result codes and what they mean
@@ -253,6 +258,7 @@ public interface NetworkInterface {
         decodings.put(RESULT_ALREADY_LOGGED_IN,    "You are already logged in");
         decodings.put(RESULT_UNKNOWN_CHAT,         "This chat is missing");
         decodings.put(RESULT_BAD_REQUEST,          "Bad request");
+        decodings.put(RESULT_TEXT_TOO_LONG,        "Text was too long");
         decodings.put(RESULT_FAILURE_UNKNOWN,      "Unknown error occurred");
         
         return Collections.unmodifiableMap(decodings);
