@@ -51,32 +51,44 @@ public class LoginWindow extends StatePanel {
 		GraphicsEnvironment genv = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		genv.registerFont(font);
 		font = font.deriveFont(15f);
-		this.setLayout(null);
-		this.setSize(800, 439);																//set all the settings for the window,
-		logoStartup = Toolkit.getDefaultToolkit().createImage(this.getClass().getResource("/resources/logo.gif"));	//like size, logos, etc.
+		
+		this.setLayout(null);	
+		this.setSize(800, 439);
+		
+		// Set all the settings for the window, like size, logos, etc.
+		logoStartup = Toolkit.getDefaultToolkit().createImage(this.getClass().getResource("/resources/logo.gif"));	
 		logoDone = Toolkit.getDefaultToolkit().createImage(this.getClass().getResource("/resources/logodone.gif"));
 		loginbg = Toolkit.getDefaultToolkit().createImage(this.getClass().getResource("/resources/loginbg.png"));
 		tempLogoStartup = logoStartup.getScaledInstance(getWidth(), -1, Image.SCALE_DEFAULT);
 		tempLogoDone = logoDone.getScaledInstance(getWidth(), -1, Image.SCALE_DEFAULT);
-		if (startMillis == 0) {
-			startMillis = System.currentTimeMillis();										//This is used for changing the logo animations. First it plays the typing animation logo, then it
-		}																					//switches to the looping logo with the blinking cursor after 4190ms.
+		
+		// This is used for changing the logo animations. First it plays the typing animation logo, then it
+		// switches to the looping logo with the blinking cursor after 4190ms.
+		if (startMillis == 0) 
+			startMillis = System.currentTimeMillis();
+		
+		// JLabel to tell you status of login
 		action = new JLabel();
 		action.setForeground(Color.white);
 		action.setVisible(false);
+		action.setFont(font);
 		
-		username = new PlaceHolderTextField("username");									//Username input field
+		// Username field
+		username = new PlaceHolderTextField("username");
 		username.setBorder(BorderFactory.createMatteBorder(0,0,0,0, ColorConstants.BACKGROUND_COLOR));
 		username.setBackground(ColorConstants.BACKGROUND_COLOR);
 		username.setHorizontalAlignment(JTextField.LEFT);
 		username.setFont(font);
-		nickname = new PlaceHolderTextField("nickname (shown in chat)");					//Nickname input field
+		
+		// Nickname field
+		nickname = new PlaceHolderTextField("nickname (shown in chat)");
 		nickname.setBackground(ColorConstants.BACKGROUND_COLOR);
 		nickname.setFont(font);
 		nickname.setBorder(BorderFactory.createMatteBorder(0,0,0,0, ColorConstants.BACKGROUND_COLOR));
 		nickname.setHorizontalAlignment(JTextField.LEFT);
 		
-		submit = new JButton("login");														//login button
+		// Submit button
+		submit = new JButton("login");
 		submit.setHorizontalAlignment(JTextField.LEFT);
 		submit.setForeground(ColorConstants.SUBMIT_FOREGROUND_COLOR);
 		submit.setBackground(ColorConstants.BACKGROUND_COLOR);
@@ -86,25 +98,27 @@ public class LoginWindow extends StatePanel {
         submit.setFocusPainted(false); 
         submit.setOpaque(false);
         
-		loggingIn = new JProgressBar();														//progress bar for logging in
+        // Logging in loading bar
+		loggingIn = new JProgressBar();
 		loggingIn.setVisible(false);
 		loggingIn.setIndeterminate(true);
 		loggingIn.setForeground(Color.white);
-		action.setFont(font);
 		loggingIn.setBackground(ColorConstants.BACKGROUND_COLOR);
 		loggingIn.setBorderPainted(false);
 		loggingIn.setString("Logging in...");
 
 		submit.addActionListener(e -> {
-	    	
+
 			if (username.isPlaceHolder() || nickname.isPlaceHolder()) {
-				action.setText("Fill in all fields, please!");						//if username/nickname was left empty
+				// If username/nickname was left empty
+				action.setText("Fill in all fields, please!");						
 				action.setBounds(450, 130, getWidth() / 3, 30);
 				action.setVisible(true);
 			} else {
+				// Start the visual login process
 				hidden = true;
 				action.setVisible(true);
-				action.setBounds(450, 130, getWidth() / 3, 30);						//Start the visual login process
+				action.setBounds(450, 130, getWidth() / 3, 30);						
 				username.setVisible(false);    
 		    	nickname.setVisible(false);
 		    	submit.setVisible(false);
@@ -112,25 +126,29 @@ public class LoginWindow extends StatePanel {
 				loggingIn.setVisible(true);
 			}
 		});
+		
+		// Adding everything to the login JPanel
 		this.setBackground(ColorConstants.BACKGROUND_COLOR);
 		this.add(action);
 		this.add(username);
 		this.add(nickname);
 		this.add(submit);
 		this.add(loggingIn);
+		
+		
 		this.addComponentListener(new ComponentListener() {
+			
+			// Whenever the window is resized reset the location of stuff
 		    public void componentResized(ComponentEvent e) {
 		    	action.setBounds(450, 130, getWidth() / 3, 30);
-		    	username.setBounds(456, 158, getWidth() / 3 - 8, 24);    
+		    	username.setBounds(456, 158, getWidth() / 3 - 8, 24);
 		    	nickname.setBounds(456, 193, getWidth() / 3 - 8, 24);
-		    	loggingIn.setBounds(450, 188, getWidth() / 3, 24);					//Update the bounds on window resize
+		    	loggingIn.setBounds(450, 188, getWidth() / 3, 24);
 		    	submit.setBounds(450, 230, getWidth() / 8, 30);
+		    	
+		    	// Rescale jmessage image
 		    	tempLogoStartup = logoStartup.getScaledInstance(getWidth() / 3, -1, Image.SCALE_DEFAULT);
 				tempLogoDone = logoDone.getScaledInstance(getWidth() / 3, -1, Image.SCALE_DEFAULT);
-				rectX = getWidth() / 2 - getWidth() / 8 - 25;
-				rectY = getHeight() / 2 + 5;
-				rectW = getWidth() / 4 + 50;
-				rectH = 240;
 		    }
 
 			@Override
@@ -152,34 +170,32 @@ public class LoginWindow extends StatePanel {
 			}
 		});
 	}
-	@SuppressWarnings("unused")
-    private void setResizable(boolean b) {
-		// TODO Auto-generated method stub
-		
-	}
+
 	Image tempLogoStartup;
 	Image tempLogoDone;
-	int rectX = 0;
-	int rectY = 150;
-	int rectW = 100;
-	int rectH = 100;
 	boolean hidden = false;
+	
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
+		
 		g.drawImage(loginbg, 0, 0, this);
+		
+		// Draw the launch gif or the idle gif
 		if (tempLogoStartup != null && (System.currentTimeMillis() - startMillis) < 4190)
-			g.drawImage(tempLogoStartup, 74, 174, this);							//Do all the logo stuff mentioned earlier
+			g.drawImage(tempLogoStartup, 74, 174, this);							
 		else if (tempLogoDone != null)
 			g.drawImage(tempLogoDone, 74, 174, this);
-		
-
 	}
+	
 	@Override
 	public void paint(Graphics g) {
 			super.paint(g);
+			
 			g.setColor(ColorConstants.LOGIN_RECTANGLE_COLOR);
 			((Graphics2D) g).setStroke(new BasicStroke(2));
+			
+			// Draw the rectangles OVER the other components
 		if (!hidden) {
 			g.drawRoundRect(450, 155, getWidth() / 3, 30, 10, 10);//paint border
 			g.drawRoundRect(450, 190, getWidth() / 3, 30, 10, 10);//paint border
@@ -190,6 +206,7 @@ public class LoginWindow extends StatePanel {
 			g.drawRoundRect(450, 188, getWidth() / 3, 24, 10, 10);
 		}
 	}
+	
 	public Optional<User> getLoginInfo() {
 		return Optional.ofNullable(loginInfo);
 	}
@@ -205,18 +222,22 @@ public class LoginWindow extends StatePanel {
         submit.setVisible(true);
         
         hidden = false;
-        action.setBounds(450, 130, getWidth() / 3, 30);
+        
         username.setBorder(BorderFactory.createMatteBorder(0,0,0,0, ColorConstants.BACKGROUND_COLOR));
         username.setBackground(ColorConstants.BACKGROUND_COLOR);
         username.setHorizontalAlignment(JTextField.LEFT);
+        
         nickname.setBackground(ColorConstants.BACKGROUND_COLOR);
         nickname.setBorder(BorderFactory.createMatteBorder(0,0,0,0, ColorConstants.BACKGROUND_COLOR));
         nickname.setHorizontalAlignment(JTextField.LEFT);
+        
         loggingIn.setVisible(false);
         loginInfo = null;
+        
         action.setLayout(null);
         action.setBounds(450, 130, getWidth() / 3, 30);
         action.setVisible(true);
+        action.setBounds(450, 130, getWidth() / 3, 30);
 	}
 
 	
@@ -231,7 +252,7 @@ public class LoginWindow extends StatePanel {
 	}
 
 	public void setActionText(String text) {
-		action.setText(text);								//used for telling the user stuff on the login screen
+		action.setText(text);
 	}
 	
 }
