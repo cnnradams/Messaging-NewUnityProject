@@ -410,9 +410,15 @@ public class MessagingWindow extends StatePanel {
 				sendMessageButton.setVisible(false);
 				SwingUtilities.updateComponentTreeUI(this);
 			}
-
-			return;
 		}
+		
+        if(!System.getProperty("os.name").toLowerCase().contains("win")) {
+            int width = this.getWidth();
+            messagingPane.setSize(width + 1, this.getHeight());
+            SwingUtilities.updateComponentTreeUI(messagingPane);
+            messagingPane.setSize(width, this.getHeight());
+            SwingUtilities.updateComponentTreeUI(messagingPane);
+        }
 	}
 
 	public void updateUser(User user, int state, NetworkInterface network) {
@@ -767,24 +773,6 @@ public class MessagingWindow extends StatePanel {
 	public void emptyQueuedMessages() {
 		while (messageQueue.size() != 0)
 			messageQueue.remove(0);
-	}
-
-	//TODO: ryan what III
-	public void setSendMessagesOnTop() {
-		boolean wasFocused = sendMessages.hasFocus();
-		boolean textWasVisible = sendMessages.isVisible();
-		boolean buttonWasVisible = sendMessageButton.isVisible();
-
-		this.remove(sendMessages);
-		this.add(sendMessages);
-		this.remove(sendMessageButton);
-		this.add(sendMessageButton);
-
-		if (wasFocused) {
-			sendMessages.requestFocus();
-		}
-		sendMessages.setVisible(textWasVisible);
-		sendMessageButton.setVisible(buttonWasVisible);
 	}
 
 	// Update the tab panel for groups and users

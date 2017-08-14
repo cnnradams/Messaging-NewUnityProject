@@ -31,9 +31,7 @@ import main.networking.ZeroMQServer;
  */
 public class Main {
     
-	public static String RESOURCE_PATH = "src/resources/";
     public static void main(String[] args) {
-    	
     	// Creates the JFrame
         Window window = new Window();
         window.setStatePanel(window.loginWindow);
@@ -46,10 +44,10 @@ public class Main {
         
         // All the icon sizes, 16 is used for small taskbar / titlebar, 32 for large taskbar etc.
         try {
-            icons.add(ImageIO.read(new File(RESOURCE_PATH + "icon16.png")));
-            icons.add(ImageIO.read(new File(RESOURCE_PATH + "icon32.png")));
-            icons.add(ImageIO.read(new File(RESOURCE_PATH + "icon64.png")));
-            icons.add(ImageIO.read(new File(RESOURCE_PATH + "icon128.png")));
+            icons.add(ImageIO.read(Main.class.getResourceAsStream("/resources/icon16.png")));
+            icons.add(ImageIO.read(Main.class.getResourceAsStream("/resources/icon32.png")));
+            icons.add(ImageIO.read(Main.class.getResourceAsStream("/resources/icon64.png")));
+            icons.add(ImageIO.read(Main.class.getResourceAsStream("/resources/icon128.png")));
         }
         catch(IOException e) {
             e.printStackTrace();
@@ -61,7 +59,22 @@ public class Main {
         // What is the address to the server?
         InetAddress address = null;
         
-        File ipOverride = new File("ip-conf.txt");
+        ClassLoader cl = Main.class.getClassLoader();
+        String f = cl.getResource("").getFile();
+
+        File cwd = new File(f);
+
+        if (cwd.toString().endsWith("!"))
+            cwd = cwd.getParentFile();
+        
+        File ipOverride = null;
+        if(new File(cwd, "ip-conf.txt").exists()) {
+            ipOverride = new File(cwd, "ip-conf.txt");
+        }
+        else {
+            ipOverride = new File("ip-conf.txt");
+        }
+        
         if(!ipOverride.exists()) {
             try {
             	// If the file that lists the IP to the server doesn't exist then try localhost

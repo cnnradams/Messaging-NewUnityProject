@@ -11,7 +11,6 @@ import java.util.Optional;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
@@ -24,10 +23,30 @@ public class Message extends JPanel {
     
     private static final long serialVersionUID = 1L;
     
+    /**
+     * The sender or receiver of the message
+     */
     public final User user;
+    
+    /**
+     * The addressed chat. This may be empty if the message was
+     * addressed to was from a user.
+     */
     public final Optional<ChatRoom> chatRoom;
+    
+    /**
+     * The contents of the message
+     */
     public final String message;
+    
+    /**
+     * The time the message was sent in UTC
+     */
     public final ZonedDateTime dateTime;
+    
+    /**
+     * Whether the message is being sent directly to the 
+     */
     public final boolean loopback;
     JTextArea messageLabel;
     JLabel dateTimeLabel;

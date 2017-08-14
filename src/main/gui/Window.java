@@ -53,6 +53,14 @@ public class Window extends JFrame {
         panel.setVisible(true);
         
         SwingUtilities.updateComponentTreeUI(this);
+        
+        if(!System.getProperty("os.name").toLowerCase().contains("win")) {
+            int width = this.getWidth();
+            this.setSize(width + 1, this.getHeight());
+            SwingUtilities.updateComponentTreeUI(this);
+            this.setSize(width, this.getHeight());
+            SwingUtilities.updateComponentTreeUI(this);
+        }
     }
     
     private static List<BufferedImage> getImages() {
