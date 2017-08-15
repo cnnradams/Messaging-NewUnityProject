@@ -89,6 +89,8 @@ public class MessagingWindow extends StatePanel {
 	private Optional<User> selectedUser = Optional.empty();
 	private Optional<ChatRoom> selectedChat = Optional.empty();
 
+	private boolean scrollDown = false;
+	
 	// For creating groups
 	private String groupName;
 
@@ -221,6 +223,21 @@ public class MessagingWindow extends StatePanel {
         tabPanel.addTab("Groups", chatScrollPane);
         tabPanel.addTab("Users", userScrollPane);
         
+        tabPanel.addChangeListener((c) -> {
+            if(tabPanel.getSelectedIndex() == 0) {
+                tabPanel.setForegroundAt(0, Color.BLACK);
+                tabPanel.setForegroundAt(1, Color.WHITE);
+            }
+            else if(tabPanel.getSelectedIndex() == 1) {
+                tabPanel.setForegroundAt(0, Color.WHITE);
+                tabPanel.setForegroundAt(1, Color.BLACK);
+            }
+            else {
+                tabPanel.setForegroundAt(0, Color.WHITE);
+                tabPanel.setForegroundAt(1, Color.WHITE);
+            }
+        });
+        
         // Don't see these until you start talking to someone
         sendMessages.setVisible(false);
         sendMessageButton.setVisible(false);
@@ -312,32 +329,64 @@ public class MessagingWindow extends StatePanel {
 	 */
 	public void updateMessages() {
 		// This is used to check for unread messages, and if so then highlight the user that sent them
+	    boolean userTabUnread = false;
 		for (JButton userButton : userButtons) {
 			if (selectedUser.isPresent()
 					&& ((UserButtonPress) userButton.getActionListeners()[0]).user.equals(selectedUser.get())) {
 				userButton.setBackground(ColourConstants.NEW_MESSAGES_BACKGROUND_COLOR);
 			} else if (((UserButtonPress) userButton.getActionListeners()[0]).unread) {
 				userButton.setBackground(Color.YELLOW);
+				userTabUnread = true;
 			} else {
 				userButton.setBackground(ColourConstants.BACKGROUND_COLOR);
 			}
 		}
 
+        if(userTabUnread) {
+            tabPanel.setBackgroundAt(1, Color.YELLOW);
+            tabPanel.setForegroundAt(1, Color.BLACK);
+        }
+        else {
+            tabPanel.setBackgroundAt(1, ColourConstants.BACKGROUND_COLOR);
+            if(tabPanel.getSelectedIndex() == 1) {
+                tabPanel.setForegroundAt(1, Color.BLACK);
+            }
+            else {
+                tabPanel.setForegroundAt(1, Color.WHITE);
+            }
+        }
+		
+        boolean chatTabUnread = false;
 		for (JButton chatButton : chatButtons) {
 			if (selectedChat.isPresent()
 					&& ((ChatButtonPress) chatButton.getActionListeners()[0]).chat.equals(selectedChat.get())) {
 				chatButton.setBackground(ColourConstants.NEW_MESSAGES_BACKGROUND_COLOR);
 			} else if (((ChatButtonPress) chatButton.getActionListeners()[0]).unread) {
 				chatButton.setBackground(Color.YELLOW);
+				chatTabUnread = true;
 			} else {
 				chatButton.setBackground(ColourConstants.BACKGROUND_COLOR);
 			}
 		}
 
+        if(chatTabUnread) {
+            tabPanel.setBackgroundAt(0, Color.YELLOW);
+            tabPanel.setForegroundAt(0, Color.BLACK);
+        }
+        else {
+            tabPanel.setBackgroundAt(0, ColourConstants.BACKGROUND_COLOR);
+            if(tabPanel.getSelectedIndex() == 0) {
+                tabPanel.setForegroundAt(0, Color.BLACK);
+            }
+            else {
+                tabPanel.setForegroundAt(0, Color.WHITE);
+            }
+        }
+        
 		if (selectedChat.isPresent()) {
 			ChatButtonPress button = (ChatButtonPress) getChatButtonByChat(selectedChat.get()).get().getActionListeners()[0];
 			button.unread = false;
-
+			
 			// Resets the messages for recalculation purposes
 			messagingWindow.removeAll();
 			List<Message> allChatMessages = new ArrayList<>();
@@ -356,14 +405,11 @@ public class MessagingWindow extends StatePanel {
 						m.setAlignmentX(LEFT_ALIGNMENT);
 						messagingWindow.add(m, -1);
 						messagingWindow.setAlignmentX(LEFT_ALIGNMENT);
-					    // If you're in the chat that the message was added to, then drag the scrollbar to the bottom.
-						JScrollBar vertical = messagingPane.getVerticalScrollBar();
-						vertical.setValue(vertical.getMaximum());
 					}
 
 				}
 			}
-
+			
 			for (Component comp : messagingWindow.getComponents()) {
 				if (comp instanceof Message) {
 					boolean remove = true;
@@ -381,7 +427,7 @@ public class MessagingWindow extends StatePanel {
 					}
 				}
 			}
-
+			
 			if (!messagingPane.isVisible()) {
 				messagingPane.setVisible(true);
 				SwingUtilities.updateComponentTreeUI(this);
@@ -390,7 +436,7 @@ public class MessagingWindow extends StatePanel {
 			
 			UserButtonPress button = (UserButtonPress) getUserButtonByUser(selectedUser.get()).get().getActionListeners()[0];
 			button.unread = false;
-
+			
 			// Reset the messages
 			messagingWindow.removeAll();
 			List<Message> allUserMessages = new ArrayList<>();
@@ -411,13 +457,10 @@ public class MessagingWindow extends StatePanel {
 						m.setAlignmentX(LEFT_ALIGNMENT);
 						messagingWindow.add(m, -1);
 						messagingWindow.setAlignmentX(LEFT_ALIGNMENT);
-                        // If you're in the chat that the message was added to, then drag the scrollbar to the bottom.
-                        JScrollBar vertical = messagingPane.getVerticalScrollBar();
-                        vertical.setValue(vertical.getMaximum());
 					}
 				}
 			}
-
+			
 			for (Component comp : messagingWindow.getComponents()) {
 				if (comp instanceof Message) {
 					boolean remove = true;
@@ -436,6 +479,7 @@ public class MessagingWindow extends StatePanel {
 				}
 			}
 
+			
 			if (!messagingPane.isVisible()) {
 				messagingPane.setVisible(true);
 				SwingUtilities.updateComponentTreeUI(this);
@@ -448,6 +492,17 @@ public class MessagingWindow extends StatePanel {
 				SwingUtilities.updateComponentTreeUI(this);
 			}
 		}
+		
+        if(scrollDown) {
+            scrollDown = false;
+            // If you're in the chat that the message was added to, then drag the scrollbar to the bottom.
+            // For some reason, it doesn't work if it isn't done twice
+            JScrollBar vertical = messagingPane.getVerticalScrollBar();
+            vertical.setValue(vertical.getMaximum());
+            SwingUtilities.updateComponentTreeUI(messagingPane);
+            vertical.setValue(vertical.getMaximum());
+            SwingUtilities.updateComponentTreeUI(messagingPane);
+        }
 		
 		// If its not windows you have to resize to refresh for some stupid reason
         if(!System.getProperty("os.name").toLowerCase().contains("win")) {
@@ -701,6 +756,9 @@ public class MessagingWindow extends StatePanel {
 				((UserButtonPress) button.get().getActionListeners()[0]).unread = true;
 			}
 		}
+		else {
+		    scrollDown = true;
+		}
 	}
 	
 	// When a user joins, create a button for them.
@@ -816,6 +874,7 @@ public class MessagingWindow extends StatePanel {
 		selectedUser = Optional.empty();
 		sendMessages.setVisible(true);
 		sendMessageButton.setVisible(true);
+		scrollDown = true;
 	}
 	
 	private Optional<JButton> getChatButtonByChat(ChatRoom chat) {
