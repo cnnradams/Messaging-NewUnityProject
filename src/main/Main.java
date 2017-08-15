@@ -134,6 +134,10 @@ public class Main {
                 Map<User, List<Integer>> userUpdates = network.getUserUpdates().orElseThrow(network::makeException);
                 for(User user : userUpdates.keySet()) {
                     for(int state : userUpdates.get(user)) {
+                        if(user.equals(User.getMe())) {
+                            User.setMe(new User(User.getMe().username, network));
+                        }
+                        
                         window.messagingWindow.updateUser(user, state, network);	//Handling for user chats
                     }
                 }
